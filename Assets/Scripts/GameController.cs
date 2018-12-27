@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    public GameObject tile;
+    public GameObject boardSpace;
 
     // Start is called before the first frame update
     void Start()
     {
         Vector3 BoardCenter = new Vector3(0.5F, 0, 0.5F);
-        GenerateBoard(2, 2, BoardCenter);
+        GenerateBoard(7, 7, BoardCenter);
     }
 
     void GenerateBoard(int sizeX, int sizeZ, Vector3 BoardCenter)
@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
         {
             for (int b = 0; b < sizeX; b++)
             {
-                Instantiate(tile, spawnPosition, spawnRotation);
+                Instantiate(boardSpace, spawnPosition, spawnRotation);
                 spawnPosition.x = spawnPosition.x + 1;
             }
             spawnPosition.x = BoardCenter.x - (sizeX / 2);

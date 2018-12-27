@@ -1,4 +1,4 @@
-# Bear Country
+# BEAR COUNTRY
 
 ## Project Setup
 Make sure you have Git and Git LFS installed. The easiest way to do this is to install [Brew](https://brew.sh/), and then run: `brew install git git-lfs`

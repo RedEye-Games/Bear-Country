@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class GameController : MonoBehaviour
 {
     public GameObject boardSpace;
@@ -31,6 +32,7 @@ public class GameController : MonoBehaviour
         }
     }
     // Update is called once per frame
+
     void Update()
     {
         

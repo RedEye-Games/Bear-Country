@@ -5,7 +5,8 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public GameObject boardSpace;
-    public float boardScale = 1f;
+    public float boardScale = 10;
+
 
     // Start is called before the first frame update
     void Start()

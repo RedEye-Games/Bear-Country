@@ -5,9 +5,9 @@ Make sure you have Git and Git LFS installed. The easiest way to do this is to i
 1. Install Unity
 2. Clone this repo locally.
 3. Open the project in Unity.
-4. Go to the Asset Store (Window->Asset Store) and search for Github for Unity.
-5. Download and Import the plugin. 
-6. Open the GitHub Panel (Window > GitHub), and sign-in.
+4. ~~Go to the Asset Store (Window->Asset Store) and search for Github for Unity.~~
+5. ~~Download and Import the plugin.~~
+6. ~~Open the GitHub Panel (Window > GitHub), and sign-in.~~
 
 ## Working with the Project
 

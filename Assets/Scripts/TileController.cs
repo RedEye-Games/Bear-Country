@@ -46,8 +46,9 @@ public class TileController : MonoBehaviour
 
     void OnMouseDrag()
     {
-        if (!isConfirmed)
+        if (isConfirmed == false)
         {
+            ControlsDisable();
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
             Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
             transform.parent.gameObject.transform.position = cursorPosition;
@@ -59,10 +60,22 @@ public class TileController : MonoBehaviour
         if (isArmed)
         {
             transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
-            theGroup.alpha = 1;
-            theGroup.interactable = true;
+            ControlsEnable();
             isArmed = false;
         }
+    }
+
+    // Tile Controls Enable
+    private void ControlsEnable()
+    {
+        theGroup.alpha = 1;
+        theGroup.interactable = true;
+    }
+    // Tile Controls Disable
+    private void ControlsDisable()
+    {
+        theGroup.alpha = 0;
+        theGroup.interactable = false;
     }
 
     // Button functions
@@ -84,13 +97,7 @@ public class TileController : MonoBehaviour
     void Confirm()
     {
         isConfirmed = true;
-        CanvasGroup theGroup = canvas.GetComponent<CanvasGroup>();
-        //if (theGroup.alpha >= 0)
-        //{ 
-        //    theGroup.alpha = theGroup.alpha * 
-        //}
-        theGroup.alpha = 0;
-        theGroup.interactable = false;
+        ControlsDisable();
     }
 
     // Update is called once per frame

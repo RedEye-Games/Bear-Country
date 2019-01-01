@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class tileCollider : MonoBehaviour {
+public class TileCollider : MonoBehaviour {
 
     public bool isEmpty = true;
     Color colorStart = Color.red;
@@ -21,7 +21,6 @@ public class tileCollider : MonoBehaviour {
     {
         if (other.CompareTag ("Tile") && isEmpty)
         {
-            print("Tile Collided");
             rend.material.color = Color.green;
         }
     }

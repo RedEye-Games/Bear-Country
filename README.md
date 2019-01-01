@@ -17,5 +17,3 @@ Changes to the repo will show up in the "Changes" tab of the "GitHub Panel". Sel
 ### Branch Setup
 Work should be done in specific branches organized by `Feature`, `Improvement`, and `Bug`, like this: `Feature/NewFeature`
 When a branch is ready for review, merge into the development branch. After testing is completed in `Development`, create a pull request to merge into `Master`.
-
-hello. i am a fake sentence and i can't wait to be removed.

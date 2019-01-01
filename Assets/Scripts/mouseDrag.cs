@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class mouseDrag : MonoBehaviour
+public class MouseDrag : MonoBehaviour
 {
 
     public bool tileReleased;

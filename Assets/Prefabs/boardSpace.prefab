@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4102227898402398927}
   - component: {fileID: 4102227898402398923}
   - component: {fileID: 4102227898402398922}
-  - component: {fileID: 4102227898402398901}
+  - component: {fileID: 3775147309199307450}
   m_Layer: 0
   m_Name: boardSpace
   m_TagString: BoardSpace
@@ -123,7 +123,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.07
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4102227898402398901
+--- !u!114 &3775147309199307450
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

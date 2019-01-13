@@ -1,7 +1,7 @@
 # BEAR COUNTRY
 
 ## Project Setup
-Make sure you have Git and Git LFS installed. The easiest way to do this is to install [Brew](https://brew.sh/), and then run: `brew install git git-lfs`
+~~Make sure you have Git and Git LFS installed. The easiest way to do this is to install [Brew](https://brew.sh/), and then run: `brew install git git-lfs`~~
 1. Install Unity
 2. Clone this repo locally.
 3. Open the project in Unity.

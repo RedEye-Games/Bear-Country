@@ -9,10 +9,11 @@ public class TileController : MonoBehaviour
     public Button flipButton;
     public Button rotateCWButton;
     public Button rotateCCWButton;
-    public Button confirmButton;
     // how to find canvas so you can fade it on and off
     public GameObject canvas;
+    public GameObject theQuad;
     CanvasGroup theGroup;
+
 
     // Placement Vars
     bool isArmed = false;
@@ -22,6 +23,9 @@ public class TileController : MonoBehaviour
     // Mouse Drag vars
     private Vector3 screenPoint;
     private Vector3 offset;
+    public GameObject lastHit; // Keep track of last object clicked
+    public float distance = 100;
+    //RaycastHit[] hits;
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +34,6 @@ public class TileController : MonoBehaviour
         flipButton.onClick.AddListener(Flip);
         rotateCWButton.onClick.AddListener(RotateCW);
         rotateCCWButton.onClick.AddListener(RotateCCW);
-        confirmButton.onClick.AddListener(Confirm);
 
         // Canvas Group vars
         theGroup = canvas.GetComponent<CanvasGroup>();
@@ -49,6 +52,7 @@ public class TileController : MonoBehaviour
         if (isConfirmed == false)
         {
             ControlsDisable();
+            isArmed = true;
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
             Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
             transform.parent.gameObject.transform.position = cursorPosition;
@@ -70,12 +74,14 @@ public class TileController : MonoBehaviour
     {
         theGroup.alpha = 1;
         theGroup.interactable = true;
+        theQuad.SetActive(true);
     }
     // Tile Controls Disable
     private void ControlsDisable()
     {
         theGroup.alpha = 0;
         theGroup.interactable = false;
+        theQuad.SetActive(false);
     }
 
     // Button functions
@@ -103,7 +109,18 @@ public class TileController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                if (hit.collider.tag != "Tile" && hit.collider.tag != "TileButton")
+                {
+                    ControlsDisable();
+                }
+            }
+        }
     }
 
     void OnTriggerEnter(Collider other)

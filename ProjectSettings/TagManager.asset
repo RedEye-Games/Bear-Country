@@ -6,7 +6,7 @@ TagManager:
   tags:
   - Tile
   - BoardSpace
-  - Board Space
+  - TileButton
   layers:
   - Default
   - TransparentFX

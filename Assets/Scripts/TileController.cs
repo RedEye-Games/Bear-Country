@@ -5,17 +5,30 @@ using UnityEngine.UI;
 
 public class TileController : MonoBehaviour
 {
+    // GameController
+    private GameController gameController;
+
     // Tile Buttons
     public Button flipButton;
     public Button rotateCWButton;
     public Button rotateCCWButton;
     public Button confirmButton;
+
+    // Tile Colliders
+    public GameObject westPath;
+    public GameObject eastPath;
+    public GameObject northPath;
+    public GameObject southPath;
+
+    public List<GameObject> pathList = new List<GameObject>();
+
     // how to find canvas so you can fade it on and off
     public GameObject canvas;
     CanvasGroup theGroup;
 
     // Placement Vars
     bool isArmed = false;
+    public bool isPlaced;
     bool isConfirmed = false;
     Vector3 theSquarePosition;
 
@@ -26,6 +39,17 @@ public class TileController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Locate GameController Script
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+        }
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'GameController' script");
+        }
+
         //Announcing the buttons
         flipButton.onClick.AddListener(Flip);
         rotateCWButton.onClick.AddListener(RotateCW);
@@ -36,12 +60,22 @@ public class TileController : MonoBehaviour
         theGroup = canvas.GetComponent<CanvasGroup>();
         theGroup.alpha = 0;
         theGroup.interactable = false;
+
+        // Populate Paths
+        pathList.Add(westPath);
+        pathList.Add(eastPath);
+        pathList.Add(southPath);
+        pathList.Add(northPath);
+
+        // Set Placement
+        isPlaced = false;
     }
 
     void OnMouseDown()
     {
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+        isPlaced = false;
     }
 
     void OnMouseDrag()
@@ -62,6 +96,14 @@ public class TileController : MonoBehaviour
             transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
             ControlsEnable();
             isArmed = false;
+            isPlaced = true;
+
+            foreach (GameObject path in pathList)
+            {
+                // Add up score.
+                var scoreToAdd = path.GetComponent<PathController>().scoreToAdd;
+                gameController.AddScore(scoreToAdd);
+            }
         }
     }
 
@@ -103,7 +145,6 @@ public class TileController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
     }
 
     void OnTriggerEnter(Collider other)
@@ -119,4 +160,5 @@ public class TileController : MonoBehaviour
             }
         }
     }
+   
 }

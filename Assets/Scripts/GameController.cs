@@ -8,12 +8,15 @@ public class GameController : MonoBehaviour
     public GameObject boardSpace;
     public float boardScale = 10;
 
+    private int score;
+
 
     // Start is called before the first frame update
     void Start()
     {
         Vector3 BoardCenter = new Vector3(0.5F, 0, 0.5F);
         GenerateBoard(7, 7, BoardCenter);
+        score = 0;
     }
 
     void GenerateBoard(int sizeX, int sizeZ, Vector3 BoardCenter)
@@ -38,5 +41,11 @@ public class GameController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void AddScore(int newScoreValue)
+    {
+        score += newScoreValue;
+        Debug.Log("The score is " + score + " points");
     }
 }

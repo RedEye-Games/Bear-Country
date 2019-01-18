@@ -15,7 +15,11 @@ public class TileController : MonoBehaviour
     public GameObject northPath;
     public GameObject southPath;
 
+    // Path Components
     public List<GameObject> pathList = new List<GameObject>();
+
+    // Scoring Variables
+    private int scoreToAdd;
 
     // Tile Buttons
     public Button flipButton;
@@ -27,17 +31,18 @@ public class TileController : MonoBehaviour
     CanvasGroup theGroup;
 
 
-    // Placement Vars
+    // Placement Variables
     bool isArmed = false;
     bool isConfirmed = false;
     public bool isPlaced = false;
     Vector3 theSquarePosition;
 
-    // Mouse Drag vars
+    // Mouse Drag Variables
     private Vector3 screenPoint;
     private Vector3 offset;
     public GameObject lastHit; // Keep track of last object clicked
     public float distance = 100;
+
     //RaycastHit[] hits;
 
     // Start is called before the first frame update
@@ -78,12 +83,20 @@ public class TileController : MonoBehaviour
     {
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+        if (isPlaced && !isConfirmed) 
+        {
+            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
+        }
     }
 
     void OnMouseDrag()
     {
         if (isConfirmed == false)
         {
+            if (isPlaced)
+            {
+                gameController.AddScore(4);
+            }
             ControlsDisable();
             isArmed = true;
             isPlaced = false;
@@ -95,21 +108,18 @@ public class TileController : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if (isArmed)
+        if (isConfirmed == false)
         {
-            transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
-            ControlsEnable();
-            isArmed = false;
-            isPlaced = true;
-
-            foreach (GameObject path in pathList)
+            if (isArmed)
             {
-                // Add up score.
-                var scoreToAdd = path.GetComponent<PathController>().scoreToAdd;
-                gameController.AddScore(scoreToAdd);
+                transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
+                ControlsEnable();
+                isArmed = false;
+                isPlaced = true;
+                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
             }
-
         }
+
     }
 
     // Tile Controls Enable
@@ -143,10 +153,11 @@ public class TileController : MonoBehaviour
         transform.Rotate(0, -90, 0);
     }
 
-    void Confirm()
+    public void ConfirmTile()
     {
         isConfirmed = true;
         ControlsDisable();
+        ScoreTile();
     }
 
     // Update is called once per frame
@@ -177,6 +188,22 @@ public class TileController : MonoBehaviour
             {
                 isArmed = true;
             }
+        }
+    }
+
+    public void UpdateScore(int score) 
+    {
+
+    }
+
+    public void ScoreTile() 
+    {
+        foreach (GameObject path in pathList)
+        {
+            // Add up score.
+            scoreToAdd = path.GetComponent<PathController>().scoreToAdd;
+            gameController.AddScore(scoreToAdd);
+            Debug.Log(path.name + " has a score of " + scoreToAdd);
         }
     }
 }

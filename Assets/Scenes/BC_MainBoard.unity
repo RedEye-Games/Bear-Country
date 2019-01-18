@@ -480,6 +480,9 @@ MonoBehaviour:
   - {fileID: 44947767}
   - {fileID: 1239936679}
   - {fileID: 275494439}
+  tiles: []
+  unplacedTiles: 0
+  remainingTiles: 28
 --- !u!1 &463347835
 GameObject:
   m_ObjectHideFlags: 0

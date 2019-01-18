@@ -15,8 +15,6 @@ public class PathController : MonoBehaviour
     {
         pathTag = gameObject.tag;
 
-        scoreToAdd = -1;
-
         // Locate Parent Tile Controller
         parentTile = gameObject.GetComponentInParent<TileController>();
 
@@ -27,7 +25,6 @@ public class PathController : MonoBehaviour
     {
         if (parentTile.isPlaced)
         {
-            
         }
     }
 
@@ -37,14 +34,16 @@ public class PathController : MonoBehaviour
         if (other.CompareTag(pathTag))
         {
             GameObject adjacentPath = other.gameObject;
-            Debug.Log("Touched a " + pathTag);
+
             //var adjacentPathName = other.gameObject.name;
             if (pathTag == gameObject.tag)
             {
+                Debug.Log("Touched a shared " + pathTag + " tag");
                 isDeadEnd = false;
-                scoreToAdd = 2;
+                scoreToAdd = 1;
             }
             // Check to see if path is alive. Check to see if it's a riverhead.
+            // Then create and store unique river/trail identifier.
             //gameController.AddScore(1);
         }
     }

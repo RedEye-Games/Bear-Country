@@ -66,7 +66,7 @@ public class TileDisbursementController : MonoBehaviour
         {
             EnableButton();
         }
-        Debug.Log(unplacedTiles);
+//        Debug.Log(unplacedTiles);
     }
 
     void EnableButton() 

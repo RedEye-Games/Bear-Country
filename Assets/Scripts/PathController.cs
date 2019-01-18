@@ -38,9 +38,12 @@ public class PathController : MonoBehaviour
         {
             GameObject adjacentPath = other.gameObject;
             Debug.Log("Touched a " + pathTag);
-            isDeadEnd = false;
-            scoreToAdd = 1;
             //var adjacentPathName = other.gameObject.name;
+            if (pathTag == gameObject.tag)
+            {
+                isDeadEnd = false;
+                scoreToAdd = 2;
+            }
             // Check to see if path is alive. Check to see if it's a riverhead.
             //gameController.AddScore(1);
         }

@@ -5,6 +5,18 @@ using UnityEngine.UI;
 
 public class TileController : MonoBehaviour
 {
+
+    // GameController
+    private GameController gameController;
+
+    // Tile Colliders
+    public GameObject westPath;
+    public GameObject eastPath;
+    public GameObject northPath;
+    public GameObject southPath;
+
+    public List<GameObject> pathList = new List<GameObject>();
+
     // Tile Buttons
     public Button flipButton;
     public Button rotateCWButton;
@@ -18,6 +30,7 @@ public class TileController : MonoBehaviour
     // Placement Vars
     bool isArmed = false;
     bool isConfirmed = false;
+    public bool isPlaced = false;
     Vector3 theSquarePosition;
 
     // Mouse Drag vars
@@ -30,6 +43,17 @@ public class TileController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Locate GameController Script
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+        }
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'GameController' script");
+        }
+
         //Announcing the buttons
         flipButton.onClick.AddListener(Flip);
         rotateCWButton.onClick.AddListener(RotateCW);
@@ -39,6 +63,15 @@ public class TileController : MonoBehaviour
         theGroup = canvas.GetComponent<CanvasGroup>();
         theGroup.alpha = 0;
         theGroup.interactable = false;
+
+        // Populate Paths
+        pathList.Add(westPath);
+        pathList.Add(eastPath);
+        pathList.Add(southPath);
+        pathList.Add(northPath);
+
+        // Set Placement
+        isPlaced = false;
     }
 
     void OnMouseDown()
@@ -53,6 +86,7 @@ public class TileController : MonoBehaviour
         {
             ControlsDisable();
             isArmed = true;
+            isPlaced = false;
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
             Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
             transform.parent.gameObject.transform.position = cursorPosition;
@@ -66,6 +100,15 @@ public class TileController : MonoBehaviour
             transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
             ControlsEnable();
             isArmed = false;
+            isPlaced = true;
+
+            foreach (GameObject path in pathList)
+            {
+                // Add up score.
+                var scoreToAdd = path.GetComponent<PathController>().scoreToAdd;
+                gameController.AddScore(scoreToAdd);
+            }
+
         }
     }
 

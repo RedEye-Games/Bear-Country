@@ -48,4 +48,5 @@ public class GameController : MonoBehaviour
         score += newScoreValue;
         Debug.Log("The score is " + score + " points");
     }
+
 }

@@ -83,6 +83,10 @@ public class TileController : MonoBehaviour
     {
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+        if (isPlaced && !isConfirmed) 
+        {
+            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
+        }
     }
 
     void OnMouseDrag()
@@ -104,13 +108,18 @@ public class TileController : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if (isArmed)
+        if (isConfirmed == false)
         {
-            transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
-            ControlsEnable();
-            isArmed = false;
-            isPlaced = true;
+            if (isArmed)
+            {
+                transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
+                ControlsEnable();
+                isArmed = false;
+                isPlaced = true;
+                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+            }
         }
+
     }
 
     // Tile Controls Enable
@@ -144,7 +153,7 @@ public class TileController : MonoBehaviour
         transform.Rotate(0, -90, 0);
     }
 
-    void Confirm()
+    public void ConfirmTile()
     {
         isConfirmed = true;
         ControlsDisable();

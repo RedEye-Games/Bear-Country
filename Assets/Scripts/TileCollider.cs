@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class tileCollider : MonoBehaviour {
+public class TileCollider : MonoBehaviour {
 
     public bool isEmpty = true;
     Color colorStart = Color.red;
     Color colorEnd = Color.green;
-    Renderer rend;
+    public Renderer rend;
 
 
     // Start is called before the first frame update
@@ -21,7 +21,6 @@ public class tileCollider : MonoBehaviour {
     {
         if (other.CompareTag ("Tile") && isEmpty)
         {
-            print("Tile Collided");
             rend.material.color = Color.green;
         }
     }

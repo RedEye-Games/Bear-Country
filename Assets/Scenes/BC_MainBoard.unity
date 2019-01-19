@@ -572,7 +572,7 @@ Transform:
   m_GameObject: {fileID: 463347835}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 11, y: 11, z: 11}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -653,7 +653,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 499720609}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -7.9, y: 110, z: -9.9}
+  m_LocalPosition: {x: -7.9, y: 125.4, z: -7.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -848,46 +848,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BoardSpacePrefab: {fileID: 4102227898402398924, guid: 0e73fc75e0290462cb2a431d9997c981,
     type: 3}
+  BlankGridItemPrefab: {fileID: 5796812896228462781, guid: 68773990bae7041c49560c5c8752477b,
+    type: 3}
+  RiverHeadPrefab: {fileID: 4907271747273985542, guid: 3494267713cb243f88672b03c2382127,
+    type: 3}
+  TrailHeadPrefab: {fileID: 1073381048370023588, guid: c6a24381a486b4e4791703fb4ad18d56,
+    type: 3}
   BoardContainer: {fileID: 463347835}
   tileSpacing: 12
   numberOfColumns: 7
   numberOfRows: 7
   Heads:
-  - type: river
-    edge: top
+  - type: 0
+    edge: 0
     location: 2
-  - type: path
-    edge: top
+  - type: 1
+    edge: 0
     location: 4
-  - type: river
-    edge: top
+  - type: 0
+    edge: 0
     location: 6
-  - type: river
-    edge: bottom
+  - type: 0
+    edge: 1
     location: 2
-  - type: path
-    edge: bottom
+  - type: 1
+    edge: 1
     location: 4
-  - type: river
-    edge: bottom
+  - type: 0
+    edge: 1
     location: 6
-  - type: path
-    edge: left
+  - type: 1
+    edge: 2
     location: 2
-  - type: river
-    edge: left
+  - type: 0
+    edge: 2
     location: 4
-  - type: path
-    edge: left
+  - type: 1
+    edge: 2
     location: 6
-  - type: path
-    edge: right
+  - type: 1
+    edge: 3
     location: 2
-  - type: river
-    edge: right
+  - type: 0
+    edge: 3
     location: 4
-  - type: path
-    edge: right
+  - type: 1
+    edge: 3
     location: 6
   fav: 0
 --- !u!4 &1317119495
@@ -1267,7 +1273,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1979282360}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalPosition: {x: 0, y: 0, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1635921555}

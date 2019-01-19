@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Vector3 BoardCenter = new Vector3(0.5F, 0, 0.5F);
+        Vector3 BoardCenter = new Vector3(-0.5F, 0, 0.5F);
         //GenerateBoard(numberOfBoardColumns, numberOfBoardRows, BoardCenter);
         score = 0;
     }

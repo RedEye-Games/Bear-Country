@@ -5,8 +5,11 @@ using System;
 
 [Serializable]
 public class Head
+
 {
-    public string type;
-    public string edge;
+    public enum Edge { Top, Bottom, Left, Right };
+    public enum HeadType { River, Trail };
+    public HeadType type; // these should all probably be serialized privates.
+    public Edge edge;
     public int location;
 }

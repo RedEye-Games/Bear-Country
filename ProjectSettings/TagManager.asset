@@ -9,6 +9,8 @@ TagManager:
   - Path
   - BoardSpace
   - River
+  - NonPlayableGridItem
+  - BlankGridItem
   layers:
   - Default
   - TransparentFX

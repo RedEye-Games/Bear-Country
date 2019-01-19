@@ -54,27 +54,23 @@ public class BoardManager : MonoBehaviour
 
         void getHead(Head head, int column, int row)
         {
-            GameObject prefab;
+            GameObject prefab = new GameObject();
+
             if (head.type == Head.HeadType.River)
             {
                 prefab = Instantiate(RiverHeadPrefab, spawnPosition, spawnRotation);
                 prefab.name = "RiverHead(top," + head.location + ")";
-                prefab.transform.parent = BoardContainer.transform;
-                boardSpaces[column, row] = prefab;
-                BoardSpace script = prefab.GetComponent<BoardSpace>();
-                script.Init(column, row);
-                if (head.edge == Head.Edge.Left || head.edge == Head.Edge.Right) prefab.transform.Rotate(new Vector3(0, 1, 0), 90);
             }
             else if (head.type == Head.HeadType.Trail)
             {
                 prefab = Instantiate(TrailHeadPrefab, spawnPosition, spawnRotation);
                 prefab.name = "TrailHead(top," + head.location + ")";
-                prefab.transform.parent = BoardContainer.transform;
-                boardSpaces[column, row] = prefab;
-                BoardSpace script = prefab.GetComponent<BoardSpace>();
-                script.Init(column, row);
-                if (head.edge == Head.Edge.Left || head.edge == Head.Edge.Right) prefab.transform.Rotate(new Vector3(0, 1, 0), 90);
             }
+
+            boardSpaces[column, row] = prefab;
+            prefab.GetComponent<BoardSpace>().Init(column, row);
+            if (head.edge == Head.Edge.Left || head.edge == Head.Edge.Right) prefab.transform.Rotate(new Vector3(0, 1, 0), 90);
+            prefab.transform.parent = BoardContainer.transform;
         }
 
         void getBlank(int column, int row)
@@ -84,20 +80,16 @@ public class BoardManager : MonoBehaviour
             gridItem.transform.parent = BoardContainer.transform;
             boardSpaces[column, row] = gridItem;
             gridItem.GetComponent<MeshRenderer>().enabled = false;
-            BoardSpace script = gridItem.GetComponent<BoardSpace>();
-            script.Init(column, row);
-
+            gridItem.GetComponent<BoardSpace>().Init(column, row);
         }
 
         void getBoardSpace(int column, int row)
         {
-            GameObject gridItem;
-            gridItem = Instantiate(BoardSpacePrefab, spawnPosition, spawnRotation);
+            GameObject gridItem = Instantiate(BoardSpacePrefab, spawnPosition, spawnRotation);
             gridItem.name = "boardSpace(" + column + "," + row + ")";
             gridItem.transform.parent = BoardContainer.transform;
             boardSpaces[column, row] = gridItem;
-            BoardSpace script = gridItem.GetComponent<BoardSpace>();
-            script.Init(column, row);
+            gridItem.GetComponent<BoardSpace>().Init(column, row);
         }
 
         for (int row = 0; row < numberOfRows + 2; row++)

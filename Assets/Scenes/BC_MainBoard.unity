@@ -846,14 +846,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d98d382a004e409288eb5117f92aa14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BoardSpacePrefab: {fileID: 4102227898402398924, guid: 0e73fc75e0290462cb2a431d9997c981,
-    type: 3}
-  BlankGridItemPrefab: {fileID: 5796812896228462781, guid: 68773990bae7041c49560c5c8752477b,
-    type: 3}
-  RiverHeadPrefab: {fileID: 4907271747273985542, guid: 3494267713cb243f88672b03c2382127,
-    type: 3}
-  TrailHeadPrefab: {fileID: 1073381048370023588, guid: c6a24381a486b4e4791703fb4ad18d56,
-    type: 3}
+  prefabs:
+    boardSpacePrefab: {fileID: 4102227898402398924, guid: 0e73fc75e0290462cb2a431d9997c981,
+      type: 3}
+    blankGridItemPrefab: {fileID: 5796812896228462781, guid: 68773990bae7041c49560c5c8752477b,
+      type: 3}
+    riverHeadPrefab: {fileID: 4907271747273985542, guid: 3494267713cb243f88672b03c2382127,
+      type: 3}
+    trailHeadPrefab: {fileID: 1073381048370023588, guid: c6a24381a486b4e4791703fb4ad18d56,
+      type: 3}
   BoardContainer: {fileID: 463347835}
   tileSpacing: 11
   numberOfColumns: 7

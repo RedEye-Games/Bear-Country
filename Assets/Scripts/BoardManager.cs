@@ -9,16 +9,7 @@ public class BoardManager : MonoBehaviour
     public static BoardManager Instance { get { return _instance; } }
 
     [SerializeField]
-    private GameObject BoardSpacePrefab;
-
-    [SerializeField]
-    private GameObject BlankGridItemPrefab;
-
-    [SerializeField]
-    private GameObject RiverHeadPrefab;
-
-    [SerializeField]
-    private GameObject TrailHeadPrefab;
+    private BoardManagerPrefabs prefabs;
 
     [SerializeField]
     private GameObject BoardContainer;
@@ -29,7 +20,6 @@ public class BoardManager : MonoBehaviour
 
     private GameObject[,] boardSpaces;
     public Head[] Heads;
-    public int fav;
 
     // Singleton
     private void Awake()
@@ -58,12 +48,12 @@ public class BoardManager : MonoBehaviour
 
             if (head.type == Head.HeadType.River)
             {
-                prefab = Instantiate(RiverHeadPrefab, spawnPosition, spawnRotation);
+                prefab = Instantiate(prefabs.RiverHeadPrefab, spawnPosition, spawnRotation);
                 prefab.name = "RiverHead(top," + head.location + ")";
             }
             else if (head.type == Head.HeadType.Trail)
             {
-                prefab = Instantiate(TrailHeadPrefab, spawnPosition, spawnRotation);
+                prefab = Instantiate(prefabs.TrailHeadPrefab, spawnPosition, spawnRotation);
                 prefab.name = "TrailHead(top," + head.location + ")";
             }
 
@@ -75,7 +65,7 @@ public class BoardManager : MonoBehaviour
 
         void getBlank(int column, int row)
         {
-            GameObject gridItem = Instantiate(BlankGridItemPrefab, spawnPosition, spawnRotation);
+            GameObject gridItem = Instantiate(prefabs.BlankGridItemPrefab, spawnPosition, spawnRotation);
             gridItem.name = "blankSpace(" + column + "," + row + ")";
             gridItem.transform.parent = BoardContainer.transform;
             boardSpaces[column, row] = gridItem;
@@ -85,7 +75,7 @@ public class BoardManager : MonoBehaviour
 
         void getBoardSpace(int column, int row)
         {
-            GameObject gridItem = Instantiate(BoardSpacePrefab, spawnPosition, spawnRotation);
+            GameObject gridItem = Instantiate(prefabs.BoardSpacePrefab, spawnPosition, spawnRotation);
             gridItem.name = "boardSpace(" + column + "," + row + ")";
             gridItem.transform.parent = BoardContainer.transform;
             boardSpaces[column, row] = gridItem;
@@ -182,4 +172,24 @@ public class BoardManager : MonoBehaviour
         results.Add("right", right);
         return results;
     }
+}
+
+[Serializable]
+public class BoardManagerPrefabs
+{
+    [SerializeField]
+    private GameObject boardSpacePrefab;
+    public GameObject BoardSpacePrefab { get { return boardSpacePrefab; } }
+
+    [SerializeField]
+    private GameObject blankGridItemPrefab;
+    public GameObject BlankGridItemPrefab { get { return blankGridItemPrefab; } }
+
+    [SerializeField]
+    private GameObject riverHeadPrefab;
+    public GameObject RiverHeadPrefab { get { return riverHeadPrefab; } }
+
+    [SerializeField]
+    private GameObject trailHeadPrefab;
+    public GameObject TrailHeadPrefab { get { return trailHeadPrefab; } }
 }

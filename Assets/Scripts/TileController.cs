@@ -132,6 +132,11 @@ public class TileController : MonoBehaviour
                         transform.parent.gameObject.transform.position = spawnPoint;
                     }
                 }
+                else
+                {
+                    theSquarePosition = spawnPoint;
+                    transform.parent.gameObject.transform.position = spawnPoint;
+                }
             }
         }
     }

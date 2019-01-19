@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// quick scene reset for debugging
+using UnityEngine.SceneManagement;
+
 
 public class GameController : MonoBehaviour
 {
@@ -40,7 +43,11 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        
+       // quick scene reset for debugging
+       if (Input.GetKeyDown("backspace"))
+        {
+            SceneManager.LoadScene(1);
+        }
     }
 
     public void AddScore(int newScoreValue)

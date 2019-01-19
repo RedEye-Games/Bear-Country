@@ -446,7 +446,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardSpace: {fileID: 4102227898402398924, guid: 0e73fc75e0290462cb2a431d9997c981,
     type: 3}
-  boardScale: 10
+  boardScale: 100
+  numberOfBoardColumns: 7
+  numberOfBoardRows: 7
 --- !u!4 &345423400
 Transform:
   m_ObjectHideFlags: 0
@@ -573,7 +575,7 @@ Transform:
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &499720609
 GameObject:
@@ -651,7 +653,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 499720609}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 150, z: 0}
+  m_LocalPosition: {x: -7.9, y: 110, z: -9.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -721,7 +723,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1239936678
 GameObject:
@@ -815,6 +817,93 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1239936678}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1317119493
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1317119495}
+  - component: {fileID: 1317119494}
+  m_Layer: 0
+  m_Name: BoardManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1317119494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317119493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d98d382a004e409288eb5117f92aa14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BoardSpacePrefab: {fileID: 4102227898402398924, guid: 0e73fc75e0290462cb2a431d9997c981,
+    type: 3}
+  BoardContainer: {fileID: 463347835}
+  tileSpacing: 12
+  numberOfColumns: 7
+  numberOfRows: 7
+  Heads:
+  - type: river
+    edge: top
+    location: 2
+  - type: path
+    edge: top
+    location: 4
+  - type: river
+    edge: top
+    location: 6
+  - type: river
+    edge: bottom
+    location: 2
+  - type: path
+    edge: bottom
+    location: 4
+  - type: river
+    edge: bottom
+    location: 6
+  - type: path
+    edge: left
+    location: 2
+  - type: river
+    edge: left
+    location: 4
+  - type: path
+    edge: left
+    location: 6
+  - type: path
+    edge: right
+    location: 2
+  - type: river
+    edge: right
+    location: 4
+  - type: path
+    edge: right
+    location: 6
+  fav: 0
+--- !u!4 &1317119495
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317119493}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1451706699
 GameObject:
   m_ObjectHideFlags: 0
@@ -1078,7 +1167,7 @@ RectTransform:
   m_Children:
   - {fileID: 257232940}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1152,7 +1241,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 113.7, y: -30, z: 0}
 --- !u!1 &1979282360
 GameObject:
@@ -1186,5 +1275,5 @@ Transform:
   - {fileID: 1239936679}
   - {fileID: 275494439}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -7,7 +7,8 @@ public class GameController : MonoBehaviour
 {
     public GameObject boardSpace;
     public float boardScale = 10;
-
+    public int numberOfBoardColumns = 7;
+    public int numberOfBoardRows = 7;
     private int score;
 
 
@@ -15,7 +16,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         Vector3 BoardCenter = new Vector3(0.5F, 0, 0.5F);
-        GenerateBoard(7, 7, BoardCenter);
+        //GenerateBoard(numberOfBoardColumns, numberOfBoardRows, BoardCenter);
         score = 0;
     }
 

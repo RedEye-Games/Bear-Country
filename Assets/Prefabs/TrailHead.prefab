@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 1073381048370023585}
   - component: {fileID: 1073381048370023590}
   - component: {fileID: 1073381048370023587}
-  - component: {fileID: 7724617822863224631}
   - component: {fileID: 6434471885880120025}
+  - component: {fileID: 7960285132521133542}
+  - component: {fileID: 5756125434133696524}
   m_Layer: 0
   m_Name: TrailHead
   m_TagString: BoardSpace
@@ -96,24 +97,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7724617822863224631
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1073381048370023588}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61ef0cb1861fb464e9006ec7969e98e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TilePrefab: {fileID: 6914356672655439281, guid: fc5a7363f3c69437b80caa4828e17d48,
-    type: 3}
-  column: 0
-  row: 0
-  isHighlighted: 0
-  contents: {fileID: 0}
 --- !u!65 &6434471885880120025
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -127,3 +110,27 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.99999994, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7960285132521133542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073381048370023588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a685f40f629646078ef93a7e9736760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5756125434133696524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073381048370023588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5795103da22e4966a1e3b11b7b39bc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

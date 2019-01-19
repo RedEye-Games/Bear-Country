@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 5796812896228462783}
   - component: {fileID: 5796812896228462778}
   - component: {fileID: 566563959671213760}
-  - component: {fileID: 8967040852276571926}
+  - component: {fileID: 2964184393983030325}
+  - component: {fileID: 109807327893100897}
   m_Layer: 0
   m_Name: BlankGridItem
   m_TagString: BoardSpace
@@ -109,7 +110,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 0.99999994, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8967040852276571926
+--- !u!114 &2964184393983030325
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,11 +119,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 5796812896228462781}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61ef0cb1861fb464e9006ec7969e98e2, type: 3}
+  m_Script: {fileID: 11500000, guid: 4a685f40f629646078ef93a7e9736760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TilePrefab: {fileID: 0}
-  column: 0
-  row: 0
-  isHighlighted: 0
-  contents: {fileID: 0}
+--- !u!114 &109807327893100897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5796812896228462781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5795103da22e4966a1e3b11b7b39bc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

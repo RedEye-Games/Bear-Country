@@ -68,7 +68,7 @@ public class BoardManager : MonoBehaviour
             }
 
             boardSpaces[column, row] = prefab;
-            prefab.GetComponent<BoardSpace>().Init(column, row);
+            prefab.GetComponent<GridCoordinates>().Init(column, row);
             if (head.edge == Head.Edge.Left || head.edge == Head.Edge.Right) prefab.transform.Rotate(new Vector3(0, 1, 0), 90);
             prefab.transform.parent = BoardContainer.transform;
         }
@@ -80,7 +80,7 @@ public class BoardManager : MonoBehaviour
             gridItem.transform.parent = BoardContainer.transform;
             boardSpaces[column, row] = gridItem;
             gridItem.GetComponent<MeshRenderer>().enabled = false;
-            gridItem.GetComponent<BoardSpace>().Init(column, row);
+            gridItem.GetComponent<GridCoordinates>().Init(column, row);
         }
 
         void getBoardSpace(int column, int row)
@@ -89,7 +89,7 @@ public class BoardManager : MonoBehaviour
             gridItem.name = "boardSpace(" + column + "," + row + ")";
             gridItem.transform.parent = BoardContainer.transform;
             boardSpaces[column, row] = gridItem;
-            gridItem.GetComponent<BoardSpace>().Init(column, row);
+            gridItem.GetComponent<GridCoordinates>().Init(column, row);
         }
 
         for (int row = 0; row < numberOfRows + 2; row++)
@@ -161,8 +161,9 @@ public class BoardManager : MonoBehaviour
         {
             for (int row = 0; row < numberOfColumns + 2; row++)
             {
-                GameObject boardSpace = boardSpaces[col, row];
-                boardSpace.GetComponent<BoardSpace>().CacheNeighbors();
+                GameObject gridItem = boardSpaces[col, row];
+                if (gridItem.tag == "BoardSpace")
+                    gridItem.GetComponent<NeighborAwareness>().CacheNeighbors(col, row);
             }
         }
     }

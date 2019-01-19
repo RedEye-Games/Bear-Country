@@ -59,26 +59,32 @@ public class TileDisbursementController : MonoBehaviour
     {
     }
 
-    public void UpdatePlaceCount(int count) 
+    public void UpdatePlaceCount(int count)
     {
         unplacedTiles = unplacedTiles + count;
         if (unplacedTiles == 0)
         {
             EnableButton();
         }
-//        Debug.Log(unplacedTiles);
+        else
+        {
+            DisableButton();
+        }
+        //        Debug.Log(unplacedTiles);
     }
 
     void EnableButton() 
     {
         disburseTilesButton.GetComponentInChildren<Text>().text = "Confirm Placement";
         isEnabled = true;
+        disburseTilesButton.interactable = true;
         disburseTilesButton.onClick.AddListener(DisburseTiles);
     }
 
     void DisableButton()
     {
         isEnabled = false;
+        disburseTilesButton.interactable = false;
         disburseTilesButton.onClick.RemoveListener(DisburseTiles);
     }
 }

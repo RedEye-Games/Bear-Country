@@ -34,6 +34,7 @@ public class TileController : MonoBehaviour
     public bool isPlaced = false;
     bool isSelected = false;
     Vector3 theSquarePosition;
+    Vector3 spawnPoint;
 
     // Mouse Drag Variables
     private Vector3 screenPoint;
@@ -53,6 +54,11 @@ public class TileController : MonoBehaviour
         {
             Debug.Log("Cannot find 'GameController' script");
         }
+
+        // Find this tile's position
+        theSquarePosition = gameObject.transform.position;
+        // Record spawn point
+        spawnPoint = gameObject.transform.position;
 
         // Locate Tile Adjuster Buttons
         flipButton = GameObject.Find("FlipButton").GetComponent<Button>();
@@ -100,25 +106,40 @@ public class TileController : MonoBehaviour
         }
     }
 
-    private void OnMouseUp()
+    void OnMouseUp()
     {
+        // Sends tiles back to spawn point
+       
         if (isConfirmed == false)
         {
-            if (isArmed)
+            if (isArmed && !isPlaced)
             {
-                transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
                 isArmed = false;
-                isPlaced = true;
-                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+
+                RaycastHit boardCheck;
+                Ray ray = new Ray(transform.position, -transform.up);
+                if (Physics.Raycast(ray, out boardCheck, Mathf.Infinity))
+                {
+                    if (boardCheck.collider.name == "boardSpaceMain" || boardCheck.collider.name == "boardSpaceCollider01")
+                    {
+                        isPlaced = true;
+                        transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
+                        gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+                    }
+                    else
+                    {
+                        theSquarePosition = spawnPoint;
+                        transform.parent.gameObject.transform.position = spawnPoint;
+                    }
+                }
             }
         }
-
     }
 
     // Button functions
     void Flip()
     {
-        if (isSelected == true)
+        if (isSelected && isPlaced)
         {
             transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, -transform.localScale.z);
         }
@@ -126,7 +147,7 @@ public class TileController : MonoBehaviour
 
     void RotateCW()
     {
-        if (isSelected == true)
+        if (isSelected && isPlaced)
         {
             transform.Rotate(0, 90, 0);
         }
@@ -134,7 +155,7 @@ public class TileController : MonoBehaviour
 
     void RotateCCW()
     {
-        if (isSelected == true)
+        if (isSelected && isPlaced)
         {
             transform.Rotate(0, -90, 0);
         }

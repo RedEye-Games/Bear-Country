@@ -14,9 +14,14 @@ public class TileDisbursementController : MonoBehaviour
     public int unplacedTiles = 0;
     public int remainingTiles = 28;
 
+    public AudioSource sfx;
+    public AudioClip disburse;
+    public AudioClip confirm;
+
     // Start is called before the first frame update
     void Start()
     {
+        sfx = GetComponent<AudioSource>();
         DisburseTiles();
     }
 
@@ -24,6 +29,9 @@ public class TileDisbursementController : MonoBehaviour
     {
         // Check to see if all tiles are placed.
         // Check for tiles on board. Confirm them.
+
+        // Play tile disburse SFX
+        sfx.PlayOneShot(disburse);
 
         foreach (var tile in tiles)
         {

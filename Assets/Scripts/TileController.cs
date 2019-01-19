@@ -36,6 +36,13 @@ public class TileController : MonoBehaviour
     Vector3 theSquarePosition;
     Vector3 spawnPoint;
 
+    // Audio
+    AudioSource sfx;
+    public AudioClip placed;
+    public AudioClip offBoard;
+    public AudioClip rotate;
+    public AudioClip flip;
+
     // Mouse Drag Variables
     private Vector3 screenPoint;
     private Vector3 offset;
@@ -44,6 +51,10 @@ public class TileController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        // Audio
+        sfx = GetComponent<AudioSource>();
+
         // Locate GameController Script
         GameObject gameControllerObject = GameObject.FindWithTag("GameController");
         if (gameControllerObject != null)
@@ -123,6 +134,7 @@ public class TileController : MonoBehaviour
                     if (boardCheck.collider.name == "boardSpaceMain" || boardCheck.collider.name == "boardSpaceCollider01")
                     {
                         isPlaced = true;
+                        sfx.PlayOneShot(placed);
                         transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
                         gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
                     }
@@ -130,6 +142,7 @@ public class TileController : MonoBehaviour
                     {
                         theSquarePosition = spawnPoint;
                         transform.parent.gameObject.transform.position = spawnPoint;
+                        sfx.PlayOneShot(offBoard);
                     }
                 }
                 else
@@ -147,6 +160,7 @@ public class TileController : MonoBehaviour
         if (isSelected && isPlaced)
         {
             transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, -transform.localScale.z);
+            sfx.PlayOneShot(flip);
         }
     }
 
@@ -155,6 +169,7 @@ public class TileController : MonoBehaviour
         if (isSelected && isPlaced)
         {
             transform.Rotate(0, 90, 0);
+            sfx.PlayOneShot(rotate);
         }
     }
 
@@ -163,6 +178,7 @@ public class TileController : MonoBehaviour
         if (isSelected && isPlaced)
         {
             transform.Rotate(0, -90, 0);
+            sfx.PlayOneShot(rotate);
         }
     }
 

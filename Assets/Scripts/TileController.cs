@@ -115,11 +115,12 @@ public class TileController : MonoBehaviour
             if (isArmed && !isPlaced)
             {
                 isArmed = false;
-
+                Debug.Log("Got here.");
                 RaycastHit boardCheck;
                 Ray ray = new Ray(transform.position, -transform.up);
                 if (Physics.Raycast(ray, out boardCheck, Mathf.Infinity))
                 {
+                    Debug.Log("And here.");
                     if (boardCheck.collider.name == "boardSpaceMain" || boardCheck.collider.name == "boardSpaceCollider01")
                     {
                         isPlaced = true;

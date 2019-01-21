@@ -29,8 +29,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6914356672655439281}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.24, y: 0.1, z: 0}
-  m_LocalScale: {x: 1, y: 0.07, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -122,9 +122,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8861140f08dce41339862c6ba0973f8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flipButton: {fileID: 0}
-  rotateCWButton: {fileID: 0}
-  rotateCCWButton: {fileID: 0}
-  canvas: {fileID: 0}
-  lastHit: {fileID: 0}
+  westPath: {fileID: 0}
+  eastPath: {fileID: 0}
+  northPath: {fileID: 0}
+  southPath: {fileID: 0}
+  pathList: []
+  thisTile: {fileID: 0}
+  isPlaced: 0
   distance: 100

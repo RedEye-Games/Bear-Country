@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 8696567396013079414}
   - component: {fileID: 5699087326497008276}
   m_Layer: 0
-  m_Name: boardSpace
+  m_Name: BoardSpace
   m_TagString: BoardSpace
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -149,8 +149,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d72ecb8002ee4ac2a132d564eee43c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TilePrefab: {fileID: 6914356672655439281, guid: fc5a7363f3c69437b80caa4828e17d48,
-    type: 3}
+  tilePrefabs:
+  - {fileID: 6270580398171703916, guid: f0df355f341654054b24f2245f654815, type: 3}
+  - {fileID: 1536852383756874022, guid: 7d802587b4ff34a6eaa88ada9d7eee86, type: 3}
+  - {fileID: 979554109001521844, guid: db4443a7ac29444bbb99619547441efa, type: 3}
+  - {fileID: 5858436206812004646, guid: 92eabe9ed0a7b4bf6916028417e1804e, type: 3}
+  - {fileID: 389154738607811519, guid: d34ddc5c905b64f079ec492e33f0a981, type: 3}
+  - {fileID: 2371384302292336799, guid: 8979c6c68f682402e8ec86128c1a8891, type: 3}
+  - {fileID: 3559781384943269093, guid: a39ada51022334b79831e0bc95f62e74, type: 3}
+  - {fileID: 8597928428009080115, guid: 48481892562794de99bf34340d315d78, type: 3}
+  - {fileID: 8965964887812010457, guid: 88647340e27d3423c8cdeb68e512633f, type: 3}
 --- !u!114 &8696567396013079414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,4 +184,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3454ed4dffb64d889aa71738739d2de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isHighlightable: 1

@@ -18,40 +18,9 @@ public enum TileTypeName
     TrailStraight
 }
 
-public enum TileExitType { River,Trail }
-
-public class TileExitList
-{
-    public TileExitType top;
-    public TileExitType right;
-    public TileExitType bottom;
-    public TileExitType left;
-
-    public TileExitList(TileExitType newTop, TileExitType newRight, TileExitType newBottom, TileExitType newLeft) { 
-        top = newTop;
-        right = newRight;
-        bottom = newBottom;
-        left = newLeft;
-    }
-}
-
-
 public class Tile : MonoBehaviour
 {
     public TileTypeName tileType;
-    public TileExitList exits;
-     
-    // Start is called before the first frame update
-    void Start()
-    {   
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
 
 //    // Path Components

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6434471885880120025}
   - component: {fileID: 7960285132521133542}
   - component: {fileID: 5756125434133696524}
+  - component: {fileID: 7637161149163441408}
   m_Layer: 0
   m_Name: TrailHead
   m_TagString: BoardSpace
@@ -134,3 +135,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5795103da22e4966a1e3b11b7b39bc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7637161149163441408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073381048370023588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 664d0f44ae93245bc8031f277e95a085, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathPoints:
+  - pathPointType: 1
+    direction: 0
+  - pathPointType: 1
+    direction: 1

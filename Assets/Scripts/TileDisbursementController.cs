@@ -37,9 +37,11 @@ public class TileDisbursementController : MonoBehaviour
         {
             if (remainingTiles > 0)
             {
-                Instantiate(Tile, tileSpawnPoints[i].position, tileSpawnPoints[i].rotation);
+                GameObject newTile = Instantiate(Tile, tileSpawnPoints[i].position, tileSpawnPoints[i].rotation);
                 unplacedTiles = unplacedTiles + 1;
                 remainingTiles = remainingTiles - 1;
+                SpriteRenderer tileSprite = newTile.GetComponentInChildren<SpriteRenderer>();
+                tileSprite.sprite = Resources.Load<Sprite>("Sprites/tStraight");
             }
         }
         tiles = GameObject.FindGameObjectsWithTag("Tile");

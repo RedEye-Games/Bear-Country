@@ -9,6 +9,7 @@ TagManager:
   - Path
   - BoardSpace
   - River
+  - TileModifiers
   layers:
   - Default
   - TransparentFX

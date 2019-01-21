@@ -10,7 +10,7 @@ public class TileDisbursementController : MonoBehaviour
     public Button disburseTilesButton;
     public Transform[] tileSpawnPoints;
     public GameObject[] tiles;
-    private bool isEnabled = true;
+    //private bool isEnabled = true;
     public int unplacedTiles = 0;
     public int remainingTiles = 28;
 
@@ -78,14 +78,14 @@ public class TileDisbursementController : MonoBehaviour
     void EnableButton() 
     {
         disburseTilesButton.GetComponentInChildren<Text>().text = "Confirm Placement";
-        isEnabled = true;
+        //isEnabled = true;
         disburseTilesButton.interactable = true;
         disburseTilesButton.onClick.AddListener(DisburseTiles);
     }
 
     void DisableButton()
     {
-        isEnabled = false;
+        //isEnabled = false;
         disburseTilesButton.interactable = false;
         disburseTilesButton.onClick.RemoveListener(DisburseTiles);
     }

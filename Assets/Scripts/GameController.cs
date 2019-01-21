@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
 {
     public GameObject boardSpace;
     public float boardScale = 10;
+    public GameObject selectedTile;
 
     private int score;
 

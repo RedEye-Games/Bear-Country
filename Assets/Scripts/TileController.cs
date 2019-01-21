@@ -32,7 +32,7 @@ public class TileController : MonoBehaviour
     bool isArmed = false;
     bool isConfirmed = false;
     public bool isPlaced = false;
-    bool isSelected = false;
+    //bool isSelected = false;
     Vector3 theSquarePosition;
     Vector3 spawnPoint;
 
@@ -59,16 +59,6 @@ public class TileController : MonoBehaviour
         theSquarePosition = gameObject.transform.position;
         // Record spawn point
         spawnPoint = gameObject.transform.position;
-
-        // Locate Tile Adjuster Buttons
-        flipButton = GameObject.Find("FlipButton").GetComponent<Button>();
-        rotateCCWButton = GameObject.Find("RotateCCWButton").GetComponent<Button>();
-        rotateCWButton = GameObject.Find("RotateCWButton").GetComponent<Button>();
-
-        //Announcing the buttons
-        flipButton.onClick.AddListener(Flip);
-        rotateCWButton.onClick.AddListener(RotateCW);
-        rotateCCWButton.onClick.AddListener(RotateCCW);
 
         // Populate Paths
         pathList.Add(westPath);
@@ -122,6 +112,7 @@ public class TileController : MonoBehaviour
                     if (boardCheck.collider.name == "boardSpaceMain" || boardCheck.collider.name == "boardSpaceCollider01")
                     {
                         isPlaced = true;
+                        gameController.GetComponent<GameController>().selectedTile = gameObject;
                         transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
                         gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
                     }
@@ -140,31 +131,6 @@ public class TileController : MonoBehaviour
         }
     }
 
-    // Button functions
-    void Flip()
-    {
-        if (isSelected && isPlaced)
-        {
-            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, -transform.localScale.z);
-        }
-    }
-
-    void RotateCW()
-    {
-        if (isSelected && isPlaced)
-        {
-            transform.Rotate(0, 90, 0);
-        }
-    }
-
-    void RotateCCW()
-    {
-        if (isSelected && isPlaced)
-        {
-            transform.Rotate(0, -90, 0);
-        }
-    }
-
     public void ConfirmTile()
     {
         isConfirmed = true;
@@ -174,22 +140,7 @@ public class TileController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                if (hit.collider.gameObject == thisTile)
-                {
-                    isSelected = true;
-                }
-                else
-                {
-                    isSelected = false;
-                }
-            }
-        }
+
     }
 
     void OnTriggerEnter(Collider other)

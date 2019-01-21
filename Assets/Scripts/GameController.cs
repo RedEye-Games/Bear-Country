@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
+    private float boardPosZ;
     public GameObject boardSpace;
     public float boardScale = 10;
     public GameObject selectedTile;
@@ -18,7 +19,19 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Vector3 BoardCenter = new Vector3(boardScale / 2, 0, boardScale / 2);
+        // Locate Board
+        GameObject gameBoard = GameObject.FindWithTag("Board");
+        if (gameBoard != null)
+        {
+            boardPosZ = gameBoard.transform.position.z;
+        }
+        if (gameBoard == null)
+        {
+            Debug.Log("Cannot find 'GameController' script");
+            boardPosZ = 0;
+        }
+
+        Vector3 BoardCenter = new Vector3(boardScale / 2, 0, boardScale / 2 + boardPosZ);
         GenerateBoard(7, 7, BoardCenter);
         score = 0;
     }

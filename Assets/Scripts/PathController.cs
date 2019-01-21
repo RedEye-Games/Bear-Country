@@ -30,28 +30,24 @@ public class PathController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-        if (other.CompareTag(pathTag))
+        if (other.gameObject.tag != "Untagged" && other.CompareTag(pathTag))
         {
             GameObject adjacentPath = other.gameObject;
 
             //var adjacentPathName = other.gameObject.name;
             if (pathTag == gameObject.tag)
             {
-                Debug.Log("Touched a shared " + pathTag + " tag");
                 isDeadEnd = false;
                 scoreToAdd = 1;
             }
-            // Check to see if path is alive. Check to see if it's a riverhead.
+            // To Do: Check to see if path is alive. Check to see if it's a riverhead.
             // Then create and store unique river/trail identifier.
-            //gameController.AddScore(1);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
         isDeadEnd = true;
-        //gameController.AddScore(-1);
         scoreToAdd = -1;
     }
 

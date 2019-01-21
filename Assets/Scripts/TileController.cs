@@ -32,7 +32,6 @@ public class TileController : MonoBehaviour
     bool isArmed = false;
     bool isConfirmed = false;
     public bool isPlaced = false;
-    //bool isSelected = false;
     Vector3 theSquarePosition;
     Vector3 spawnPoint;
 

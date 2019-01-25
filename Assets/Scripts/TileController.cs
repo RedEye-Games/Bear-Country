@@ -5,26 +5,24 @@ using UnityEngine.UI;
 
 public class TileController : MonoBehaviour
 {
-
-    // GameController
     private GameController gameController;
 
     // Tile Colliders
-    public GameObject westPath;
-    public GameObject eastPath;
-    public GameObject northPath;
-    public GameObject southPath;
+    //public GameObject westPath;
+    //public GameObject eastPath;
+    //public GameObject northPath;
+    //public GameObject southPath;
 
     // Path Components
-    public List<GameObject> pathList = new List<GameObject>();
+    //public List<GameObject> pathList = new List<GameObject>();
 
     // Scoring Variables
-    private int scoreToAdd;
+    //private int scoreToAdd;
 
     // Tile Buttons
-    Button rotateCWButton;
-    Button rotateCCWButton;
-    Button flipButton;
+    //Button rotateCWButton;
+    //Button rotateCCWButton;
+    //Button flipButton;
     public GameObject thisTile;
 
 
@@ -60,10 +58,10 @@ public class TileController : MonoBehaviour
         spawnPoint = gameObject.transform.position;
 
         // Populate Paths
-        pathList.Add(westPath);
-        pathList.Add(eastPath);
-        pathList.Add(southPath);
-        pathList.Add(northPath);
+        //pathList.Add(westPath);
+        //pathList.Add(eastPath);
+        //pathList.Add(southPath);
+        //pathList.Add(northPath);
 
         // Set Placement
         isPlaced = false;
@@ -85,7 +83,7 @@ public class TileController : MonoBehaviour
         {
             if (isPlaced)
             {
-                gameController.AddScore(4);
+                //gameController.AddScore(4);
             }
             isArmed = true;
             isPlaced = false;
@@ -148,11 +146,12 @@ public class TileController : MonoBehaviour
         {
             GameObject theSquare = other.gameObject;
             theSquarePosition = other.gameObject.transform.position;
-            TileCollider tileCollider = theSquare.GetComponent<TileCollider>();
-            if (tileCollider.isEmpty == true)
-            {
-                isArmed = true;
-            }
+            isArmed = true;
+            //TileCollider tileCollider = theSquare.GetComponent<TileCollider>();
+            //if (tileCollider.isEmpty == true)
+            //{
+                //isArmed = true;
+            //}
         }
     }
 
@@ -163,12 +162,12 @@ public class TileController : MonoBehaviour
 
     public void ScoreTile() 
     {
-        foreach (GameObject path in pathList)
-        {
-            // Add up score.
-            scoreToAdd = path.GetComponent<PathController>().scoreToAdd;
-            gameController.AddScore(scoreToAdd);
-            Debug.Log(path.name + " has a score of " + scoreToAdd);
-        }
+        //foreach (GameObject path in pathList)
+        //{
+        //    // Add up score.
+        //    scoreToAdd = path.GetComponent<PathController>().scoreToAdd;
+        //    //gameController.AddScore(scoreToAdd);
+        //    Debug.Log(path.name + " has a score of " + scoreToAdd);
+        //}
     }
 }

@@ -5,8 +5,7 @@ using System;
 
 public class TileReception : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject[] tilePrefabs;
+    [SerializeField] private GameObject[] tilePrefabs;
 
     public int tileOrientation;
 
@@ -15,7 +14,12 @@ public class TileReception : MonoBehaviour
     private void OnMouseDown()
     {
         if (!tile) AddTile();
-        else RotateTile();
+        //else RotateTile();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("collide");
     }
 
     private void AddTile()
@@ -23,7 +27,7 @@ public class TileReception : MonoBehaviour
         if (!tile)
         {
             GameObject prefab = tilePrefabs[UnityEngine.Random.Range(0, tilePrefabs.Length - 1)];
-            GameObject newTile = Instantiate(prefab, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 0.5f, gameObject.transform.position.z), gameObject.transform.rotation, gameObject.transform);
+            GameObject newTile = Instantiate(prefab, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 2.5f, gameObject.transform.position.z), gameObject.transform.rotation, gameObject.transform);
             tile = newTile;
         }
     }

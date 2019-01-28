@@ -9,6 +9,7 @@ public class HighlightNeighbors : MonoBehaviour
     private NeighborAwareness neighborAwareness;
     public bool alsoHighlightSelf = true;
     private Highlightable selfHighlightable;
+
     private void Awake()
     {
         neighborAwareness = GetComponent<NeighborAwareness>();
@@ -21,6 +22,8 @@ public class HighlightNeighbors : MonoBehaviour
 
     private void OnMouseEnter()
     {
+        Debug.Log("mouse entered " + GetComponent<GridCoordinates>().column + "," + GetComponent<GridCoordinates>().row);
+
         foreach (KeyValuePair<string, GameObject> n in neighborAwareness.neighbors)
         {
             GameObject neighbor = n.Value;

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GridCoordinates : MonoBehaviour
 {
-    private int column;
-    private int row;
+    public int column;
+    public int row;
 
     public void Init(int newColumn, int newRow)
     {

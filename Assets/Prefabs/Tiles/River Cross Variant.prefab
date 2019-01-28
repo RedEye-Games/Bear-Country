@@ -12,6 +12,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: River Cross Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 1049377695687239559, guid: fc5a7363f3c69437b80caa4828e17d48,
+        type: 3}
+      propertyPath: pathPointList.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049377695687239559, guid: fc5a7363f3c69437b80caa4828e17d48,
+        type: 3}
+      propertyPath: pathPointList.Array.data[1].edge
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049377695687239559, guid: fc5a7363f3c69437b80caa4828e17d48,
+        type: 3}
+      propertyPath: pathPointList.Array.data[2].edge
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1049377695687239559, guid: fc5a7363f3c69437b80caa4828e17d48,
+        type: 3}
+      propertyPath: pathPointList.Array.data[3].edge
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1419985956498248478, guid: fc5a7363f3c69437b80caa4828e17d48,
+        type: 3}
+      propertyPath: tileType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6914356672655439286, guid: fc5a7363f3c69437b80caa4828e17d48,
+        type: 3}
+      propertyPath: m_Height
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 6914356672655439435, guid: fc5a7363f3c69437b80caa4828e17d48,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -77,31 +107,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1419985956498248478, guid: fc5a7363f3c69437b80caa4828e17d48,
-        type: 3}
-      propertyPath: tileType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1049377695687239559, guid: fc5a7363f3c69437b80caa4828e17d48,
-        type: 3}
-      propertyPath: pathPointList.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1049377695687239559, guid: fc5a7363f3c69437b80caa4828e17d48,
-        type: 3}
-      propertyPath: pathPointList.Array.data[1].edge
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1049377695687239559, guid: fc5a7363f3c69437b80caa4828e17d48,
-        type: 3}
-      propertyPath: pathPointList.Array.data[2].edge
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1049377695687239559, guid: fc5a7363f3c69437b80caa4828e17d48,
-        type: 3}
-      propertyPath: pathPointList.Array.data[3].edge
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc5a7363f3c69437b80caa4828e17d48, type: 3}

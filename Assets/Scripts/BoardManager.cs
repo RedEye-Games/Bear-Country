@@ -14,6 +14,9 @@ public class BoardManager : MonoBehaviour
     [SerializeField]
     private GameObject BoardContainer;
 
+    [SerializeField]
+    private GameObject TileSpawnPoint;
+
     public int tileSpacing = 12;
     public int numberOfColumns = 7;
     public int numberOfRows = 7;
@@ -43,8 +46,8 @@ public class BoardManager : MonoBehaviour
 
     void CreateBoard(int numberOfColumns, int numberOfRows, GameObject boardContainer)
     {
-        Vector3 spawnPosition = new Vector3(-44F, 0F, 74F); // need better centering.
-        //Vector3 spawnPosition = new Vector3();
+        //Vector3 spawnPosition = new Vector3(-44F, 0F, 74F); // need better centering.
+        Vector3 spawnPosition = new Vector3( TileSpawnPoint.transform.position.x, TileSpawnPoint.transform.position.y, TileSpawnPoint.transform.position.z);
         //spawnPosition.x = boardContainer.transform.position.x;
         //spawnPosition.y = 0;
         //spawnPosition.z = boardContainer.transform.position.z;
@@ -68,14 +71,14 @@ public class BoardManager : MonoBehaviour
             boardSpaces[column, row] = prefab;
             prefab.GetComponent<GridCoordinates>().Init(column, row);
             if (head.edge == Head.Edge.Left || head.edge == Head.Edge.Right) prefab.transform.Rotate(new Vector3(0, 1, 0), 90);
-            prefab.transform.parent = BoardContainer.transform;
+            //prefab.transform.parent = BoardContainer.transform;
         }
 
         void getBlank(int column, int row)
         {
             GameObject gridItem = Instantiate(prefabs.BlankGridItemPrefab, spawnPosition, spawnRotation);
             gridItem.name = "blankSpace(" + column + "," + row + ")";
-            gridItem.transform.parent = BoardContainer.transform;
+            //gridItem.transform.parent = BoardContainer.transform;
             boardSpaces[column, row] = gridItem;
             gridItem.GetComponent<MeshRenderer>().enabled = false;
             gridItem.GetComponent<GridCoordinates>().Init(column, row);
@@ -85,7 +88,7 @@ public class BoardManager : MonoBehaviour
         {
             GameObject gridItem = Instantiate(prefabs.BoardSpacePrefab, spawnPosition, spawnRotation);
             gridItem.name = "boardSpace(" + column + "," + row + ")";
-            gridItem.transform.parent = BoardContainer.transform;
+            //gridItem.transform.parent = BoardContainer.transform;
             boardSpaces[column, row] = gridItem;
             gridItem.GetComponent<GridCoordinates>().Init(column, row);
         }

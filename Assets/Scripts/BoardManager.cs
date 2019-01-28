@@ -8,16 +8,11 @@ public class BoardManager : MonoBehaviour
     private static BoardManager _instance;
     public static BoardManager Instance { get { return _instance; } }
 
-    [SerializeField]
-    private BoardManagerPrefabs prefabs;
+    [SerializeField] private BoardManagerPrefabs prefabs;
+    [SerializeField] private GameObject BoardContainer;
+    [SerializeField] private GameObject TileSpawnPoint;
 
-    [SerializeField]
-    private GameObject BoardContainer;
-
-    [SerializeField]
-    private GameObject TileSpawnPoint;
-
-    public int tileSpacing = 12;
+    public float tileSpacing = 10.7f;
     public int numberOfColumns = 7;
     public int numberOfRows = 7;
 

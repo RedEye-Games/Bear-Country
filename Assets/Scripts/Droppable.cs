@@ -6,7 +6,7 @@ public class Droppable : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("col entered " + GetComponent<GridCoordinates>().column + "," + GetComponent<GridCoordinates>().row);
+        //Debug.Log("col entered " + GetComponent<GridCoordinates>().column + "," + GetComponent<GridCoordinates>().row);
     }
     private void OnCollisionStay(Collision collision)
     {

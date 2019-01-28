@@ -8,8 +8,7 @@ public class GameSettings
     [SerializeField]
     private int numberOfRounds = 7;
 
-    [SerializeField]
-    private int tilesPerRound = 4;
+    public int tilesPerRound = 4;
 
     [SerializeField]
     private int specialTilesPerGame = 3;
@@ -29,16 +28,42 @@ public class GameSettings
 //    currentRound = 1;
 //}
 //}
-
+[RequireComponent(typeof(TileDispenser))]
 public class GameController : MonoBehaviour
 {
+    public static GameController instance;
+
     public GameSettings gameSettings;
-    public GameObject selectedTile;
+    public TileData selectedTile;
+    private TileDispenser tileDispenser;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Debug.LogWarning("multiple game controllers detected");
+            return;
+        }
+        instance = this;
+
+        gameSettings = new GameSettings();
+        tileDispenser = GetComponent<TileDispenser>();
+    }
+
+    private void Start()
+    {
+        tileDispenser.Dispense(gameSettings.tilesPerRound);
+    }
 
     void Update()
     {
        // quick scene reset for debugging
        if (Input.GetKeyDown("backspace")) { SceneManager.LoadScene(1); }
+    }
+
+    public void SetSelectedTile(TileData tileToSelect)
+    {
+        selectedTile = tileToSelect;
     }
 
     //public void AddScore(int newScoreValue)

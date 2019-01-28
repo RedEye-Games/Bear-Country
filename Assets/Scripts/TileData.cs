@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public enum TileTypeName
+public enum TileType
 {
     RiverCross,
     RiverStraight,
@@ -18,9 +18,12 @@ public enum TileTypeName
     TrailStraight
 }
 
-public class Tile : MonoBehaviour
+[CreateAssetMenu]
+public class TileData : ScriptableObject
 {
-    public TileTypeName tileType;
+    public TileType tileType;
+    public Sprite icon;
+    public PathPoint[] pathPointList;
 }
 
 //    // Path Components

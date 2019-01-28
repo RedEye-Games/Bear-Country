@@ -22,8 +22,6 @@ public class HighlightNeighbors : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        Debug.Log("mouse entered " + GetComponent<GridCoordinates>().column + "," + GetComponent<GridCoordinates>().row);
-
         foreach (KeyValuePair<string, GameObject> n in neighborAwareness.neighbors)
         {
             GameObject neighbor = n.Value;

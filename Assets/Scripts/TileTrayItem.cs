@@ -7,7 +7,7 @@ public class TileTrayItem : MonoBehaviour
     private Image icon;
     private Image selfBg;
 
-    private void Start()
+    private void Awake()
     {
         icon = transform.Find("Icon").GetComponent<Image>();
         selfBg = GetComponent<Image>();

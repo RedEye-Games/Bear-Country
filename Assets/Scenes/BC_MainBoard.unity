@@ -576,6 +576,14 @@ MonoBehaviour:
   tiles: []
   unplacedTiles: 0
   remainingTiles: 28
+  specialTile: {fileID: 6707703648181930765, guid: 914285da9711a43d29de4a36389a1815,
+    type: 3}
+  specialTileSpawnPoints:
+  - {fileID: 1301721341}
+  - {fileID: 613339016}
+  - {fileID: 83059224}
+  - {fileID: 2044737592}
+  specialTileTray: 1
 --- !u!1 &463347835
 GameObject:
   m_ObjectHideFlags: 0

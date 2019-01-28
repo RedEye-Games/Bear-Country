@@ -2,13 +2,22 @@
 
 public class TileTrayUI : MonoBehaviour
 {
+    private static TileTrayUI _instance;
+    public static TileTrayUI Instance { get { return _instance; } }
+
     public Transform tileTray;
 
     TileTrayInventory inventory;
 
     TileTrayItem[] slots;
 
-    void Start()
+    private void Awake()
+    {
+        if (_instance != null && _instance != this) { Debug.LogWarning("too many tiletrayUIs"); }
+        else { _instance = this; }
+    }
+
+    public void Init()
     {
         inventory = TileTrayInventory.instance;
         inventory.onTileTrayInventoryChangedCallback += UpdateUI;

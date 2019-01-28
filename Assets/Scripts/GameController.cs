@@ -52,13 +52,15 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        TileTrayUI.Instance.Init();
         tileDispenser.Dispense(gameSettings.tilesPerRound);
     }
 
     void Update()
     {
-       // quick scene reset for debugging
-       if (Input.GetKeyDown("backspace")) { SceneManager.LoadScene(1); }
+        // quick scene reset for debugging
+
+        if (Input.GetKeyDown("backspace")) { SceneManager.LoadScene(1); }
     }
 
     public void SetSelectedTile(TileData tileToSelect)

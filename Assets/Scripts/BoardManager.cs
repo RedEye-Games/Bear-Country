@@ -144,9 +144,7 @@ public class BoardManager : MonoBehaviour
                     }
                     if (!found) { getBlank(column, row); }
                 }
-                else {
-                    getBoardSpace(column, row);
-                }
+                else { getBoardSpace(column, row); }
 
                 spawnPosition.x = spawnPosition.x + tileSpacing;
             }
@@ -166,7 +164,12 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public Dictionary<string, GameObject> GetNeighborsOf(int column, int row)
+    public GameObject getBoardSpaceAt(int column, int row)
+    {
+        return boardSpaces[column,row];
+    }
+
+        public Dictionary<string, GameObject> GetNeighborsOf(int column, int row)
     {
         GameObject left = (column - 1 < 0) ? null : boardSpaces[column - 1, row];
         GameObject right = (column + 1 > numberOfRows + 1) ? null : boardSpaces[column + 1, row];
@@ -179,6 +182,40 @@ public class BoardManager : MonoBehaviour
         results.Add("left", left);
         results.Add("right", right);
         return results;
+    }
+
+    public bool CanPlaceTileAt(int column, int row, TileData tile, Orientation tileOrientation)
+    {
+        if (tile == null) { return false; }
+        bool canPlaceIt = false;
+
+        GameObject boardSpace = getBoardSpaceAt(column, row);
+        Dictionary<string, GameObject> neighbors = GetNeighborsOf(column, row);
+
+        foreach (string key in neighbors.Keys)
+        {
+            GameObject nabe = neighbors[key];
+            Transform t = nabe.transform;
+
+            if (nabe.GetComponent<PathEnabled>() != null)
+            {
+                canPlaceIt = true;
+            }
+            else
+            {
+                for (int i = 0; i < t.childCount; i++)
+                {
+                    if (nabe.GetComponentInChildren<PathEnabled>() != null)
+                    {
+                        canPlaceIt = true;
+                    }
+                }
+            }
+
+        }
+
+
+        return canPlaceIt;
     }
 }
 

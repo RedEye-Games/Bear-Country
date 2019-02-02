@@ -27,13 +27,15 @@ public class TileController : MonoBehaviour
     Button flipButton;
     public GameObject thisTile;
 
-
     // Placement Variables
     bool isArmed = false;
     bool isConfirmed = false;
     public bool isPlaced = false;
     Vector3 theSquarePosition;
     Vector3 spawnPoint;
+
+    // Special Tile Variables
+    public bool isSpecial = false;
 
     // Mouse Drag Variables
     private Vector3 screenPoint;
@@ -73,7 +75,7 @@ public class TileController : MonoBehaviour
     {
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-        if (isPlaced && !isConfirmed) 
+        if (isPlaced && !isConfirmed && !isSpecial) 
         {
             gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
         }
@@ -113,16 +115,31 @@ public class TileController : MonoBehaviour
                         isPlaced = true;
                         gameController.GetComponent<GameController>().selectedTile = gameObject;
                         transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
-                        gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+                        if (isSpecial)
+                        {
+                            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
+                        }
+                        else
+                        {
+                            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+                        }
                     }
                     else
                     {
+                        if (isSpecial)
+                        {
+                            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
+                        }
                         theSquarePosition = spawnPoint;
                         transform.parent.gameObject.transform.position = spawnPoint;
                     }
                 }
                 else
                 {
+                    if (isSpecial)
+                    {
+                        gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
+                    }
                     theSquarePosition = spawnPoint;
                     transform.parent.gameObject.transform.position = spawnPoint;
                 }

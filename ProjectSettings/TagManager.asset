@@ -11,6 +11,7 @@ TagManager:
   - River
   - TileModifiers
   - Board
+  - SpecialTile
   layers:
   - Default
   - TransparentFX

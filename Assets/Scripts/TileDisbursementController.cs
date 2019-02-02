@@ -191,5 +191,7 @@ public class TileDisbursementController : MonoBehaviour
         TileOptions.Add(new Tile("rStraight_tBroken", 3));
         TileOptions.Add(new Tile("rStraight_tBroken", 3));
         TileOptions.Add(new Tile("rStraight_tBroken", 3));
+        TileOptions.Add(new Tile("rStraight_tBroken", 3));
+        TileOptions.Add(new Tile("rStraight_tBroken", 3));
     }
 }

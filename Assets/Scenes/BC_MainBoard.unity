@@ -583,7 +583,8 @@ MonoBehaviour:
   - {fileID: 613339016}
   - {fileID: 83059224}
   - {fileID: 2044737592}
-  specialTileTray: 1
+  specialTileTray: {fileID: 1377000946}
+  specialTilePlacedThisRound: 0
 --- !u!1 &463347835
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,7 +30,7 @@ public class PathController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag != "Untagged" && other.CompareTag(pathTag))
+        if (other.gameObject.tag != "Untagged" && other.gameObject.tag != "SpecialTile" && other.CompareTag(pathTag))
         {
             GameObject adjacentPath = other.gameObject;
 

@@ -65,6 +65,10 @@ public class TileDisbursementController : MonoBehaviour
                 var tileChoice = tileChoices[Random.Range(0, tileChoices.Count)];
 
                 tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+
+                // Reset Special Tile
+                specialTilePlacedThisRound = false;
+                EnableSpecialTileTray();
             }
         }
         tiles = GameObject.FindGameObjectsWithTag("Tile");
@@ -108,25 +112,11 @@ public class TileDisbursementController : MonoBehaviour
             {
                 specialTilePlacedThisRound = true;
                 DisableSpecialTileTray();
-                for (int i = 0; i < specialTiles.Length; i++)
-                {
-                    if (specialTiles[i].GetComponentInChildren<TileController>().isPlaced == false)
-                    {
-                        specialTiles[i].SetActive(false);
-                        Debug.Log("Inactive.");
-                    }
-                }
-                Debug.Log("Disabled tray.");
             }
             else
             {
                 specialTilePlacedThisRound = false;
                 EnableSpecialTileTray();
-                for (int i = 0; i < specialTiles.Length; i++)
-                {
-                    specialTiles[i].SetActive(true);
-                }
-                Debug.Log("Enabled tray.");
             }
         }
         else
@@ -142,6 +132,26 @@ public class TileDisbursementController : MonoBehaviour
             }
         }
         //        Debug.Log(unplacedTiles);
+    }
+
+    void EnableSpecialTiles()
+    {
+        for (int i = 0; i < specialTiles.Length; i++)
+        {
+            specialTiles[i].SetActive(true);
+        }
+    }
+
+    void DisableSpecialTiles()
+    {
+        for (int i = 0; i < specialTiles.Length; i++)
+        {
+            if (specialTiles[i].GetComponentInChildren<TileController>().isPlaced == false)
+            {
+                specialTiles[i].SetActive(false);
+                Debug.Log("Inactive.");
+            }
+        }
     }
 
     void EnableButton() 
@@ -163,12 +173,14 @@ public class TileDisbursementController : MonoBehaviour
     {
         //isEnabled = false;
         specialTileTray.SetActive(false);
+        DisableSpecialTiles();
     }
 
     void EnableSpecialTileTray()
     {
         //isEnabled = false;
         specialTileTray.SetActive(true);
+        EnableSpecialTiles();
     }
 
     void PopulateTileOptions() 

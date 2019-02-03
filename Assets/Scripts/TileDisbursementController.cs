@@ -65,6 +65,10 @@ public class TileDisbursementController : MonoBehaviour
                 var tileChoice = tileChoices[Random.Range(0, tileChoices.Count)];
 
                 tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+                newTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
+                newTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
+                newTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
+                newTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
 
                 // Reset Special Tile
                 specialTilePlacedThisRound = false;
@@ -186,24 +190,24 @@ public class TileDisbursementController : MonoBehaviour
     void PopulateTileOptions() 
     {
         // Common Tiles
-        TileOptions.Add(new Tile("rStraight", 1));
-        TileOptions.Add(new Tile("rFork", 1));
-        TileOptions.Add(new Tile("rCorner", 1));
-        TileOptions.Add(new Tile("tStraight", 1));
-        TileOptions.Add(new Tile("tFork", 1));
-        TileOptions.Add(new Tile("tCorner", 1));
+        TileOptions.Add(new Tile("rStraight", 1, "River", "River", "Path", "Path"));
+        TileOptions.Add(new Tile("rFork", 1, "Path", "River", "River", "River"));
+        TileOptions.Add(new Tile("rCorner", 1, "River", "Path", "Path", "River"));
+        TileOptions.Add(new Tile("tStraight", 1, "Trail", "Trail", "Path", "Path"));
+        TileOptions.Add(new Tile("tFork", 1, "Path", "Trail", "Trail", "Trail"));
+        TileOptions.Add(new Tile("tCorner", 1, "Trail", "Path", "Path", "Trail"));
 
         // Rare Tiles
-        TileOptions.Add(new Tile("rStraight_tStraight", 2));
-        TileOptions.Add(new Tile("rtCorner", 2));
-        TileOptions.Add(new Tile("tBridge_rStraight", 2));
+        TileOptions.Add(new Tile("rStraight_tStraight", 2, "River", "Trail", "Path", "Path"));
+        TileOptions.Add(new Tile("rtCorner", 2, "Path", "River", "Trail", "Path"));
+        TileOptions.Add(new Tile("tBridge_rStraight", 2, "River", "River", "Trail", "Trail"));
 
         // Special Tiles
-        TileOptions.Add(new Tile("rStraight_tBroken", 3));
-        TileOptions.Add(new Tile("rCross_tStraight", 3));
-        TileOptions.Add(new Tile("rCross", 3));
-        TileOptions.Add(new Tile("tFork_rStraight", 3));
-        TileOptions.Add(new Tile("tCross", 3));
-        TileOptions.Add(new Tile("tCorner_rCorner", 3));
+        TileOptions.Add(new Tile("rStraight_tBroken", 3, "River", "River", "Trail", "Trail"));
+        TileOptions.Add(new Tile("rCross_tStraight", 3, "River", "Trail", "River", "River"));
+        TileOptions.Add(new Tile("rCross", 3, "River", "River", "River", "River"));
+        TileOptions.Add(new Tile("tFork_rStraight", 3, "River", "Trail", "Trail", "Trail"));
+        TileOptions.Add(new Tile("tCross", 3, "Trail", "Trail", "Trail", "Trail"));
+        TileOptions.Add(new Tile("tCorner_rCorner", 3, "Trail", "River", "Trail", "River"));
     }
 }

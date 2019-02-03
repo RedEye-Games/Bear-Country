@@ -10,7 +10,9 @@ public class GameController : MonoBehaviour
 {
     private float boardPosZ;
     public GameObject boardSpace;
+    public GameObject boardEdge;
     public float boardScale = 10;
+    public int boardSize = 9;
     public GameObject selectedTile;
 
     private int score;
@@ -32,7 +34,7 @@ public class GameController : MonoBehaviour
         }
 
         Vector3 BoardCenter = new Vector3(boardScale / 2, 0, boardScale / 2 + boardPosZ);
-        GenerateBoard(7, 7, BoardCenter);
+        GenerateBoard(boardSize, boardSize, BoardCenter);
         score = 0;
     }
 
@@ -42,11 +44,53 @@ public class GameController : MonoBehaviour
         spawnPosition.x = BoardCenter.x - (sizeX * boardScale / 2);
         spawnPosition.z = BoardCenter.z - (sizeZ * boardScale / 2);
         Quaternion spawnRotation = new Quaternion();
-        for (int i = 0; i < sizeZ; i++)
+        for (int y = 0; y < sizeZ; y++)
         {
-            for (int b = 0; b < sizeX; b++)
+            for (int x = 0; x < sizeX; x++)
             {
-                Instantiate(boardSpace, spawnPosition, spawnRotation);
+                if (x == 0 || x == boardSize - 1 || y == 0 || y == boardSize - 1)
+                {
+                    GameObject newBoardEdge = Instantiate(boardEdge, spawnPosition, spawnRotation);
+                    if (x == 2 || x == 6)
+                    {
+                        SpriteRenderer tileSprite = newBoardEdge.GetComponentInChildren<SpriteRenderer>();
+                        tileSprite.sprite = Resources.Load<Sprite>("Sprites/tStraight");
+                        newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
+                        newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
+                    }
+                    else if (x == 4)
+                    {
+                        SpriteRenderer tileSprite = newBoardEdge.GetComponentInChildren<SpriteRenderer>();
+                        tileSprite.sprite = Resources.Load<Sprite>("Sprites/rStraight");
+                        newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "River";
+                        newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "River";
+                    }
+                    else if (y == 2 || y == 6)
+                    {
+                        SpriteRenderer tileSprite = newBoardEdge.GetComponentInChildren<SpriteRenderer>();
+                        tileSprite.sprite = Resources.Load<Sprite>("Sprites/rStraight");
+                        newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "River";
+                        newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "River";
+                        newBoardEdge.transform.Rotate(Vector3.up * 90);
+                    }
+                    else if (y == 4)
+                    {
+                        SpriteRenderer tileSprite = newBoardEdge.GetComponentInChildren<SpriteRenderer>();
+                        tileSprite.sprite = Resources.Load<Sprite>("Sprites/tStraight"); 
+                        newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
+                        newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
+                        newBoardEdge.transform.Rotate(Vector3.up * 90);
+                    }
+                    else
+                    {
+                        SpriteRenderer tileSprite = newBoardEdge.GetComponentInChildren<SpriteRenderer>();
+                        tileSprite.sprite = Resources.Load<Sprite>("Sprites/");
+                    }
+                }
+                else
+                {
+                    Instantiate(boardSpace, spawnPosition, spawnRotation);
+                }
                 spawnPosition.x = spawnPosition.x + boardScale;
             }
             spawnPosition.x = BoardCenter.x - (sizeX * boardScale / 2);

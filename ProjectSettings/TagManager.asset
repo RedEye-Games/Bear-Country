@@ -12,6 +12,8 @@ TagManager:
   - TileModifiers
   - Board
   - SpecialTile
+  - BoardEdge
+  - Trail
   layers:
   - Default
   - TransparentFX

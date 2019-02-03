@@ -538,7 +538,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardSpace: {fileID: 4102227898402398924, guid: 0e73fc75e0290462cb2a431d9997c981,
     type: 3}
+  boardEdge: {fileID: 6707703648181930765, guid: 875ffd132dcbd4ae485ca22738f6a09c,
+    type: 3}
   boardScale: 10
+  boardSize: 9
   selectedTile: {fileID: 0}
 --- !u!4 &345423400
 Transform:

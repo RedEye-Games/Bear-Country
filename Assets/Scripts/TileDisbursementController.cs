@@ -20,6 +20,7 @@ public class TileDisbursementController : MonoBehaviour
     public Transform[] specialTileSpawnPoints;
     public GameObject specialTileTray;
     public bool specialTilePlacedThisRound = false;
+    public int remainingSpecialTiles = 3;
 
     List<Tile> TileOptions = new List<Tile>();
     private List<Tile> tileChoices;
@@ -36,6 +37,19 @@ public class TileDisbursementController : MonoBehaviour
     {
         // Check to see if all tiles are placed.
         // Check for tiles on board. Confirm them.
+
+        // CHeck to see if any special tiles remain
+
+        if (remainingSpecialTiles != 1)
+        {
+            if (specialTilePlacedThisRound == true)
+            {
+                remainingSpecialTiles--;
+            }
+            // Reset Special Tile
+            specialTilePlacedThisRound = false;
+            EnableSpecialTileTray();
+        }
 
         foreach (var tile in tiles)
         {
@@ -69,10 +83,6 @@ public class TileDisbursementController : MonoBehaviour
                 newTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
                 newTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
                 newTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
-
-                // Reset Special Tile
-                specialTilePlacedThisRound = false;
-                EnableSpecialTileTray();
             }
         }
         tiles = GameObject.FindGameObjectsWithTag("Tile");

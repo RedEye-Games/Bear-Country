@@ -7,7 +7,7 @@ public class TileCollider : MonoBehaviour {
     public bool isEmpty = true;
     Color colorStart = Color.red;
     Color colorEnd = Color.green;
-    Renderer rend;
+    public Renderer rend;
 
 
     // Start is called before the first frame update

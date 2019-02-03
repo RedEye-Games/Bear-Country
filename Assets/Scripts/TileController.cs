@@ -22,28 +22,25 @@ public class TileController : MonoBehaviour
     private int scoreToAdd;
 
     // Tile Buttons
-    public Button flipButton;
-    public Button rotateCWButton;
-    public Button rotateCCWButton;
-    // how to find canvas so you can fade it on and off
-    public GameObject canvas;
-    public GameObject theQuad;
-    CanvasGroup theGroup;
-
+    Button rotateCWButton;
+    Button rotateCCWButton;
+    Button flipButton;
+    public GameObject thisTile;
 
     // Placement Variables
     bool isArmed = false;
     bool isConfirmed = false;
     public bool isPlaced = false;
     Vector3 theSquarePosition;
+    Vector3 spawnPoint;
+
+    // Special Tile Variables
+    public bool isSpecial = false;
 
     // Mouse Drag Variables
     private Vector3 screenPoint;
     private Vector3 offset;
-    public GameObject lastHit; // Keep track of last object clicked
     public float distance = 100;
-
-    //RaycastHit[] hits;
 
     // Start is called before the first frame update
     void Start()
@@ -59,15 +56,10 @@ public class TileController : MonoBehaviour
             Debug.Log("Cannot find 'GameController' script");
         }
 
-        //Announcing the buttons
-        flipButton.onClick.AddListener(Flip);
-        rotateCWButton.onClick.AddListener(RotateCW);
-        rotateCCWButton.onClick.AddListener(RotateCCW);
-
-        // Canvas Group vars
-        theGroup = canvas.GetComponent<CanvasGroup>();
-        theGroup.alpha = 0;
-        theGroup.interactable = false;
+        // Find this tile's position
+        theSquarePosition = gameObject.transform.position;
+        // Record spawn point
+        spawnPoint = gameObject.transform.position;
 
         // Populate Paths
         pathList.Add(westPath);
@@ -83,7 +75,7 @@ public class TileController : MonoBehaviour
     {
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-        if (isPlaced && !isConfirmed) 
+        if (isPlaced && !isConfirmed && !isSpecial) 
         {
             gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
         }
@@ -97,7 +89,6 @@ public class TileController : MonoBehaviour
             {
                 gameController.AddScore(4);
             }
-            ControlsDisable();
             isArmed = true;
             isPlaced = false;
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
@@ -106,75 +97,66 @@ public class TileController : MonoBehaviour
         }
     }
 
-    private void OnMouseUp()
+    void OnMouseUp()
     {
+        // Sends tiles back to spawn point
+       
         if (isConfirmed == false)
         {
-            if (isArmed)
+            if (isArmed && !isPlaced)
             {
-                transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
-                ControlsEnable();
                 isArmed = false;
-                isPlaced = true;
-                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+                RaycastHit boardCheck;
+                Ray ray = new Ray(transform.position, -transform.up);
+                if (Physics.Raycast(ray, out boardCheck, Mathf.Infinity))
+                {
+                    if (boardCheck.collider.name == "boardSpaceMain" || boardCheck.collider.name == "boardSpaceCollider01")
+                    {
+                        isPlaced = true;
+                        gameController.GetComponent<GameController>().selectedTile = gameObject;
+                        transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
+                        if (isSpecial)
+                        {
+                            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
+                        }
+                        else
+                        {
+                            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+                        }
+                    }
+                    else
+                    {
+                        if (isSpecial)
+                        {
+                            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
+                        }
+                        theSquarePosition = spawnPoint;
+                        transform.parent.gameObject.transform.position = spawnPoint;
+                    }
+                }
+                else
+                {
+                    if (isSpecial)
+                    {
+                        gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
+                    }
+                    theSquarePosition = spawnPoint;
+                    transform.parent.gameObject.transform.position = spawnPoint;
+                }
             }
         }
-
-    }
-
-    // Tile Controls Enable
-    private void ControlsEnable()
-    {
-        theGroup.alpha = 1;
-        theGroup.interactable = true;
-        theQuad.SetActive(true);
-    }
-    // Tile Controls Disable
-    private void ControlsDisable()
-    {
-        theGroup.alpha = 0;
-        theGroup.interactable = false;
-        theQuad.SetActive(false);
-    }
-
-    // Button functions
-    void Flip()
-    {
-        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, -transform.localScale.z);
-    }
-
-    void RotateCW()
-    {
-        transform.Rotate(0, 90, 0);
-    }
-
-    void RotateCCW()
-    {
-        transform.Rotate(0, -90, 0);
     }
 
     public void ConfirmTile()
     {
         isConfirmed = true;
-        ControlsDisable();
         ScoreTile();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                if (hit.collider.tag != "Tile" && hit.collider.tag != "TileButton")
-                {
-                    ControlsDisable();
-                }
-            }
-        }
+
     }
 
     void OnTriggerEnter(Collider other)

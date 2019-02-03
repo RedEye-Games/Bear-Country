@@ -185,13 +185,25 @@ public class TileDisbursementController : MonoBehaviour
 
     void PopulateTileOptions() 
     {
+        // Common Tiles
         TileOptions.Add(new Tile("rStraight", 1));
-        TileOptions.Add(new Tile("rCross", 2));
+        TileOptions.Add(new Tile("rFork", 1));
+        TileOptions.Add(new Tile("rCorner", 1));
+        TileOptions.Add(new Tile("tStraight", 1));
+        TileOptions.Add(new Tile("tFork", 1));
+        TileOptions.Add(new Tile("tCorner", 1));
+
+        // Rare Tiles
+        TileOptions.Add(new Tile("rStraight_tStraight", 2));
+        TileOptions.Add(new Tile("rtCorner", 2));
+        TileOptions.Add(new Tile("tBridge_rStraight", 2));
+
+        // Special Tiles
         TileOptions.Add(new Tile("rStraight_tBroken", 3));
-        TileOptions.Add(new Tile("rStraight_tBroken", 3));
-        TileOptions.Add(new Tile("rStraight_tBroken", 3));
-        TileOptions.Add(new Tile("rStraight_tBroken", 3));
-        TileOptions.Add(new Tile("rStraight_tBroken", 3));
-        TileOptions.Add(new Tile("rStraight_tBroken", 3));
+        TileOptions.Add(new Tile("rCross_tStraight", 3));
+        TileOptions.Add(new Tile("rCross", 3));
+        TileOptions.Add(new Tile("tFork_rStraight", 3));
+        TileOptions.Add(new Tile("tCross", 3));
+        TileOptions.Add(new Tile("tCorner_rCorner", 3));
     }
 }

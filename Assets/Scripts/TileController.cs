@@ -79,6 +79,9 @@ public class TileController : MonoBehaviour
         {
             gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
         }
+
+        // Highlight Compatible Board Spaces
+        CheckPotential();
     }
 
     void OnMouseDrag()
@@ -112,39 +115,38 @@ public class TileController : MonoBehaviour
                 {
                     if (boardCheck.collider.name == "boardSpaceMain" || boardCheck.collider.name == "boardSpaceCollider01")
                     {
-                        isPlaced = true;
-                        gameController.GetComponent<GameController>().selectedTile = gameObject;
-                        transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
-                        if (isSpecial)
+                        if (boardCheck.collider.GetComponentInParent<BoardSpace>().isHighlighted)
                         {
-                            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
+                            isPlaced = true;
+                            gameController.GetComponent<GameController>().selectedTile = gameObject;
+                            transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, theSquarePosition.y, theSquarePosition.z);
+                            if (isSpecial)
+                            {
+                                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
+                            }
+                            else
+                            {
+                                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+                            }
                         }
-                        else
+                        else 
                         {
-                            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+                            ResetToSpawn();
                         }
                     }
                     else
                     {
-                        if (isSpecial)
-                        {
-                            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
-                        }
-                        theSquarePosition = spawnPoint;
-                        transform.parent.gameObject.transform.position = spawnPoint;
+                        ResetToSpawn();
                     }
                 }
                 else
                 {
-                    if (isSpecial)
-                    {
-                        gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
-                    }
-                    theSquarePosition = spawnPoint;
-                    transform.parent.gameObject.transform.position = spawnPoint;
+                    ResetToSpawn();
                 }
             }
         }
+
+        ClearPotential();
     }
 
     public void ConfirmTile()
@@ -153,10 +155,46 @@ public class TileController : MonoBehaviour
         ScoreTile();
     }
 
+    private void ResetToSpawn()
+    {
+        if (isSpecial)
+        {
+            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
+        }
+        theSquarePosition = spawnPoint;
+        transform.parent.gameObject.transform.position = spawnPoint;
+    }
+
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public void CheckPotential()
+    {
+        foreach (var boardSpace in gameController.boardSpaceList)
+        {
+            foreach (GameObject path in pathList)
+            {
+                if (path.tag != "Path")
+                {
+                    boardSpace.GetComponent<BoardSpace>().CheckPotential(path.tag);
+                }
+            }
+        }
+
+    }
+
+    public void ClearPotential()
+    {
+        foreach (var boardSpace in gameController.boardSpaceList)
+        {
+            foreach (GameObject path in pathList)
+            {
+                boardSpace.GetComponent<BoardSpace>().ClearPotential();
+            }
+        }
     }
 
     void OnTriggerEnter(Collider other)

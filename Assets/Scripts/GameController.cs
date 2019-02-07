@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
 {
     private float boardPosZ;
     public GameObject boardSpace;
+    public List<GameObject> boardSpaceList;
     public GameObject boardEdge;
     public float boardScale = 10;
     public int boardSize = 9;
@@ -89,7 +90,8 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    Instantiate(boardSpace, spawnPosition, spawnRotation);
+                    GameObject newBoardSpace = Instantiate(boardSpace, spawnPosition, spawnRotation);
+                    boardSpaceList.Add(newBoardSpace);
                 }
                 spawnPosition.x = spawnPosition.x + boardScale;
             }

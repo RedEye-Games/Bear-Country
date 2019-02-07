@@ -9,6 +9,8 @@ public class PathController : MonoBehaviour
     private string pathTag;
     private bool isDeadEnd = true;
     public int scoreToAdd;
+    public GameObject adjacentTile;
+    public GameObject adjacentPath;
 
     // Start is called before the first frame update
     void Start()
@@ -30,9 +32,10 @@ public class PathController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag != "Untagged" && other.gameObject.tag != "SpecialTile" && other.CompareTag(pathTag))
+        if (!string.IsNullOrEmpty(other.gameObject.tag) && other.gameObject.tag != "Untagged" && other.gameObject.tag != "Path" && other.gameObject.tag != "SpecialTile" && other.gameObject.tag != "Board" && other.CompareTag(pathTag))
         {
-            GameObject adjacentPath = other.gameObject;
+            adjacentPath = other.gameObject;
+            adjacentTile = other.gameObject.transform.parent.gameObject;
 
             //var adjacentPathName = other.gameObject.name;
             if (pathTag == gameObject.tag)

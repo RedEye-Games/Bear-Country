@@ -96,6 +96,7 @@ public class TileController : MonoBehaviour
             isPlaced = false;
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
             Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
+            cursorPosition.y = 5;
             transform.parent.gameObject.transform.position = cursorPosition;
         }
     }

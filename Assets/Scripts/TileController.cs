@@ -31,7 +31,6 @@ public class TileController : MonoBehaviour
     bool isArmed = false;
     bool isConfirmed = false;
     public bool isPlaced = false;
-    Vector3 theSquarePosition;
     Vector3 spawnPoint;
 
     // Special Tile Variables
@@ -56,8 +55,6 @@ public class TileController : MonoBehaviour
             Debug.Log("Cannot find 'GameController' script");
         }
 
-        // Find this tile's position
-        theSquarePosition = gameObject.transform.position;
         // Record spawn point
         spawnPoint = gameObject.transform.position;
 
@@ -166,7 +163,7 @@ public class TileController : MonoBehaviour
         {
             gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
         }
-        theSquarePosition = spawnPoint;
+
         transform.position = spawnPoint;
     }
 
@@ -199,20 +196,6 @@ public class TileController : MonoBehaviour
             boardSpace.GetComponent<BoardSpace>().ClearPotential();
         }
     }
-
-    //void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.CompareTag("BoardSpace"))
-    //    {
-    //        GameObject theSquare = other.gameObject;
-    //        theSquarePosition = other.gameObject.transform.position;
-    //        TileCollider tileCollider = theSquare.GetComponent<TileCollider>();
-    //        if (tileCollider.isEmpty == true)
-    //        {
-    //            isArmed = true;
-    //        }
-    //    }
-    //}
 
     public void UpdateScore(int score) 
     {

@@ -27,17 +27,27 @@ public class TileModifiers : MonoBehaviour
     {
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
         selectedTile.transform.localScale = new Vector3(selectedTile.transform.localScale.x, selectedTile.transform.localScale.y, selectedTile.transform.localScale.z * -1);
+        LegalityCheck("CW");
     }
 
     public void RotateCW()
     {
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
         selectedTile.transform.Rotate(0, 90, 0);
+        LegalityCheck("CW");
     }
 
     public void RotateCCW()
     {
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
         selectedTile.transform.Rotate(0, -90, 0);
+        LegalityCheck("CCW");
+    }
+
+    public void LegalityCheck(string direction)
+    {
+        selectedTile.GetComponent<TileController>().ClearLegality();
+        selectedTile.GetComponent<TileController>().checkingLegalityDirection = direction;
+        selectedTile.GetComponent<TileController>().checkingLegality = true;
     }
 }

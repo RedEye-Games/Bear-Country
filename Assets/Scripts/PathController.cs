@@ -4,17 +4,33 @@ using UnityEngine;
 
 public class PathController : MonoBehaviour
 {
+    // GameController
+    private GameController gameController;
+
     private TileController parentTile;
 
     private string pathTag;
-    private bool isDeadEnd = true;
+    public bool isDeadEnd = true;
     public int scoreToAdd;
     public GameObject adjacentTile;
     public GameObject adjacentPath;
+    List<string> validPathTags = new List<string>();
 
     // Start is called before the first frame update
     void Start()
     {
+        // Locate GameController Script
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+            validPathTags = gameController.validPathTags;
+        }
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'GameController' script");
+        }
+
         pathTag = gameObject.tag;
 
         // Locate Parent Tile Controller
@@ -32,15 +48,15 @@ public class PathController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (string.IsNullOrEmpty(other.gameObject.tag) == false)
+        if (string.IsNullOrEmpty(other.gameObject.tag) == false && other.gameObject.tag != "Untagged")
         {
-            if (other.gameObject.tag != "Untagged" && other.gameObject.tag != "Path" && other.gameObject.tag != "SpecialTile" && other.gameObject.tag != "BoardSpace" && other.gameObject.tag != "Board")
+            string tilePathTag = other.gameObject.tag;
+            if (validPathTags.Contains(tilePathTag) == true)
             {
                 adjacentPath = other.gameObject;
-                adjacentTile = other.gameObject;
+                adjacentTile = other.gameObject.transform.parent.gameObject;
 
-                //var adjacentPathName = other.gameObject.name;
-                if (pathTag == gameObject.tag)
+                if (pathTag == adjacentPath.tag)
                 {
                     isDeadEnd = false;
                     scoreToAdd = 1;

@@ -9,6 +9,9 @@ public class TileController : MonoBehaviour
     // GameController
     private GameController gameController;
 
+    // GameController
+    private TileModifiers tileModifiers;
+
     // Tile Colliders
     public GameObject westPath;
     public GameObject eastPath;
@@ -30,10 +33,15 @@ public class TileController : MonoBehaviour
     // Placement Variables
     bool isArmed = false;
     bool isConfirmed = false;
+    int legalCheck = 0;
     public bool isPlaced = false;
     Vector3 spawnPoint;
     bool checkingPotential = false;
-    private int frame;
+
+    // Legality
+    bool isLegal = false;
+    public bool checkingLegality;
+    public string checkingLegalityDirection;
 
     // Special Tile Variables
     public bool isSpecial = false;
@@ -42,6 +50,9 @@ public class TileController : MonoBehaviour
     private Vector3 screenPoint;
     private Vector3 offset;
     public float distance = 100;
+
+    // Coroutine Setup
+    public int frame;
 
     // Start is called before the first frame update
     void Start()
@@ -57,6 +68,17 @@ public class TileController : MonoBehaviour
             Debug.Log("Cannot find 'GameController' script");
         }
 
+        // Locate TileModifiers Script
+        GameObject TileModifiersObject = GameObject.FindWithTag("TileModifiers");
+        if (TileModifiersObject != null)
+        {
+            tileModifiers = TileModifiersObject.GetComponent<TileModifiers>();
+        }
+        if (tileModifiers == null)
+        {
+            Debug.Log("Cannot find 'TileModifiers' script");
+        }
+
         // Record spawn point
         spawnPoint = gameObject.transform.position;
 
@@ -68,6 +90,10 @@ public class TileController : MonoBehaviour
 
         // Set Placement
         isPlaced = false;
+
+        // Setting Legality
+        checkingLegality = false;
+        checkingLegalityDirection = "CW";
     }
 
     void OnMouseDown()
@@ -82,6 +108,9 @@ public class TileController : MonoBehaviour
         // Highlight Compatible Board Spaces
         checkingPotential = true;
         StartCoroutine(CheckPotential(frame));
+
+        // Clear Legality
+        ClearLegality();
     }
 
     void OnMouseDrag()
@@ -134,6 +163,10 @@ public class TileController : MonoBehaviour
                             {
                                 gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
                             }
+
+                            // Rotate Tile if Illegal
+                            checkingLegality = true;
+                            StartCoroutine(TileLegality(frame));
                         }
                         else 
                         {
@@ -153,6 +186,57 @@ public class TileController : MonoBehaviour
         }
 
         ClearPotential();
+    }
+
+    public IEnumerator TileLegality(int startFrame)
+    {
+        yield return new WaitUntil(() => frame >= startFrame + 5);
+        TileLegalityCheck();
+    }
+
+    public void TileLegalityCheck()
+    {
+        if (legalCheck < 4)
+        {
+            foreach (var path in pathList)
+            {
+                if (path.GetComponent<PathController>().isDeadEnd == false)
+                {
+                    isLegal = true;
+                    legalCheck = 0;
+                }
+            }
+            if (!isLegal)
+            {
+                if (checkingLegalityDirection == "CW")
+                {
+                    tileModifiers.RotateCW();
+                }
+                else 
+                {
+                    tileModifiers.RotateCCW();
+                }
+
+                legalCheck++;
+                StartCoroutine(TileLegality(frame));
+            }
+        }
+        else
+        {
+            ResetToSpawn();
+            legalCheck = 0;
+            Debug.Log("No legal moves.");
+            // And perhaps end round?
+        }
+    }
+
+    public void ClearLegality()
+    {
+        foreach (var path in pathList)
+        {
+            isLegal = false;
+        }
+        legalCheck = 0;
     }
 
     public void ConfirmTile()
@@ -175,6 +259,11 @@ public class TileController : MonoBehaviour
     void Update()
     {
         frame++;
+        if (checkingLegality)
+        {
+            checkingLegality = false;
+            StartCoroutine(TileLegality(frame));
+        }
     }
 
     IEnumerator CheckPotential(int startFrame)

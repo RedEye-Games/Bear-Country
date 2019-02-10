@@ -109,6 +109,10 @@ public class TileDisbursementController : MonoBehaviour
             tileChoices = TileOptions.Where(x => (x.rarity == 3)).ToList();
             var tileChoice = tileChoices[i];
             tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+            newSpecialTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
+            newSpecialTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
+            newSpecialTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
+            newSpecialTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
         }
         specialTiles = GameObject.FindGameObjectsWithTag("SpecialTile");
     }

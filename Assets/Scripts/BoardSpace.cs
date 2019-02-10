@@ -57,7 +57,6 @@ public class BoardSpace : MonoBehaviour
     {
         if (pathTagList.Contains(pathTag))
         {
-            Debug.Log("I just fired.");
             //Highlight(true);
             hasPotential = true;
         }

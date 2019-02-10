@@ -112,9 +112,9 @@ public class TileController : MonoBehaviour
             if (isArmed && !isPlaced)
             {
                 isArmed = false;
-                RaycastHit boardCheck;
+
                 Ray ray = new Ray(transform.position, -transform.up);
-                if (Physics.Raycast(ray, out boardCheck, Mathf.Infinity))
+                if (Physics.Raycast(ray, out RaycastHit boardCheck, Mathf.Infinity))
                 {
                     if (boardCheck.collider.tag == "BoardSpace")
                     {

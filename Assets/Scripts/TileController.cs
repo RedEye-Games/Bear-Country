@@ -32,6 +32,8 @@ public class TileController : MonoBehaviour
     bool isConfirmed = false;
     public bool isPlaced = false;
     Vector3 spawnPoint;
+    bool checkingPotential = false;
+    private int frame;
 
     // Special Tile Variables
     public bool isSpecial = false;
@@ -76,6 +78,10 @@ public class TileController : MonoBehaviour
         {
             gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
         }
+
+        // Highlight Compatible Board Spaces
+        checkingPotential = true;
+        StartCoroutine(CheckPotential(frame));
     }
 
     void OnMouseDrag()
@@ -94,15 +100,13 @@ public class TileController : MonoBehaviour
             tilePosition.y = 5;
             transform.position = tilePosition;
 
-            // Highlight Compatible Board Spaces
-            CheckPotential();
         }
     }
 
     void OnMouseUp()
     {
         // Sends tiles back to spawn point
-       
+        checkingPotential = false;
         if (isConfirmed == false)
         {
             if (isArmed && !isPlaced)
@@ -170,11 +174,12 @@ public class TileController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        frame++;
     }
 
-    public void CheckPotential()
+    IEnumerator CheckPotential(int startFrame)
     {
+        yield return new WaitUntil(() => frame >= startFrame + 5);
         foreach (var boardSpace in gameController.boardSpaceList)
         {
             BoardSpace boardSpaceToBeChecked = boardSpace.GetComponent<BoardSpace>();
@@ -185,12 +190,19 @@ public class TileController : MonoBehaviour
                     boardSpaceToBeChecked.CheckPotential(path.tag);
                 }
             }
+            if (boardSpaceToBeChecked.hasPotential)
+            {
+                if (checkingPotential)
+                {
+                    boardSpaceToBeChecked.Highlight(true);
+                }
+            }
         }
-
     }
 
     public void ClearPotential()
     {
+        checkingPotential = false;
         foreach (var boardSpace in gameController.boardSpaceList)
         {
             boardSpace.GetComponent<BoardSpace>().ClearPotential();

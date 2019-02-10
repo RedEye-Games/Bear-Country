@@ -5,6 +5,7 @@ using UnityEngine;
 public class BoardSpace : MonoBehaviour
 {
     public bool isOccupied = false;
+    public bool hasPotential = false;
     public bool isHighlighted = false;
     public Renderer rend;
     public List<string> pathTagList;
@@ -23,7 +24,7 @@ public class BoardSpace : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag != "Untagged" && other.tag != "Path" && other.tag != "Board" && other.tag != "BoardSpace")
+        if (other.tag != "Untagged" && other.tag != "Path" && other.tag != "Board" && other.tag != "BoardSpace" && other.tag != "Tile")
         {
             pathTagList.Add(other.tag);
         }
@@ -31,7 +32,7 @@ public class BoardSpace : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag != "Untagged" && other.tag != "Board" && other.tag != "BoardSpace")
+        if (other.tag != "Untagged" && other.tag != "Path" && other.tag != "Board" && other.tag != "BoardSpace" && other.tag != "Tile")
         {
             pathTagList.Remove(other.tag);
         }
@@ -41,7 +42,7 @@ public class BoardSpace : MonoBehaviour
     {
         // Highlight here.
         isHighlighted = highlight;
-        if (highlight)
+        if (hasPotential)
         {
             rend.material.color = Color.green;
         } 
@@ -56,12 +57,15 @@ public class BoardSpace : MonoBehaviour
     {
         if (pathTagList.Contains(pathTag))
         {
-            Highlight(true);
+            Debug.Log("I just fired.");
+            //Highlight(true);
+            hasPotential = true;
         }
     }
 
     public void ClearPotential()
     {
+        hasPotential = false;
         Highlight(false);
     }
 }

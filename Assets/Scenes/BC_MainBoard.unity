@@ -581,7 +581,7 @@ MonoBehaviour:
   tiles: []
   unplacedTiles: 0
   remainingTiles: 28
-  specialTile: {fileID: 4897010689499159677, guid: fc5a7363f3c69437b80caa4828e17d48,
+  SpecialTile: {fileID: 4897010689499159677, guid: fc5a7363f3c69437b80caa4828e17d48,
     type: 3}
   specialTiles: []
   specialTileSpawnPoints:

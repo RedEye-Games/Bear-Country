@@ -79,9 +79,6 @@ public class TileController : MonoBehaviour
         {
             gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
         }
-
-        // Highlight Compatible Board Spaces
-        CheckPotential();
     }
 
     void OnMouseDrag()
@@ -91,13 +88,17 @@ public class TileController : MonoBehaviour
             if (isPlaced)
             {
                 gameController.AddScore(4);
+                isPlaced = false;
             }
             isArmed = true;
-            isPlaced = false;
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
             Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
-            cursorPosition.y = 5;
-            transform.parent.gameObject.transform.position = cursorPosition;
+            Vector3 tilePosition = cursorPosition;
+            tilePosition.y = 5;
+            transform.position = tilePosition;
+
+            // Highlight Compatible Board Spaces
+            CheckPotential();
         }
     }
 
@@ -114,13 +115,16 @@ public class TileController : MonoBehaviour
                 Ray ray = new Ray(transform.position, -transform.up);
                 if (Physics.Raycast(ray, out boardCheck, Mathf.Infinity))
                 {
-                    if (boardCheck.collider.name == "boardSpaceMain" || boardCheck.collider.name == "boardSpaceCollider01")
+                    if (boardCheck.collider.tag == "BoardSpace")
                     {
                         if (boardCheck.collider.GetComponentInParent<BoardSpace>().isHighlighted)
                         {
                             isPlaced = true;
                             gameController.GetComponent<GameController>().selectedTile = gameObject;
-                            transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, theSquarePosition.y, theSquarePosition.z);
+                            Vector3 tilePosition = boardCheck.collider.transform.position;
+                            tilePosition.y = 0;
+                            transform.position = tilePosition;
+                            boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
                             if (isSpecial)
                             {
                                 gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
@@ -163,7 +167,7 @@ public class TileController : MonoBehaviour
             gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
         }
         theSquarePosition = spawnPoint;
-        transform.parent.gameObject.transform.position = spawnPoint;
+        transform.position = spawnPoint;
     }
 
     // Update is called once per frame
@@ -176,11 +180,12 @@ public class TileController : MonoBehaviour
     {
         foreach (var boardSpace in gameController.boardSpaceList)
         {
+            BoardSpace boardSpaceToBeChecked = boardSpace.GetComponent<BoardSpace>();
             foreach (GameObject path in pathList)
             {
                 if (path.tag != "Path")
                 {
-                    boardSpace.GetComponent<BoardSpace>().CheckPotential(path.tag);
+                    boardSpaceToBeChecked.CheckPotential(path.tag);
                 }
             }
         }
@@ -191,26 +196,23 @@ public class TileController : MonoBehaviour
     {
         foreach (var boardSpace in gameController.boardSpaceList)
         {
-            foreach (GameObject path in pathList)
-            {
-                boardSpace.GetComponent<BoardSpace>().ClearPotential();
-            }
+            boardSpace.GetComponent<BoardSpace>().ClearPotential();
         }
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("BoardSpace"))
-        {
-            GameObject theSquare = other.gameObject;
-            theSquarePosition = other.gameObject.transform.position;
-            TileCollider tileCollider = theSquare.GetComponent<TileCollider>();
-            if (tileCollider.isEmpty == true)
-            {
-                isArmed = true;
-            }
-        }
-    }
+    //void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.CompareTag("BoardSpace"))
+    //    {
+    //        GameObject theSquare = other.gameObject;
+    //        theSquarePosition = other.gameObject.transform.position;
+    //        TileCollider tileCollider = theSquare.GetComponent<TileCollider>();
+    //        if (tileCollider.isEmpty == true)
+    //        {
+    //            isArmed = true;
+    //        }
+    //    }
+    //}
 
     public void UpdateScore(int score) 
     {

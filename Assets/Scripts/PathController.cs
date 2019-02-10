@@ -32,20 +32,24 @@ public class PathController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!string.IsNullOrEmpty(other.gameObject.tag) && other.gameObject.tag != "Untagged" && other.gameObject.tag != "Path" && other.gameObject.tag != "SpecialTile" && other.gameObject.tag != "Board" && other.CompareTag(pathTag))
+        if (string.IsNullOrEmpty(other.gameObject.tag) == false)
         {
-            adjacentPath = other.gameObject;
-            adjacentTile = other.gameObject.transform.parent.gameObject;
-
-            //var adjacentPathName = other.gameObject.name;
-            if (pathTag == gameObject.tag)
+            if (other.gameObject.tag != "Untagged" && other.gameObject.tag != "Path" && other.gameObject.tag != "SpecialTile" && other.gameObject.tag != "BoardSpace" && other.gameObject.tag != "Board")
             {
-                isDeadEnd = false;
-                scoreToAdd = 1;
+                adjacentPath = other.gameObject;
+                adjacentTile = other.gameObject;
+
+                //var adjacentPathName = other.gameObject.name;
+                if (pathTag == gameObject.tag)
+                {
+                    isDeadEnd = false;
+                    scoreToAdd = 1;
+                }
+                // To Do: Check to see if path is alive. Check to see if it's a riverhead.
+                // Then create and store unique river/trail identifier.
             }
-            // To Do: Check to see if path is alive. Check to see if it's a riverhead.
-            // Then create and store unique river/trail identifier.
         }
+
     }
 
     private void OnTriggerExit(Collider other)

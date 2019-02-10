@@ -570,7 +570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da6e2b6f07c7a46acb6a3cfcf95b672e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tile: {fileID: 6707703648181930765, guid: 914285da9711a43d29de4a36389a1815, type: 3}
+  Tile: {fileID: 4897010689499159677, guid: fc5a7363f3c69437b80caa4828e17d48, type: 3}
   disburseTilesButton: {fileID: 257232941}
   tileSpawnPoints:
   - {fileID: 1635921555}
@@ -580,7 +580,7 @@ MonoBehaviour:
   tiles: []
   unplacedTiles: 0
   remainingTiles: 28
-  specialTile: {fileID: 6707703648181930765, guid: 914285da9711a43d29de4a36389a1815,
+  specialTile: {fileID: 4897010689499159677, guid: fc5a7363f3c69437b80caa4828e17d48,
     type: 3}
   specialTiles: []
   specialTileSpawnPoints:

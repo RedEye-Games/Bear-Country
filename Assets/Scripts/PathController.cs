@@ -4,17 +4,33 @@ using UnityEngine;
 
 public class PathController : MonoBehaviour
 {
+    // GameController
+    private GameController gameController;
+
     private TileController parentTile;
 
     private string pathTag;
-    private bool isDeadEnd = true;
+    public bool isDeadEnd = true;
     public int scoreToAdd;
     public GameObject adjacentTile;
     public GameObject adjacentPath;
+    List<string> validPathTags = new List<string>();
 
     // Start is called before the first frame update
     void Start()
     {
+        // Locate GameController Script
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+            validPathTags = gameController.validPathTags;
+        }
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'GameController' script");
+        }
+
         pathTag = gameObject.tag;
 
         // Locate Parent Tile Controller
@@ -32,20 +48,24 @@ public class PathController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!string.IsNullOrEmpty(other.gameObject.tag) && other.gameObject.tag != "Untagged" && other.gameObject.tag != "Path" && other.gameObject.tag != "SpecialTile" && other.gameObject.tag != "Board" && other.CompareTag(pathTag))
+        if (string.IsNullOrEmpty(other.gameObject.tag) == false && other.gameObject.tag != "Untagged")
         {
-            adjacentPath = other.gameObject;
-            adjacentTile = other.gameObject.transform.parent.gameObject;
-
-            //var adjacentPathName = other.gameObject.name;
-            if (pathTag == gameObject.tag)
+            string tilePathTag = other.gameObject.tag;
+            if (validPathTags.Contains(tilePathTag) == true)
             {
-                isDeadEnd = false;
-                scoreToAdd = 1;
+                adjacentPath = other.gameObject;
+                adjacentTile = other.gameObject.transform.parent.gameObject;
+
+                if (pathTag == adjacentPath.tag)
+                {
+                    isDeadEnd = false;
+                    scoreToAdd = 1;
+                }
+                // To Do: Check to see if path is alive. Check to see if it's a riverhead.
+                // Then create and store unique river/trail identifier.
             }
-            // To Do: Check to see if path is alive. Check to see if it's a riverhead.
-            // Then create and store unique river/trail identifier.
         }
+
     }
 
     private void OnTriggerExit(Collider other)

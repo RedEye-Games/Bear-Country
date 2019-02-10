@@ -5,24 +5,26 @@ using UnityEngine;
 public class BoardSpace : MonoBehaviour
 {
     public bool isOccupied = false;
+    public bool hasPotential = false;
     public bool isHighlighted = false;
+    public Renderer rend;
     public List<string> pathTagList;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        rend.material.color = Color.clear;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag != "Untagged" && other.tag != "Board" && other.tag != "BoardSpace")
+        if (other.tag != "Untagged" && other.tag != "Path" && other.tag != "Board" && other.tag != "BoardSpace" && other.tag != "Tile")
         {
             pathTagList.Add(other.tag);
         }
@@ -30,7 +32,7 @@ public class BoardSpace : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag != "Untagged" && other.tag != "Board" && other.tag != "BoardSpace")
+        if (other.tag != "Untagged" && other.tag != "Path" && other.tag != "Board" && other.tag != "BoardSpace" && other.tag != "Tile")
         {
             pathTagList.Remove(other.tag);
         }
@@ -40,13 +42,13 @@ public class BoardSpace : MonoBehaviour
     {
         // Highlight here.
         isHighlighted = highlight;
-        if (highlight)
+        if (hasPotential)
         {
-            GetComponentInChildren<TileCollider>().rend.material.color = Color.green;
+            rend.material.color = Color.green;
         } 
         else 
         {
-            GetComponentInChildren<TileCollider>().rend.material.color = Color.red;
+            rend.material.color = Color.clear;
         }
 
     }
@@ -55,12 +57,14 @@ public class BoardSpace : MonoBehaviour
     {
         if (pathTagList.Contains(pathTag))
         {
-            Highlight(true);
+            //Highlight(true);
+            hasPotential = true;
         }
     }
 
     public void ClearPotential()
     {
+        hasPotential = false;
         Highlight(false);
     }
 }

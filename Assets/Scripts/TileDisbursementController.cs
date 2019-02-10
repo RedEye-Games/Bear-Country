@@ -15,7 +15,7 @@ public class TileDisbursementController : MonoBehaviour
     public int remainingTiles = 28;
 
     // Vars for Special Tiles
-    public GameObject specialTile;
+    public GameObject SpecialTile;
     public GameObject[] specialTiles;
     public Transform[] specialTileSpawnPoints;
     public GameObject specialTileTray;
@@ -56,6 +56,14 @@ public class TileDisbursementController : MonoBehaviour
             if (tile.GetComponent<TileController>().isPlaced)
             {
                 tile.GetComponent<TileController>().ConfirmTile();
+            }
+        }
+
+        foreach (var specialTile in specialTiles)
+        {
+            if (specialTile.GetComponent<TileController>().isPlaced)
+            {
+                specialTile.GetComponent<TileController>().ConfirmTile();
             }
         }
 
@@ -102,13 +110,17 @@ public class TileDisbursementController : MonoBehaviour
 
         for (int i = 0; i < specialTileSpawnPoints.Length; i++)
         {
-            GameObject newSpecialTile = Instantiate(specialTile, specialTileSpawnPoints[i].position, specialTileSpawnPoints[i].rotation);
+            GameObject newSpecialTile = Instantiate(SpecialTile, specialTileSpawnPoints[i].position, specialTileSpawnPoints[i].rotation);
             newSpecialTile.GetComponentInChildren<TileController>().isSpecial = true;
             newSpecialTile.tag = "SpecialTile";
             SpriteRenderer tileSprite = newSpecialTile.GetComponentInChildren<SpriteRenderer>();
             tileChoices = TileOptions.Where(x => (x.rarity == 3)).ToList();
             var tileChoice = tileChoices[i];
             tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+            newSpecialTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
+            newSpecialTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
+            newSpecialTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
+            newSpecialTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
         }
         specialTiles = GameObject.FindGameObjectsWithTag("SpecialTile");
     }
@@ -209,7 +221,7 @@ public class TileDisbursementController : MonoBehaviour
 
         // Rare Tiles
         TileOptions.Add(new Tile("rStraight_tStraight", 2, "River", "Trail", "Path", "Path"));
-        TileOptions.Add(new Tile("rtCorner", 2, "Path", "River", "Trail", "Path"));
+        TileOptions.Add(new Tile("rtCorner", 2, "Path", "River", "Path", "Trail"));
         TileOptions.Add(new Tile("tBridge_rStraight", 2, "River", "River", "Trail", "Trail"));
 
         // Special Tiles

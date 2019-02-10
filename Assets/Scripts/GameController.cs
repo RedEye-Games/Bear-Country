@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
     private float boardPosZ;
     public GameObject boardSpace;
     public List<GameObject> boardSpaceList;
+    public List<string> validPathTags = new List<string>();
     public GameObject boardEdge;
     public float boardScale = 10;
     public int boardSize = 9;
@@ -37,6 +38,10 @@ public class GameController : MonoBehaviour
         Vector3 BoardCenter = new Vector3(boardScale / 2, 0, boardScale / 2 + boardPosZ);
         GenerateBoard(boardSize, boardSize, BoardCenter);
         score = 0;
+
+        // Define Valid Path Tags
+        validPathTags.Add("Trail");
+        validPathTags.Add("River");
     }
 
     void GenerateBoard(int sizeX, int sizeZ, Vector3 BoardCenter)

@@ -104,7 +104,7 @@ public class TileController : MonoBehaviour
         {
             gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
         }
-        else if (!isConfirmed)
+        if (!isConfirmed)
         {
             // Highlight Compatible Board Spaces
             checkingPotential = true;

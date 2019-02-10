@@ -104,13 +104,15 @@ public class TileController : MonoBehaviour
         {
             gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
         }
+        else if (!isConfirmed)
+        {
+            // Highlight Compatible Board Spaces
+            checkingPotential = true;
+            StartCoroutine(CheckPotential(frame));
 
-        // Highlight Compatible Board Spaces
-        checkingPotential = true;
-        StartCoroutine(CheckPotential(frame));
-
-        // Clear Legality
-        ClearLegality();
+            // Clear Legality
+            ClearLegality();
+        }
     }
 
     void OnMouseDrag()

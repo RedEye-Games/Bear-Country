@@ -19,6 +19,12 @@ public class GameController : MonoBehaviour
 
     private int score;
 
+    // Scoring Systems
+    public List<TileSystem> tileSystemList;
+    public TileSystem tileSystem;
+    readonly string tileSystemNamingString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private int tileSystemNamingInt = 0;
+
 
     // Start is called before the first frame update
     void Start()
@@ -63,6 +69,9 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/tStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
+                        newBoardEdge.GetComponentInChildren<TileController>().tileSystem = Instantiate(tileSystem);
+                        newBoardEdge.GetComponentInChildren<TileController>().tileSystem.tileSystemName = tileSystemNamingString[tileSystemNamingInt];
+                        tileSystemNamingInt++;
                     }
                     else if (x == 4)
                     {
@@ -119,6 +128,13 @@ public class GameController : MonoBehaviour
     {
         score += newScoreValue;
 //        Debug.Log("The score is " + score + " points");
+    }
+
+    // Scoring
+    // Adds tileSystem to List
+    public void AddTileSystem(TileSystem tileSystemToAdd)
+    {
+        tileSystemList.Add(tileSystemToAdd);
     }
 
 }

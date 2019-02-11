@@ -23,6 +23,7 @@ public class TileController : MonoBehaviour
 
     // Scoring Variables
     private int scoreToAdd;
+    public TileSystem tileSystem;
 
     // Tile Buttons
     Button rotateCWButton;
@@ -151,6 +152,7 @@ public class TileController : MonoBehaviour
                     {
                         if (boardCheck.collider.GetComponentInParent<BoardSpace>().isHighlighted)
                         {
+                            // All Checks Passed. Place the Tile
                             isPlaced = true;
                             gameController.GetComponent<GameController>().selectedTile = gameObject;
                             Vector3 tilePosition = boardCheck.collider.transform.position;
@@ -244,7 +246,7 @@ public class TileController : MonoBehaviour
     public void ConfirmTile()
     {
         isConfirmed = true;
-        ScoreTile();
+        //ScoreTile();
     }
 
     private void ResetToSpawn()
@@ -305,14 +307,14 @@ public class TileController : MonoBehaviour
 
     }
 
-    public void ScoreTile() 
+    public void AddToTileSystem() 
     {
         foreach (GameObject path in pathList)
         {
-            // Add up score.
-            scoreToAdd = path.GetComponent<PathController>().scoreToAdd;
-            gameController.AddScore(scoreToAdd);
-            Debug.Log(path.name + " has a score of " + scoreToAdd);
+            if (!path.GetComponent<PathController>().isDeadEnd)
+            {
+                //string tileSystem = path.transform.parent.GetComponent<TileController>().tileSystem;
+            }
         }
     }
 }

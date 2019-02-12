@@ -7,7 +7,8 @@ AudioMixerController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ambience
-  m_OutputGroup: {fileID: 24300002, guid: 55a984d9ac266406db144d7423add8cf, type: 2}
+  m_OutputGroup: {fileID: 243639440524668972, guid: 55a984d9ac266406db144d7423add8cf,
+    type: 2}
   m_MasterGroup: {fileID: 24300002}
   m_Snapshots:
   - {fileID: 24500006}
@@ -153,6 +154,20 @@ AudioMixerEffectController:
   m_EffectID: 3610bceb9399c4ce7a08abe35dd3382f
   m_EffectName: Attenuation
   m_MixLevel: 773b130bcf07e4f44a986516438b7ece
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!244 &244659960487041824
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Attenuation
+  m_EffectID: 825d4250aa3bf402788a490ae420827c
+  m_EffectName: Attenuation
+  m_MixLevel: 500f7965c2eb64e0bab32eda436b0b85
   m_Parameters: []
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0

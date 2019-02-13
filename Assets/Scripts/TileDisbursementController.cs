@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class TileDisbursementController : MonoBehaviour
 {
+    // GameController
+    private GameController gameController;
 
     public GameObject Tile;
     public Button disburseTilesButton;
@@ -28,6 +30,17 @@ public class TileDisbursementController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Locate GameController Script
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+        }
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'GameController' script");
+        }
+
         PopulateTileOptions();
         DisburseTiles();
         DisburseSpecialTiles();
@@ -51,21 +64,27 @@ public class TileDisbursementController : MonoBehaviour
             EnableSpecialTileTray();
         }
 
-        foreach (var tile in tiles)
+        foreach (var tile in gameController.GetComponent<GameController>().tilesPlacedThisRound)
         {
-            if (tile.GetComponent<TileController>().isPlaced)
-            {
-                tile.GetComponent<TileController>().ConfirmTile();
-            }
+            tile.GetComponent<TileController>().ConfirmTile();
         }
+        gameController.GetComponent<GameController>().tilesPlacedThisRound.Clear();
 
-        foreach (var specialTile in specialTiles)
-        {
-            if (specialTile.GetComponent<TileController>().isPlaced)
-            {
-                specialTile.GetComponent<TileController>().ConfirmTile();
-            }
-        }
+        //foreach (var tile in tiles)
+        //{
+        //    if (tile.GetComponent<TileController>().isPlaced)
+        //    {
+        //        tile.GetComponent<TileController>().ConfirmTile();
+        //    }
+        //}
+
+        //foreach (var specialTile in specialTiles)
+        //{
+        //    if (specialTile.GetComponent<TileController>().isPlaced)
+        //    {
+        //        specialTile.GetComponent<TileController>().ConfirmTile();
+        //    }
+        //}
 
         for (int i = 0; i < tileSpawnPoints.Length; i++)
         {

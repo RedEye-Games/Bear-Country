@@ -9,7 +9,7 @@ public class TileController : MonoBehaviour
     // GameController
     private GameController gameController;
 
-    // GameController
+    // TileModifiers
     private TileModifiers tileModifiers;
 
     // Tile Colliders
@@ -23,7 +23,8 @@ public class TileController : MonoBehaviour
 
     // Scoring Variables
     private int scoreToAdd;
-    public TileSystem tileSystem;
+    public GameObject tileSystem;
+    public bool isExit = false;
 
     // Tile Buttons
     Button rotateCWButton;
@@ -99,6 +100,9 @@ public class TileController : MonoBehaviour
 
     void OnMouseDown()
     {
+        // Check to make sure it's not attached to only a tile placed this round
+        // ... to do
+
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
         if (isPlaced && !isConfirmed && !isSpecial) 
@@ -124,6 +128,7 @@ public class TileController : MonoBehaviour
             {
                 gameController.AddScore(4);
                 isPlaced = false;
+                gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
             }
             isArmed = true;
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
@@ -154,6 +159,7 @@ public class TileController : MonoBehaviour
                         {
                             // All Checks Passed. Place the Tile
                             isPlaced = true;
+                            gameController.GetComponent<GameController>().tilesPlacedThisRound.Add(gameObject);
                             gameController.GetComponent<GameController>().selectedTile = gameObject;
                             Vector3 tilePosition = boardCheck.collider.transform.position;
                             tilePosition.y = 0;
@@ -246,7 +252,31 @@ public class TileController : MonoBehaviour
     public void ConfirmTile()
     {
         isConfirmed = true;
-        //ScoreTile();
+        // Connect Systems for Scoring
+        ScoreTile();
+    }
+
+    public void ScoreTile()
+    {
+        foreach (var path in pathList)
+        {
+            if (!path.GetComponent<PathController>().isDeadEnd)
+            {
+                GameObject adjacentTileSystem = path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>().tileSystem;
+                if (adjacentTileSystem)
+                {
+                    if (tileSystem == null)
+                    {
+                        tileSystem = adjacentTileSystem;
+                        adjacentTileSystem.GetComponent<TileSystem>().AddToSystem(gameObject);
+                    }
+                    else
+                    {
+                        adjacentTileSystem.GetComponent<TileSystem>().MergeSystem(tileSystem);
+                    }
+                }
+            }
+        }
     }
 
     private void ResetToSpawn()

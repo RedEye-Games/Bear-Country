@@ -21,10 +21,12 @@ public class GameController : MonoBehaviour
 
     // Scoring Systems
     public List<TileSystem> tileSystemList;
-    public TileSystem tileSystem;
+    public GameObject tileSystem;
     readonly string tileSystemNamingString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private int tileSystemNamingInt = 0;
 
+    // Placement Helpers
+    public List<GameObject> tilesPlacedThisRound;
 
     // Start is called before the first frame update
     void Start()
@@ -69,9 +71,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/tStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
-                        newBoardEdge.GetComponentInChildren<TileController>().tileSystem = Instantiate(tileSystem);
-                        newBoardEdge.GetComponentInChildren<TileController>().tileSystem.tileSystemName = tileSystemNamingString[tileSystemNamingInt];
-                        tileSystemNamingInt++;
+                        AttachTileSystem(newBoardEdge);
                     }
                     else if (x == 4)
                     {
@@ -79,6 +79,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/rStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "River";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "River";
+                        AttachTileSystem(newBoardEdge);
                     }
                     else if (y == 2 || y == 6)
                     {
@@ -87,6 +88,7 @@ public class GameController : MonoBehaviour
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "River";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "River";
                         newBoardEdge.transform.Rotate(Vector3.up * 90);
+                        AttachTileSystem(newBoardEdge);
                     }
                     else if (y == 4)
                     {
@@ -95,6 +97,7 @@ public class GameController : MonoBehaviour
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
                         newBoardEdge.transform.Rotate(Vector3.up * 90);
+                        AttachTileSystem(newBoardEdge);
                     }
                     else
                     {
@@ -135,6 +138,17 @@ public class GameController : MonoBehaviour
     public void AddTileSystem(TileSystem tileSystemToAdd)
     {
         tileSystemList.Add(tileSystemToAdd);
+    }
+
+    private void AttachTileSystem(GameObject newBoardEdge)
+    {
+        newBoardEdge.GetComponentInChildren<TileController>().isExit = true;
+        GameObject newTileSystem = Instantiate(tileSystem);
+        char newTileSystemName = tileSystemNamingString[tileSystemNamingInt];
+        newTileSystem.name = "Tile System (" + newTileSystemName + ")";
+        newTileSystem.GetComponent<TileSystem>().tileSystemName = newTileSystemName;
+        newTileSystem.GetComponent<TileSystem>().AddToSystem(newBoardEdge.GetComponentInChildren<TileController>().gameObject);
+        tileSystemNamingInt++;
     }
 
 }

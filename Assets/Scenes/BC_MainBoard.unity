@@ -545,6 +545,9 @@ MonoBehaviour:
   boardScale: 10
   boardSize: 9
   selectedTile: {fileID: 0}
+  tileSystemList: []
+  tileSystem: {fileID: 7591832815588949293, guid: 74df6c9acc73e48389d473c351abc000,
+    type: 3}
 --- !u!4 &345423400
 Transform:
   m_ObjectHideFlags: 0

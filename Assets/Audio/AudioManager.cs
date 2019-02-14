@@ -37,7 +37,12 @@ public class AudioManager : MonoBehaviour
     {
         switch (tileEventName)
         {
-            case TileEventName.PickedUp: Play("Squip"); break;
+            case TileEventName.PickedUp:
+                {
+                    if (tile.GetComponent<TileController>().isSpecial) Play("clickPop");
+                    Play("Squip");
+                    break;
+                }
             case TileEventName.SuccessfullyPlaced: Play("Uh-huh"); Play("drop"); break;
             case TileEventName.UnsuccessfullyPlaced: Play("Click1Low"); break;
             case TileEventName.Flipped: Play("Click1"); break;

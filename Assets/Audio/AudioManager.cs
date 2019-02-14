@@ -7,12 +7,12 @@ using System;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager instance;
+    public static AudioManager Instance { get; private set; }
     public Sound[] sounds;
 
     private void Awake()
     {
-        if (instance == null) instance = this;
+        if (Instance == null) Instance = this;
         else { Destroy(gameObject); return; }
 
         DontDestroyOnLoad(gameObject);

@@ -109,7 +109,7 @@ public class TileController : MonoBehaviour
             // Highlight Compatible Board Spaces
             checkingPotential = true;
             StartCoroutine(CheckPotential(frame));
-            AudioManager.instance.Play("Squip");
+            AudioManager.Instance.Play("Squip");
             // Clear Legality
             ClearLegality();
         }
@@ -158,8 +158,8 @@ public class TileController : MonoBehaviour
                             tilePosition.y = 0;
                             transform.position = tilePosition;
                             boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
-                            AudioManager.instance.Play("Uh-huh");
-                            AudioManager.instance.Play("drop");
+                            //AudioManager.instance.Play("Uh-huh");
+                            AudioManager.Instance.Play("drop");
 
                             if (isSpecial)
                             {
@@ -176,19 +176,19 @@ public class TileController : MonoBehaviour
                         }
                         else 
                         {
-                            AudioManager.instance.Play("Click1Low");
+                            AudioManager.Instance.Play("Click1Low");
                             ResetToSpawn();
                         }
                     }
                     else
                     {
-                        AudioManager.instance.Play("Click1Low");
+                        AudioManager.Instance.Play("Click1Low");
                         ResetToSpawn();
                     }
                 }
                 else
                 {
-                    AudioManager.instance.Play("Click1Low");
+                    AudioManager.Instance.Play("Click1Low");
                     ResetToSpawn();
                 }
             }

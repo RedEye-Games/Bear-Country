@@ -28,7 +28,7 @@ public class TileModifiers : MonoBehaviour
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
         selectedTile.transform.localScale = new Vector3(selectedTile.transform.localScale.x, selectedTile.transform.localScale.y, selectedTile.transform.localScale.z * -1);
         LegalityCheck("CW");
-        AudioManager.instance.Play("Click1");
+        AudioManager.Instance.Play("Click1");
     }
 
     public void RotateCW()
@@ -36,7 +36,7 @@ public class TileModifiers : MonoBehaviour
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
         selectedTile.transform.Rotate(0, 90, 0);
         LegalityCheck("CW");
-        AudioManager.instance.Play("Click1");
+        AudioManager.Instance.Play("Click1");
     }
 
     public void RotateCCW()
@@ -44,7 +44,7 @@ public class TileModifiers : MonoBehaviour
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
         selectedTile.transform.Rotate(0, -90, 0);
         LegalityCheck("CCW");
-        AudioManager.instance.Play("Click1");
+        AudioManager.Instance.Play("Click1");
     }
 
     public void LegalityCheck(string direction)

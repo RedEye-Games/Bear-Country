@@ -40,7 +40,9 @@ public class AudioManager : MonoBehaviour
             case TileEventName.PickedUp:
                 {
                     if (tile.GetComponent<TileController>().isSpecial) Play("clickPop");
-                    Play("Squip");
+                    Play("Click1");
+                    //Play("pickup");
+                    Play("slide");
                     break;
                 }
             case TileEventName.SuccessfullyPlaced: Play("Uh-huh"); Play("drop"); break;

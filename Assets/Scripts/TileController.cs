@@ -159,6 +159,7 @@ public class TileController : MonoBehaviour
                             transform.position = tilePosition;
                             boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
                             AudioManager.instance.Play("Uh-huh");
+                            AudioManager.instance.Play("drop");
 
                             if (isSpecial)
                             {

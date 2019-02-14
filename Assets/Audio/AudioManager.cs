@@ -2,7 +2,6 @@
 using UnityEngine.Audio;
 using System;
 
-
 /* This AudioManager handles all in-game SFX--except for the ambience and music--which are handled with an audio mixer. */
 
 public class AudioManager : MonoBehaviour
@@ -17,6 +16,9 @@ public class AudioManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
         SetupAllSounds();
+
+        TileController.TileEvent += OnTileEvent;
+        TileModifiers.TileEvent += OnTileEvent;
     }
 
     private void SetupAllSounds()
@@ -31,7 +33,20 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void Play(string name)
+    public void OnTileEvent(TileEventName tileEventName, GameObject tile)
+    {
+        switch (tileEventName)
+        {
+            case TileEventName.PickedUp: Play("Squip"); break;
+            case TileEventName.SuccessfullyPlaced: Play("Uh-huh"); Play("drop"); break;
+            case TileEventName.UnsuccessfullyPlaced: Play("Click1Low"); break;
+            case TileEventName.Flipped: Play("Click1"); break;
+            case TileEventName.Rotated: Play("Click1"); break;
+        }
+    }
+
+ 
+   public void Play(string name)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null) { Debug.LogWarning("cannot find sound named " + name); }

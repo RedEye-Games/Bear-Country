@@ -2,9 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public class TileController : MonoBehaviour
+public enum TileEventName
 {
+    PickedUp,
+    SuccessfullyPlaced,
+    UnsuccessfullyPlaced,
+    Rotated,
+    Flipped
+}
+
+public class TileController : MonoBehaviour 
+{ 
+
+    public static event Action<TileEventName, GameObject> TileEvent;
 
     // GameController
     private GameController gameController;
@@ -109,7 +121,9 @@ public class TileController : MonoBehaviour
             // Highlight Compatible Board Spaces
             checkingPotential = true;
             StartCoroutine(CheckPotential(frame));
-            AudioManager.Instance.Play("Squip");
+
+            TileEvent(TileEventName.PickedUp, gameObject);
+
             // Clear Legality
             ClearLegality();
         }
@@ -158,8 +172,6 @@ public class TileController : MonoBehaviour
                             tilePosition.y = 0;
                             transform.position = tilePosition;
                             boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
-                            //AudioManager.instance.Play("Uh-huh");
-                            AudioManager.Instance.Play("drop");
 
                             if (isSpecial)
                             {
@@ -173,22 +185,23 @@ public class TileController : MonoBehaviour
                             // Rotate Tile if Illegal
                             checkingLegality = true;
                             StartCoroutine(TileLegality(frame));
+                            TileEvent(TileEventName.SuccessfullyPlaced, gameObject);
                         }
                         else 
                         {
-                            AudioManager.Instance.Play("Click1Low");
+                            TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                             ResetToSpawn();
                         }
                     }
                     else
                     {
-                        AudioManager.Instance.Play("Click1Low");
+                        TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                         ResetToSpawn();
                     }
                 }
                 else
                 {
-                    AudioManager.Instance.Play("Click1Low");
+                    TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                     ResetToSpawn();
                 }
             }

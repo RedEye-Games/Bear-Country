@@ -828,8 +828,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 478109994}
+  - component: {fileID: 478109995}
   m_Layer: 0
-  m_Name: BackgroundSoundManager
+  m_Name: AudioManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -851,6 +852,61 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &478109995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478109993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4814cfc9b24744f2c8d6133f2c650169, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Click1
+    clip: {fileID: 8300000, guid: 080e062019f08412b85d844ffbbe3dda, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: Click1Low
+    clip: {fileID: 8300000, guid: 080e062019f08412b85d844ffbbe3dda, type: 3}
+    volume: 0.57
+    pitch: 0.5
+    source: {fileID: 0}
+    loop: 0
+  - name: Click2
+    clip: {fileID: 8300000, guid: efe8f4bf0b8b646ba9fc7ed6565dfee5, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: Squip
+    clip: {fileID: 8300000, guid: 5dd0c80263a304c979d67bad15d4ad1a, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: SquipLow
+    clip: {fileID: 8300000, guid: 5dd0c80263a304c979d67bad15d4ad1a, type: 3}
+    volume: 1
+    pitch: 0.7
+    source: {fileID: 0}
+    loop: 0
+  - name: Uh-huh
+    clip: {fileID: 8300000, guid: 7d435d9540bcb4936bc352908303aabf, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: Uh-uh
+    clip: {fileID: 8300000, guid: b3be24b46255e4dc694aaa2da0045c95, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
 --- !u!1 &499720609
 GameObject:
   m_ObjectHideFlags: 0

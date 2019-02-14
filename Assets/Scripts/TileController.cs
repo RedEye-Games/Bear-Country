@@ -109,7 +109,7 @@ public class TileController : MonoBehaviour
             // Highlight Compatible Board Spaces
             checkingPotential = true;
             StartCoroutine(CheckPotential(frame));
-
+            AudioManager.instance.Play("Squip");
             // Clear Legality
             ClearLegality();
         }
@@ -138,6 +138,7 @@ public class TileController : MonoBehaviour
     {
         // Sends tiles back to spawn point
         checkingPotential = false;
+
         if (isConfirmed == false)
         {
             if (isArmed && !isPlaced)
@@ -157,6 +158,8 @@ public class TileController : MonoBehaviour
                             tilePosition.y = 0;
                             transform.position = tilePosition;
                             boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
+                            AudioManager.instance.Play("Uh-huh");
+
                             if (isSpecial)
                             {
                                 gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
@@ -172,16 +175,19 @@ public class TileController : MonoBehaviour
                         }
                         else 
                         {
+                            AudioManager.instance.Play("Click1Low");
                             ResetToSpawn();
                         }
                     }
                     else
                     {
+                        AudioManager.instance.Play("Click1Low");
                         ResetToSpawn();
                     }
                 }
                 else
                 {
+                    AudioManager.instance.Play("Click1Low");
                     ResetToSpawn();
                 }
             }

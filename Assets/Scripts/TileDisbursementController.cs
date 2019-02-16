@@ -9,6 +9,9 @@ public class TileDisbursementController : MonoBehaviour
     // GameController
     private GameController gameController;
 
+    // ScoreBoard
+    private ScoreBoard scoreBoard;
+
     public GameObject Tile;
     public Button disburseTilesButton;
     public Transform[] tileSpawnPoints;
@@ -41,6 +44,18 @@ public class TileDisbursementController : MonoBehaviour
             Debug.Log("Cannot find 'GameController' script");
         }
 
+        // Locate ScoreBoard Script
+        // ToDo: Trigger to EventManager
+        GameObject scoreBoardObject = GameObject.FindWithTag("ScoreBoard");
+        if (scoreBoardObject != null)
+        {
+            scoreBoard = scoreBoardObject.GetComponent<ScoreBoard>();
+        }
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'ScoreBoard' script");
+        }
+
         PopulateTileOptions();
         DisburseTiles();
         DisburseSpecialTiles();
@@ -69,6 +84,7 @@ public class TileDisbursementController : MonoBehaviour
             tile.GetComponent<TileController>().ConfirmTile();
         }
         gameController.GetComponent<GameController>().tilesPlacedThisRound.Clear();
+        scoreBoard.GetComponent<ScoreBoard>().ScoreTiles();
 
         //foreach (var tile in tiles)
         //{

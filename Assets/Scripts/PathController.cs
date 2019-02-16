@@ -61,7 +61,7 @@ public class PathController : MonoBehaviour
                     isDeadEnd = false;
                     scoreToAdd = 1;
                 }
-                // To Do: Check to see if path is alive. Check to see if it's a riverhead.
+                // ToDo: Check to see if path is alive. Check to see if it's a riverhead.
                 // Then create and store unique river/trail identifier.
             }
         }

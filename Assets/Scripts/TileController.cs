@@ -2,9 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public class TileController : MonoBehaviour
+public enum TileEventName
 {
+    PickedUp,
+    SuccessfullyPlaced,
+    UnsuccessfullyPlaced,
+    Rotated,
+    Flipped
+}
+
+public class TileController : MonoBehaviour 
+{ 
+
+    public static event Action<TileEventName, GameObject> TileEvent;
 
     // GameController
     private GameController gameController;
@@ -110,6 +122,8 @@ public class TileController : MonoBehaviour
             checkingPotential = true;
             StartCoroutine(CheckPotential(frame));
 
+            TileEvent(TileEventName.PickedUp, gameObject);
+
             // Clear Legality
             ClearLegality();
         }
@@ -138,6 +152,7 @@ public class TileController : MonoBehaviour
     {
         // Sends tiles back to spawn point
         checkingPotential = false;
+
         if (isConfirmed == false)
         {
             if (isArmed && !isPlaced)
@@ -157,6 +172,7 @@ public class TileController : MonoBehaviour
                             tilePosition.y = 0;
                             transform.position = tilePosition;
                             boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
+
                             if (isSpecial)
                             {
                                 gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
@@ -169,19 +185,23 @@ public class TileController : MonoBehaviour
                             // Rotate Tile if Illegal
                             checkingLegality = true;
                             StartCoroutine(TileLegality(frame));
+                            TileEvent(TileEventName.SuccessfullyPlaced, gameObject);
                         }
                         else 
                         {
+                            TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                             ResetToSpawn();
                         }
                     }
                     else
                     {
+                        TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                         ResetToSpawn();
                     }
                 }
                 else
                 {
+                    TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                     ResetToSpawn();
                 }
             }

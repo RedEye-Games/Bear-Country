@@ -905,10 +905,10 @@ MonoBehaviour:
     pitch: 1
     source: {fileID: 0}
     loop: 0
-  - name: Squip
+  - name: pickup
     clip: {fileID: 8300000, guid: 5dd0c80263a304c979d67bad15d4ad1a, type: 3}
-    volume: 1
-    pitch: 0.9
+    volume: 0.1
+    pitch: 0.7
     source: {fileID: 0}
     loop: 0
   - name: SquipLow
@@ -936,15 +936,21 @@ MonoBehaviour:
     source: {fileID: 0}
     loop: 0
   - name: goodjob
-    clip: {fileID: 8300000, guid: dee42a6aa4e924bcba57b24b4df28581, type: 3}
+    clip: {fileID: 8300000, guid: 36b824c48a34946c9a613d811190cb99, type: 3}
     volume: 0.75
     pitch: 0.7
     source: {fileID: 0}
     loop: 0
+  - name: slide
+    clip: {fileID: 8300000, guid: 6588e00ad641d4b9fa4a0236e0f768c6, type: 3}
+    volume: 0.7
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
   - name: clickPop
     clip: {fileID: 8300000, guid: 413541b88f8ce47758108b9f0049c010, type: 3}
-    volume: 0.75
-    pitch: 0.7
+    volume: 0.7
+    pitch: 0.5
     source: {fileID: 0}
     loop: 0
 --- !u!1 &499720609

@@ -126,6 +126,7 @@ public class TileDisbursementController : MonoBehaviour
                 newTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
                 newTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
                 newTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
+                gameController.AttachTileSystem(newTile);
             }
         }
         tiles = GameObject.FindGameObjectsWithTag("Tile");
@@ -156,6 +157,7 @@ public class TileDisbursementController : MonoBehaviour
             newSpecialTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
             newSpecialTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
             newSpecialTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
+            gameController.AttachTileSystem(newSpecialTile);
         }
         specialTiles = GameObject.FindGameObjectsWithTag("SpecialTile");
     }

@@ -274,6 +274,7 @@ public class TileController : MonoBehaviour
         isConfirmed = true;
         // Connect Systems for Scoring
         ScoreTile();
+        Debug.Log("Begin merging");
     }
 
     public void ScoreTile()

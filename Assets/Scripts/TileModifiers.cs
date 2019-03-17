@@ -1,12 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
 
 public class TileModifiers : MonoBehaviour
 {
     // GameController
     private GameController gameController;
     private GameObject selectedTile;
+
+    public static event Action<TileEventName, GameObject> TileEvent;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,7 @@ public class TileModifiers : MonoBehaviour
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
         selectedTile.transform.localScale = new Vector3(selectedTile.transform.localScale.x, selectedTile.transform.localScale.y, selectedTile.transform.localScale.z * -1);
         LegalityCheck("CW");
+        TileEvent(TileEventName.Flipped, gameObject);
     }
 
     public void RotateCW()
@@ -35,6 +37,7 @@ public class TileModifiers : MonoBehaviour
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
         selectedTile.transform.Rotate(0, 90, 0);
         LegalityCheck("CW");
+        TileEvent(TileEventName.Rotated, gameObject);
     }
 
     public void RotateCCW()
@@ -42,6 +45,7 @@ public class TileModifiers : MonoBehaviour
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
         selectedTile.transform.Rotate(0, -90, 0);
         LegalityCheck("CCW");
+        TileEvent(TileEventName.Rotated, gameObject);
     }
 
     public void LegalityCheck(string direction)

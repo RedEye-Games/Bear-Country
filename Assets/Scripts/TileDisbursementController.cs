@@ -255,7 +255,7 @@ public class TileDisbursementController : MonoBehaviour
         TileOptions.Add(new Tile("tCorner", 1, "Trail", "Path", "Path", "Trail"));
 
         // Rare Tiles
-        TileOptions.Add(new Tile("rStraight_tStraight", 2, "River", "Trail", "Path", "Path"));
+        TileOptions.Add(new Tile("rStraight_tStraight", 2, "Trail", "River", "Path", "Path"));
         TileOptions.Add(new Tile("rtCorner", 2, "Path", "River", "Path", "Trail"));
         TileOptions.Add(new Tile("tBridge_rStraight", 2, "River", "River", "Trail", "Trail"));
 
@@ -265,6 +265,6 @@ public class TileDisbursementController : MonoBehaviour
         TileOptions.Add(new Tile("rCross", 3, "River", "River", "River", "River"));
         TileOptions.Add(new Tile("tFork_rStraight", 3, "River", "Trail", "Trail", "Trail"));
         TileOptions.Add(new Tile("tCross", 3, "Trail", "Trail", "Trail", "Trail"));
-        TileOptions.Add(new Tile("tCorner_rCorner", 3, "Trail", "River", "Trail", "River"));
+        TileOptions.Add(new Tile("tCorner_rCorner", 3, "River", "Trail", "River", "Trail"));
     }
 }

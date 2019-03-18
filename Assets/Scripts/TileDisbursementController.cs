@@ -51,7 +51,7 @@ public class TileDisbursementController : MonoBehaviour
         {
             scoreBoard = scoreBoardObject.GetComponent<ScoreBoard>();
         }
-        if (gameController == null)
+        if (scoreBoardObject == null)
         {
             Debug.Log("Cannot find 'ScoreBoard' script");
         }

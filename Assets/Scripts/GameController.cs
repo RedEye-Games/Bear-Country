@@ -133,6 +133,7 @@ public class GameController : MonoBehaviour
         {
             SceneManager.LoadScene(1);
         }
+        RemoveMissingObjects();
     }
 
     public void AddScore(int newScoreValue)
@@ -198,10 +199,10 @@ public class GameController : MonoBehaviour
     public void EndRound() 
     {
         tilesPlacedThisRound.Clear();
-        //RemoveMissingObjects();
+        RemoveMissingObjects();
     }
 
-    private void RemoveMissingObjects()
+    public void RemoveMissingObjects()
     {
         GameObject[] allTiles = GameObject.FindGameObjectsWithTag("Tile");
         GameObject[] allBoardEdges = GameObject.FindGameObjectsWithTag("BoardEdge");

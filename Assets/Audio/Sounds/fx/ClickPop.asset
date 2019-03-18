@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1551c33c3b4404fefbcc4a1a4067b40b, type: 3}
+  m_Name: ClickPop
+  m_EditorClassIdentifier: 
+  soundName: ClickPop
+  clip: {fileID: 8300000, guid: 413541b88f8ce47758108b9f0049c010, type: 3}
+  volume: 0.122
+  pitch: 0.45
+  source: {fileID: 0}
+  loop: 0

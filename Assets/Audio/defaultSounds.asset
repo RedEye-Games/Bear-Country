@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d1058bbedf24419b9bbf115b7993b9, type: 3}
+  m_Name: defaultSounds
+  m_EditorClassIdentifier: 
+  tilePickedUpSound:
+  - {fileID: 11400000, guid: 5996e2fa3704b4e13a2c1873a555d95c, type: 2}
+  - {fileID: 11400000, guid: 15b5d7a25b20d46199b24aeaebdc12b8, type: 2}
+  specialTilePickedUpSound:
+  - {fileID: 11400000, guid: 614dab4d577c242a5896ebb659c1b6ad, type: 2}
+  - {fileID: 11400000, guid: 15b5d7a25b20d46199b24aeaebdc12b8, type: 2}
+  - {fileID: 11400000, guid: 5996e2fa3704b4e13a2c1873a555d95c, type: 2}
+  tileSuccessfullyPlacedSound:
+  - {fileID: 11400000, guid: 9c73814aaf98b413fa125a5b81509526, type: 2}
+  - {fileID: 11400000, guid: a4d58661d3db24c0f9b87d6cf156561f, type: 2}
+  tileUnsuccessfullyPlacedSound:
+  - {fileID: 11400000, guid: 25796377b627d4bf7a7d35b238560bd8, type: 2}
+  tileFlippedSound:
+  - {fileID: 11400000, guid: 15b5d7a25b20d46199b24aeaebdc12b8, type: 2}
+  tileRotatedSound:
+  - {fileID: 11400000, guid: 15b5d7a25b20d46199b24aeaebdc12b8, type: 2}

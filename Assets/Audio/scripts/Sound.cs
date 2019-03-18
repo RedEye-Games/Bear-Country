@@ -1,11 +1,11 @@
-﻿using UnityEngine;
-using UnityEngine.Audio;
-using System;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-[Serializable]
-public class Sound
+[CreateAssetMenu(menuName = "audio/sound")]
+public class Sound : ScriptableObject
 {
-    public string name;
+    public string soundName;
 
     public AudioClip clip;
 

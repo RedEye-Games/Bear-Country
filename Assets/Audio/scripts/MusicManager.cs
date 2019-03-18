@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class MusicManager : MonoBehaviour
 {
-    public Song[] songs;
+    public SongsCollection songsCollection;
 
     private Song currentlyPlayingSong;
 
     private void Awake()
     {
-        foreach (Song s in songs)
+        foreach (Song s in songsCollection.songs)
         {
             s.sources.Clear();
 
@@ -28,7 +28,7 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
-        PlayRandomSong();
+        //PlayRandomSong();
     }
 
     private void Update()
@@ -44,7 +44,7 @@ public class MusicManager : MonoBehaviour
 
     void PlayRandomSong()
     {
-        PlaySong(Random.Range(1, songs.Length+1));
+        PlaySong(Random.Range(1, songsCollection.songs.Length+1));
     }
 
     void StopSong(Song songToStop)
@@ -57,7 +57,7 @@ public class MusicManager : MonoBehaviour
 
     void PlaySong(int index)
     {
-        Song s = songs[index - 1];
+        Song s = songsCollection.songs[index - 1];
         if (s == null)
         {
             Debug.Log(index + " is an invalid song index");

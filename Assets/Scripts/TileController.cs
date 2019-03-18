@@ -35,7 +35,7 @@ public class TileController : MonoBehaviour
 
     // Scoring Variables
     private int scoreToAdd;
-    public GameObject tileSystem;
+    public List<GameObject> tileSystemList = new List<GameObject>();
     public bool isExit = false;
 
     // Tile Buttons
@@ -96,11 +96,7 @@ public class TileController : MonoBehaviour
         // Record spawn point
         spawnPoint = gameObject.transform.position;
 
-        // Populate Paths
-        pathList.Add(westPath);
-        pathList.Add(eastPath);
-        pathList.Add(southPath);
-        pathList.Add(northPath);
+
 
         // Set Placement
         isPlaced = false;
@@ -108,6 +104,14 @@ public class TileController : MonoBehaviour
         // Setting Legality
         checkingLegality = false;
         checkingLegalityDirection = "CW";
+    }
+
+    public void PopulatePaths()
+    { 
+        pathList.Add(westPath);
+        pathList.Add(eastPath);
+        pathList.Add(southPath);
+        pathList.Add(northPath);
     }
 
     void OnMouseDown()
@@ -274,27 +278,66 @@ public class TileController : MonoBehaviour
         isConfirmed = true;
         // Connect Systems for Scoring
         ScoreTile();
-        Debug.Log("Begin merging");
     }
 
     public void ScoreTile()
     {
+        List<GameObject> flaggedForDeletion = new List<GameObject>();
+        List<GameObject> flaggedForAddition = new List<GameObject>();
         foreach (var path in pathList)
         {
             if (!path.GetComponent<PathController>().isDeadEnd)
             {
-                GameObject adjacentTileSystem = path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>().tileSystem;
-                if (adjacentTileSystem)
+                List<GameObject> adjacentTileSystems = path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>().tileSystemList;
+                if (adjacentTileSystems != null)
                 {
-                    if (tileSystem == null)
+                    foreach (var system in adjacentTileSystems)
                     {
-                        tileSystem = adjacentTileSystem;
-                        adjacentTileSystem.GetComponent<TileSystem>().AddToSystem(gameObject);
+                        if (system != null)
+                        {
+                            if (path.tag == system.GetComponent<TileSystem>().systemType)
+                            {
+                                foreach (var internalSystem in tileSystemList)
+                                {
+                                    if (internalSystem.GetComponent<TileSystem>().systemType == path.tag)
+                                    {
+                                        internalSystem.GetComponent<TileSystem>().MergeSystem(system);
+                                        flaggedForDeletion.Add(system);
+                                    }
+                                }
+                            }
+                            else if (system.GetComponent<TileSystem>().systemType == null)
+                            {
+                                // ToDo: DRY this up.
+                                foreach (var internalSystem in tileSystemList)
+                                {
+                                    if (internalSystem.GetComponent<TileSystem>().systemType == null)
+                                    {
+                                        internalSystem.GetComponent<TileSystem>().MergeSystem(system);
+                                        flaggedForDeletion.Add(system);
+                                    }
+                                }
+                            }
+                        }
                     }
-                    else
-                    {
-                        adjacentTileSystem.GetComponent<TileSystem>().MergeSystem(tileSystem);
-                    }
+                }
+
+            }
+        }
+        foreach (var system in flaggedForDeletion)
+        {
+            if (!tileSystemList.Contains(system))
+            {
+                Destroy(system);
+            }
+        }
+        foreach (var system in tileSystemList)
+        {
+            foreach (var tile in system.GetComponent<TileSystem>().containedTiles)
+            {
+                if (!tile.GetComponent<TileController>().tileSystemList.Contains(system))
+                {
+                    tile.GetComponent<TileController>().tileSystemList.Add(system);
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +17,9 @@ public class GameController : MonoBehaviour
     public float boardScale = 10;
     public int boardSize = 9;
     public GameObject selectedTile;
+
+    // tileDisbursementController
+    private TileDisbursementController tileDisbursementController;
 
     private int score;
 
@@ -42,6 +46,9 @@ public class GameController : MonoBehaviour
             Debug.Log("Cannot find 'GameController' script");
             boardPosZ = 0;
         }
+
+        // Locate TileDisbursementController Script
+        tileDisbursementController = gameObject.GetComponent<TileDisbursementController>();
 
         Vector3 BoardCenter = new Vector3(boardScale / 2, 0, boardScale / 2 + boardPosZ);
         GenerateBoard(boardSize, boardSize, BoardCenter);
@@ -71,7 +78,8 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/tStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
-                        AttachTileSystem(newBoardEdge, true);
+                        PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
+                        
                     }
                     else if (x == 4)
                     {
@@ -79,7 +87,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/rStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "River";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "River";
-                        AttachTileSystem(newBoardEdge, true);
+                        PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                     }
                     else if (y == 2 || y == 6)
                     {
@@ -88,7 +96,7 @@ public class GameController : MonoBehaviour
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "River";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "River";
                         newBoardEdge.transform.Rotate(Vector3.up * 90);
-                        AttachTileSystem(newBoardEdge, true);
+                        PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                     }
                     else if (y == 4)
                     {
@@ -97,7 +105,7 @@ public class GameController : MonoBehaviour
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
                         newBoardEdge.transform.Rotate(Vector3.up * 90);
-                        AttachTileSystem(newBoardEdge, true);
+                        PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                     }
                     else
                     {
@@ -140,15 +148,76 @@ public class GameController : MonoBehaviour
         tileSystemList.Add(tileSystemToAdd);
     }
 
-    public void AttachTileSystem(GameObject tile, bool isEdge = false)
+    public void AttachTileSystem(GameObject tile, string systemType = "Tile", bool isEdge = false)
     {
-        tile.GetComponentInChildren<TileController>().isExit = isEdge;
+        tile.GetComponentInChildren<TileController>().isExit |= isEdge;
         GameObject newTileSystem = Instantiate(tileSystem);
-        char newTileSystemName = tileSystemNamingString[tileSystemNamingInt];
-        newTileSystem.name = "Tile System (" + newTileSystemName + ")";
+        string newTileSystemName = GenerateTileName();
+        newTileSystem.name = newTileSystemName;
+        newTileSystem.GetComponent<TileSystem>().systemType = systemType;
         newTileSystem.GetComponent<TileSystem>().tileSystemName = newTileSystemName;
         newTileSystem.GetComponent<TileSystem>().AddToSystem(tile.GetComponentInChildren<TileController>().gameObject);
-        tileSystemNamingInt = Random.Range(0, tileSystemNamingString.Length);
+        tile.GetComponent<TileController>().tileSystemList.Add(newTileSystem);
+    }
+
+    private string GenerateTileName()
+    {
+        string newTileName = "";
+        for (int i = 0; i < 5; i++)
+        {
+            char newChar = tileSystemNamingString[tileSystemNamingInt];
+            newTileName = newTileName + newChar;
+            tileSystemNamingInt = Random.Range(0, tileSystemNamingString.Length);
+        }
+        return "Tile System (" + newTileName + ")";
+    }
+
+    public void PopulateTileSystems(GameObject tile, bool isEdge = false)
+    {
+        // Populate Paths
+        tile.GetComponent<TileController>().PopulatePaths();
+
+        // Add a generic tile system
+        AttachTileSystem(tile, default, isEdge);
+
+        // Add a unique system for each path type contained in the tile
+        List<string> SystemList = new List<string>();
+        foreach (GameObject path in tile.GetComponent<TileController>().pathList)
+        {
+            if (path.tag != "Path")
+            {
+                if (!SystemList.Contains<string>(path.tag))
+                {
+                    SystemList.Add(path.tag);
+                    AttachTileSystem(tile, path.tag);
+                }
+            }
+        }
+    }
+
+    public void EndRound() 
+    {
+        tilesPlacedThisRound.Clear();
+        //RemoveMissingObjects();
+    }
+
+    private void RemoveMissingObjects()
+    {
+        GameObject[] allTiles = GameObject.FindGameObjectsWithTag("Tile");
+        GameObject[] allBoardEdges = GameObject.FindGameObjectsWithTag("BoardEdge");
+        allTiles = allTiles.Concat(allBoardEdges).ToArray();
+        foreach (var tile in allTiles)
+        {
+            List<GameObject> tileSystems = tile.GetComponent<TileController>().tileSystemList;
+            for (var i = tileSystems.Count() - 1; i > -1; i--)
+            {
+                if (tileSystems[i] == null)
+                {
+                    tileSystems.RemoveAt(i);
+                }
+            }
+        }
+
     }
 
 }

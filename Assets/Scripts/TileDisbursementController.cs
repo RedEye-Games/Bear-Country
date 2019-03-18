@@ -66,7 +66,7 @@ public class TileDisbursementController : MonoBehaviour
         // Check to see if all tiles are placed.
         // Check for tiles on board. Confirm them.
 
-        // CHeck to see if any special tiles remain
+        // Check to see if any special tiles remain
 
         if (remainingSpecialTiles != 1)
         {
@@ -83,8 +83,8 @@ public class TileDisbursementController : MonoBehaviour
         {
             tile.GetComponent<TileController>().ConfirmTile();
         }
-        gameController.GetComponent<GameController>().tilesPlacedThisRound.Clear();
         scoreBoard.GetComponent<ScoreBoard>().ScoreTiles();
+        gameController.EndRound();
 
         //foreach (var tile in tiles)
         //{
@@ -126,7 +126,7 @@ public class TileDisbursementController : MonoBehaviour
                 newTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
                 newTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
                 newTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
-                gameController.AttachTileSystem(newTile);
+                gameController.PopulateTileSystems(newTile);
             }
         }
         tiles = GameObject.FindGameObjectsWithTag("Tile");
@@ -157,7 +157,7 @@ public class TileDisbursementController : MonoBehaviour
             newSpecialTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
             newSpecialTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
             newSpecialTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
-            gameController.AttachTileSystem(newSpecialTile);
+            gameController.PopulateTileSystems(newSpecialTile);
         }
         specialTiles = GameObject.FindGameObjectsWithTag("SpecialTile");
     }
@@ -269,4 +269,5 @@ public class TileDisbursementController : MonoBehaviour
         TileOptions.Add(new Tile("tCross", 3, "Trail", "Trail", "Trail", "Trail"));
         TileOptions.Add(new Tile("tCorner_rCorner", 3, "River", "Trail", "River", "Trail"));
     }
+
 }

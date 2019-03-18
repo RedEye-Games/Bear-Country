@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class TileSystem : MonoBehaviour
 {
-    public char tileSystemName;
+    public string tileSystemName;
     public List<GameObject> containedTiles;
     public List<GameObject> connectedExits;
+    public string systemType;
 
     // Start is called before the first frame update
     void Start()
@@ -22,29 +23,21 @@ public class TileSystem : MonoBehaviour
 
     public void MergeSystem(GameObject mergingSystem)
     {
-
-        foreach (var tile in mergingSystem.GetComponent<TileSystem>().containedTiles)
+        if (mergingSystem.GetComponent<TileSystem>().systemType == systemType)
         {
-            if (!containedTiles.Contains(tile))
+            foreach (var tile in mergingSystem.GetComponent<TileSystem>().containedTiles)
             {
-                AddToSystem(tile);
+                if (!containedTiles.Contains(tile))
+                {
+                    AddToSystem(tile);
+                }
             }
-        }
-        if (gameObject != mergingSystem)
-        {
-            Destroy(mergingSystem);
-            Debug.Log("Destroying.");
-        }
-        else
-        {
-            Debug.Log("Did not destroy " + mergingSystem.name);
         }
     }
 
     public void AddToSystem(GameObject tileToAdd)
     {
         containedTiles.Add(tileToAdd);
-        tileToAdd.GetComponent<TileController>().tileSystem = gameObject;
         if (tileToAdd.GetComponent<TileController>().isExit)
         {
             connectedExits.Add(tileToAdd);

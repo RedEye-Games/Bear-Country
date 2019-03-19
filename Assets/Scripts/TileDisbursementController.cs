@@ -90,25 +90,13 @@ public class TileDisbursementController : MonoBehaviour
         {
             tile.GetComponent<TileController>().ConfirmTile();
         }
+
+        // Round Cleanup
+        // ToDo: Move to more appropriate class.
         scoreBoard.GetComponent<ScoreBoard>().ScoreTiles();
         gameController.EndRound();
 
-        //foreach (var tile in tiles)
-        //{
-        //    if (tile.GetComponent<TileController>().isPlaced)
-        //    {
-        //        tile.GetComponent<TileController>().ConfirmTile();
-        //    }
-        //}
-
-        //foreach (var specialTile in specialTiles)
-        //{
-        //    if (specialTile.GetComponent<TileController>().isPlaced)
-        //    {
-        //        specialTile.GetComponent<TileController>().ConfirmTile();
-        //    }
-        //}
-
+        // Begin Dispersal
         for (int i = 0; i < tileSpawnPoints.Length; i++)
         {
             if (remainingTiles > 0)
@@ -175,35 +163,6 @@ public class TileDisbursementController : MonoBehaviour
 
     }
 
-    public void UpdatePlaceCount(int count, bool isSpecial = false)
-    {
-        //if (isSpecial == true) 
-        //{
-        //    if (count == -1)
-        //    {
-        //        specialTilePlacedThisRound = true;
-        //        DisableSpecialTileTray();
-        //    }
-        //    else
-        //    {
-        //        specialTilePlacedThisRound = false;
-        //        EnableSpecialTileTray();
-        //    }
-        //}
-        //else
-        //{
-        //    unplacedTiles = unplacedTiles + count;
-        //    if (unplacedTiles == 0)
-        //    {
-        //        EnableButton();
-        //    }
-        //    else
-        //    {
-        //        DisableButton();
-        //    }
-        //}
-        //        Debug.Log(unplacedTiles);
-    }
 
     public void ToggleButtons()
     {
@@ -239,7 +198,6 @@ public class TileDisbursementController : MonoBehaviour
             if (specialTiles[i].GetComponentInChildren<TileController>().isPlaced == false)
             {
                 specialTiles[i].SetActive(false);
-                //Debug.Log("Inactive.");
             }
         }
     }
@@ -249,7 +207,6 @@ public class TileDisbursementController : MonoBehaviour
         if (!disburseTilesButton.interactable)
         {
             disburseTilesButton.GetComponentInChildren<Text>().text = "Confirm Placement";
-            //isEnabled = true;
             disburseTilesButton.interactable = true;
             disburseTilesButton.onClick.AddListener(DisburseTiles);
         }
@@ -257,21 +214,18 @@ public class TileDisbursementController : MonoBehaviour
 
     void DisableButton()
     {
-        //isEnabled = false;
         disburseTilesButton.interactable = false;
         disburseTilesButton.onClick.RemoveListener(DisburseTiles);
     }
 
     void DisableSpecialTileTray()
     {
-        //isEnabled = false;
         specialTileTray.SetActive(false);
         DisableSpecialTiles();
     }
 
     void EnableSpecialTileTray()
     {
-        //isEnabled = false;
         specialTileTray.SetActive(true);
         EnableSpecialTiles();
     }

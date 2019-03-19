@@ -28,7 +28,7 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
-        //PlayRandomSong();
+        PlayRandomSong();
     }
 
     private void Update()

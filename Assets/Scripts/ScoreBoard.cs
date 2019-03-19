@@ -5,11 +5,14 @@ using UnityEngine;
 
 public class ScoreBoard : MonoBehaviour
 {
-    public int systems = 0;
+    private int systems = 0;
+    public int exitPoints = 0;
     public int longestTrail = 0;
     public int longestRiver = 0;
-    public int bonusSpaces = 0;
-    public int deadEnds = 0;
+    private int bonusSpaces = 0;
+    private int deadEnds = 0;
+    readonly int[] exitScoreTable = new int[] {0, 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 45};
+    public int totalScore = 0;
 
     // GameController
     private GameController gameController;
@@ -36,6 +39,7 @@ public class ScoreBoard : MonoBehaviour
         GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
         // ToDo: Remove from Update
         CountSystems(tileSystems);
+        CountTotalScore();
     }
 
     public void ScoreTiles()
@@ -43,17 +47,19 @@ public class ScoreBoard : MonoBehaviour
         GameObject[] tileSystems = GameObject.FindGameObjectsWithTag("TileSystem");
         GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
         CountSystems(tileSystems);
-        CalculateDeadEnds(tiles);
+        CountDeadEnds(tiles);
     }
 
     private void CountSystems(GameObject[] tileSystems)
     {
         systems = 0;
+        exitPoints = 0;
         foreach (var tileSystem in tileSystems)
         {
             TileSystem tileSystemComponent = tileSystem.GetComponent<TileSystem>();
             if (tileSystemComponent.systemType == null && tileSystemComponent.containedTiles.Count() > 1)
             {
+                exitPoints = exitPoints + exitScoreTable[tileSystemComponent.connectedExits.Count()];
                 systems++;
             }
             else
@@ -81,7 +87,7 @@ public class ScoreBoard : MonoBehaviour
         }
     }
 
-    private void CalculateDeadEnds(GameObject[] tiles)
+    private void CountDeadEnds(GameObject[] tiles)
     {
         deadEnds = 0;
         int deadEndDoubles = 0;
@@ -104,7 +110,11 @@ public class ScoreBoard : MonoBehaviour
             }
         }
         deadEnds = deadEnds - (deadEndDoubles / 2);
+    }
 
+    private void CountTotalScore()
+    {
+        totalScore = exitPoints + longestRiver + longestTrail - deadEnds;
     }
 
 }

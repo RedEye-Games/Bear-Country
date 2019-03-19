@@ -256,7 +256,7 @@ public class TileController : MonoBehaviour
         bool hasLineage = false;
         foreach (var path in pathList)
         {
-            if (path.GetComponent<PathController>().adjacentTile)
+            if (path.GetComponent<PathController>().adjacentTile && !path.GetComponent<PathController>().isDeadEnd)
             {
                 TileController adjacentTileController = path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>();
                 if (adjacentTileController.isConfirmed)
@@ -413,7 +413,7 @@ public class TileController : MonoBehaviour
 
     IEnumerator CheckPotential(int startFrame)
     {
-        yield return new WaitUntil(() => frame >= startFrame + 10);
+        yield return new WaitUntil(() => frame >= startFrame + 5);
         foreach (var boardSpace in gameController.boardSpaceList)
         {
             BoardSpace boardSpaceToBeChecked = boardSpace.GetComponent<BoardSpace>();

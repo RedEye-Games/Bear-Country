@@ -46,16 +46,18 @@ public class TileController : MonoBehaviour
 
     // Placement Variables
     bool isArmed = false;
-    bool isConfirmed = false;
+    public bool isConfirmed = false;
     int legalCheck = 0;
     public bool isPlaced = false;
     Vector3 spawnPoint;
     bool checkingPotential = false;
+    public GameObject anchorTile;
 
     // Legality
     bool isLegal = false;
     public bool checkingLegality;
     public string checkingLegalityDirection;
+    public bool isBeingHandled = false;
 
     // Special Tile Variables
     public bool isSpecial = false;
@@ -104,6 +106,7 @@ public class TileController : MonoBehaviour
         // Setting Legality
         checkingLegality = false;
         checkingLegalityDirection = "CW";
+
     }
 
     public void PopulatePaths()
@@ -116,17 +119,23 @@ public class TileController : MonoBehaviour
 
     void OnMouseDown()
     {
-        // Check to make sure it's not attached to only a tile placed this round
-        // ... to do
-
+        UpdateAllAnchors();
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
         if (isPlaced && !isConfirmed && !isSpecial) 
         {
-            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
+            //gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
         }
         if (!isConfirmed)
         {
+            if (isSpecial)
+            {
+                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
+            }
+            else
+            {
+                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+            }
             // Highlight Compatible Board Spaces
             checkingPotential = true;
             StartCoroutine(CheckPotential(frame));
@@ -147,6 +156,7 @@ public class TileController : MonoBehaviour
                 gameController.AddScore(4);
                 isPlaced = false;
                 gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
+                HandleDependents();
             }
             isArmed = true;
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
@@ -185,15 +195,6 @@ public class TileController : MonoBehaviour
                             transform.position = tilePosition;
                             boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
 
-                            if (isSpecial)
-                            {
-                                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
-                            }
-                            else
-                            {
-                                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
-                            }
-
                             // Rotate Tile if Illegal
                             checkingLegality = true;
                             StartCoroutine(TileLegality(frame));
@@ -218,7 +219,6 @@ public class TileController : MonoBehaviour
                 }
             }
         }
-
         ClearPotential();
     }
 
@@ -271,6 +271,61 @@ public class TileController : MonoBehaviour
             isLegal = false;
         }
         legalCheck = 0;
+    }
+
+    // Check to make sure it's not attached to only a tile placed this round
+    public void HandleDependents()
+    {
+        foreach (var tile in gameController.tilesPlacedThisRound)
+        {
+            Debug.Log("Checking a tile.");
+            tile.GetComponent<TileController>().CheckAnchors(gameObject);
+        }
+    }
+
+    public void UpdateAllAnchors()
+    {
+        foreach (var tile in gameController.tilesPlacedThisRound)
+        {
+            tile.GetComponent<TileController>().UpdateAnchors();
+        }
+    }
+
+    public void UpdateAnchors()
+    {
+        // An anchor is an unconfirmed tile
+        bool noAnchor = false;
+        int numberOfAnchors = 0;
+        foreach (var path in pathList)
+        {
+            if (path.GetComponent<PathController>().adjacentTile != null)
+            {
+                if (path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>().isConfirmed)
+                {
+                    // This tile is self sufficient
+                    Debug.Log("Touching a confirmed tile.");
+                    noAnchor = true;
+                }
+                else if (path.GetComponent<PathController>().adjacentTile && path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>().isConfirmed == false)
+                {
+                    Debug.Log("Touching a tile placed this round.");
+                    anchorTile = path.GetComponent<PathController>().adjacentTile;
+                    numberOfAnchors++;
+                }
+            }
+        }
+        if (noAnchor || numberOfAnchors > 1)
+        {
+            anchorTile = null;
+        }
+    }
+
+    public void CheckAnchors(GameObject adjacentTile)
+    {
+        if (anchorTile == adjacentTile)
+        {
+            ResetToSpawn();
+        }
     }
 
     public void ConfirmTile()
@@ -349,7 +404,8 @@ public class TileController : MonoBehaviour
         {
             gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
         }
-
+        gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
+        isPlaced = false;
         transform.position = spawnPoint;
     }
 

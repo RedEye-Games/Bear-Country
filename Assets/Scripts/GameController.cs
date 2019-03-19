@@ -78,6 +78,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/tStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
+                        newBoardEdge.GetComponentInChildren<TileController>().isConfirmed = true;
                         PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                         
                     }
@@ -87,6 +88,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/rStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "River";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "River";
+                        newBoardEdge.GetComponentInChildren<TileController>().isConfirmed = true;
                         PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                     }
                     else if (y == 2 || y == 6)
@@ -95,6 +97,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/rStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "River";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "River";
+                        newBoardEdge.GetComponentInChildren<TileController>().isConfirmed = true;
                         newBoardEdge.transform.Rotate(Vector3.up * 90);
                         PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                     }
@@ -104,6 +107,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/tStraight"); 
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
+                        newBoardEdge.GetComponentInChildren<TileController>().isConfirmed = true;
                         newBoardEdge.transform.Rotate(Vector3.up * 90);
                         PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                     }

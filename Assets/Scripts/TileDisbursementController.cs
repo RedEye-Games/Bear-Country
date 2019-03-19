@@ -30,6 +30,8 @@ public class TileDisbursementController : MonoBehaviour
     List<Tile> TileOptions = new List<Tile>();
     private List<Tile> tileChoices;
 
+    private bool disbursingTiles = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -63,6 +65,8 @@ public class TileDisbursementController : MonoBehaviour
 
     void DisburseTiles()
     {
+        DisableButton();
+        disbursingTiles = true;
         // Check to see if all tiles are placed.
         // Check for tiles on board. Confirm them.
 
@@ -70,16 +74,19 @@ public class TileDisbursementController : MonoBehaviour
 
         if (remainingSpecialTiles != 1)
         {
-            if (specialTilePlacedThisRound == true)
+            if (gameController.specialTilesPlacedThisRound.Any())
             {
                 remainingSpecialTiles--;
             }
             // Reset Special Tile
-            specialTilePlacedThisRound = false;
             EnableSpecialTileTray();
         }
 
         foreach (var tile in gameController.GetComponent<GameController>().tilesPlacedThisRound)
+        {
+            tile.GetComponent<TileController>().ConfirmTile();
+        }
+        foreach (var tile in gameController.GetComponent<GameController>().specialTilesPlacedThisRound)
         {
             tile.GetComponent<TileController>().ConfirmTile();
         }
@@ -138,7 +145,7 @@ public class TileDisbursementController : MonoBehaviour
         {
             disburseTilesButton.GetComponentInChildren<Text>().text = "Place last tiles!";
         }
-        DisableButton();
+        disbursingTiles = false;
     }
 
     void DisburseSpecialTiles()
@@ -165,36 +172,56 @@ public class TileDisbursementController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
     }
 
     public void UpdatePlaceCount(int count, bool isSpecial = false)
     {
-        if (isSpecial == true) 
-        {
-            if (count == -1)
-            {
-                specialTilePlacedThisRound = true;
-                DisableSpecialTileTray();
-            }
-            else
-            {
-                specialTilePlacedThisRound = false;
-                EnableSpecialTileTray();
-            }
-        }
-        else
-        {
-            unplacedTiles = unplacedTiles + count;
-            if (unplacedTiles == 0)
-            {
-                EnableButton();
-            }
-            else
-            {
-                DisableButton();
-            }
-        }
+        //if (isSpecial == true) 
+        //{
+        //    if (count == -1)
+        //    {
+        //        specialTilePlacedThisRound = true;
+        //        DisableSpecialTileTray();
+        //    }
+        //    else
+        //    {
+        //        specialTilePlacedThisRound = false;
+        //        EnableSpecialTileTray();
+        //    }
+        //}
+        //else
+        //{
+        //    unplacedTiles = unplacedTiles + count;
+        //    if (unplacedTiles == 0)
+        //    {
+        //        EnableButton();
+        //    }
+        //    else
+        //    {
+        //        DisableButton();
+        //    }
+        //}
         //        Debug.Log(unplacedTiles);
+    }
+
+    public void ToggleButtons()
+    {
+        if (gameController.specialTilesPlacedThisRound.Count == 1)
+        {
+            DisableSpecialTileTray();
+        } else
+        {
+            EnableSpecialTileTray();
+        }
+
+        if (gameController.tilesPlacedThisRound.Count == 4 && !disbursingTiles)
+        {
+            EnableButton();
+        } else
+        {
+            DisableButton();
+        }
     }
 
     void EnableSpecialTiles()
@@ -212,17 +239,20 @@ public class TileDisbursementController : MonoBehaviour
             if (specialTiles[i].GetComponentInChildren<TileController>().isPlaced == false)
             {
                 specialTiles[i].SetActive(false);
-                Debug.Log("Inactive.");
+                //Debug.Log("Inactive.");
             }
         }
     }
 
     void EnableButton() 
     {
-        disburseTilesButton.GetComponentInChildren<Text>().text = "Confirm Placement";
-        //isEnabled = true;
-        disburseTilesButton.interactable = true;
-        disburseTilesButton.onClick.AddListener(DisburseTiles);
+        if (!disburseTilesButton.interactable)
+        {
+            disburseTilesButton.GetComponentInChildren<Text>().text = "Confirm Placement";
+            //isEnabled = true;
+            disburseTilesButton.interactable = true;
+            disburseTilesButton.onClick.AddListener(DisburseTiles);
+        }
     }
 
     void DisableButton()

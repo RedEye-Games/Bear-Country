@@ -31,6 +31,7 @@ public class GameController : MonoBehaviour
 
     // Placement Helpers
     public List<GameObject> tilesPlacedThisRound;
+    public List<GameObject> specialTilesPlacedThisRound;
 
     // Start is called before the first frame update
     void Start()
@@ -138,6 +139,7 @@ public class GameController : MonoBehaviour
             SceneManager.LoadScene(1);
         }
         RemoveMissingObjects();
+
     }
 
     public void AddScore(int newScoreValue)
@@ -203,6 +205,7 @@ public class GameController : MonoBehaviour
     public void EndRound() 
     {
         tilesPlacedThisRound.Clear();
+        specialTilesPlacedThisRound.Clear();
         RemoveMissingObjects();
     }
 

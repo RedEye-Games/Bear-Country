@@ -74,9 +74,15 @@ public class PathController : MonoBehaviour
 
 private void OnTriggerExit(Collider other)
     {
+        adjacentPath = null;
+        adjacentTile = null;
         isDeadEnd = true;
         isDoubledDeadEnd = false;
         scoreToAdd = -1;
+        if (parentTile.isLegal && parentTile.isPlaced)
+        {
+            parentTile.CheckLineage();
+        }
     }
 
 }

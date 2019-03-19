@@ -20,7 +20,7 @@ public class TileController : MonoBehaviour
 
     // GameController
     private GameController gameController;
-
+    private TileDisbursementController tileDisbursementController;
     // TileModifiers
     private TileModifiers tileModifiers;
 
@@ -51,13 +51,20 @@ public class TileController : MonoBehaviour
     public bool isPlaced = false;
     Vector3 spawnPoint;
     bool checkingPotential = false;
-    public GameObject anchorTile;
+
+    // Tile Removal
+    // If Tile is touching a confirmed or anchored tile
+    public bool isAnchored = false;
+    public bool isBeingHandled = false;
+    // List of anchored tiles in contact
+    public List<GameObject> anchorTiles = new List<GameObject>();
+
+    public List<GameObject> linkedAnchorTiles = new List<GameObject>();
 
     // Legality
-    bool isLegal = false;
+    public bool isLegal = false;
     public bool checkingLegality;
     public string checkingLegalityDirection;
-    public bool isBeingHandled = false;
 
     // Special Tile Variables
     public bool isSpecial = false;
@@ -83,6 +90,9 @@ public class TileController : MonoBehaviour
         {
             Debug.Log("Cannot find 'GameController' script");
         }
+
+        // Locate TileDisbursementController Script
+        tileDisbursementController = gameControllerObject.GetComponent<TileDisbursementController>();
 
         // Locate TileModifiers Script
         GameObject TileModifiersObject = GameObject.FindWithTag("TileModifiers");
@@ -119,7 +129,6 @@ public class TileController : MonoBehaviour
 
     void OnMouseDown()
     {
-        UpdateAllAnchors();
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
         if (isPlaced && !isConfirmed && !isSpecial) 
@@ -130,11 +139,11 @@ public class TileController : MonoBehaviour
         {
             if (isSpecial)
             {
-                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
+                //gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
             }
             else
             {
-                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+                //gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
             }
             // Highlight Compatible Board Spaces
             checkingPotential = true;
@@ -155,8 +164,17 @@ public class TileController : MonoBehaviour
             {
                 gameController.AddScore(4);
                 isPlaced = false;
-                gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
-                HandleDependents();
+                if (isSpecial)
+                {
+                    gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Remove(gameObject);
+                }
+                else
+                {
+                    gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
+                }
+
+                //CheckLineage();
+                //RemoveDependents();
             }
             isArmed = true;
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
@@ -188,7 +206,14 @@ public class TileController : MonoBehaviour
                         {
                             // All Checks Passed. Place the Tile
                             isPlaced = true;
-                            gameController.GetComponent<GameController>().tilesPlacedThisRound.Add(gameObject);
+                            if (isSpecial)
+                            {
+                                gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Add(gameObject);
+                            }
+                            else
+                            {
+                                gameController.GetComponent<GameController>().tilesPlacedThisRound.Add(gameObject);
+                            }
                             gameController.GetComponent<GameController>().selectedTile = gameObject;
                             Vector3 tilePosition = boardCheck.collider.transform.position;
                             tilePosition.y = 0;
@@ -220,6 +245,92 @@ public class TileController : MonoBehaviour
             }
         }
         ClearPotential();
+
+        tileDisbursementController.ToggleButtons();
+        //UpdateAllAnchors();
+        //UpdateLinkedAnchors();
+    }
+
+    public void UpdateAllLinkedAnchors()
+    {
+        foreach (var tile in gameController.tilesPlacedThisRound)
+        {
+            tile.GetComponent<TileController>().UpdateLinkedAnchors();
+        }
+    }
+
+    public void UpdateLinkedAnchors()
+    {
+        foreach (var path in pathList)
+        {
+            // If touching a confirmed tile, add it as a linked anchor
+            if (path.GetComponentInParent<TileController>().isConfirmed)
+            {
+                linkedAnchorTiles.Add(path.transform.parent.gameObject);
+            }
+            else
+            {
+                linkedAnchorTiles.Add(path.transform.parent.gameObject);
+            }
+            // If not touching a confirmed tile, see if it has a linked anchor.
+            // If it does, add it as a linked anchor
+        }
+    }
+
+    public void CheckAllLinkedAnchors()
+    {
+        foreach (var tile in gameController.tilesPlacedThisRound)
+        {
+            tile.GetComponent<TileController>().CheckLinkedAnchors();
+        }
+    }
+
+    public void CheckLinkedAnchors()
+    {
+        // If list of linked anchors is empty, reset to spawn.
+        if (linkedAnchorTiles.Count == 0)
+        {
+            ResetToSpawn();
+        }
+    }
+
+    public void CheckLineage()
+    {
+        Debug.Log("Checking " + gameObject.GetComponentInChildren<SpriteRenderer>().sprite + "'s lineage");
+        if (!gameObject.GetComponent<TileController>().HasLineage())
+        {
+            gameObject.GetComponent<TileController>().ResetToSpawn();
+        }
+    }
+
+    // Bool to make sure there is no recursion
+    public bool lineageBeingChecked = false;
+
+    // Check to make sure tile connects to confirmed tile
+    public bool HasLineage()
+    {
+        lineageBeingChecked = true;
+        bool hasLineage = false;
+        foreach (var path in pathList)
+        {
+            if (path.GetComponent<PathController>().adjacentTile)
+            {
+                TileController adjacentTileController = path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>();
+                if (adjacentTileController.isConfirmed)
+                {
+                    lineageBeingChecked = false;
+                    return true;
+                }
+                else
+                {
+                    if (!adjacentTileController.lineageBeingChecked)
+                    {
+                        hasLineage = adjacentTileController.HasLineage();
+                    }
+                }
+            }
+        }
+        return hasLineage;
     }
 
     public IEnumerator TileLegality(int startFrame)
@@ -274,17 +385,19 @@ public class TileController : MonoBehaviour
     }
 
     // Check to make sure it's not attached to only a tile placed this round
-    public void HandleDependents()
+    public void RemoveDependents()
     {
         foreach (var tile in gameController.tilesPlacedThisRound)
         {
             Debug.Log("Checking a tile.");
-            tile.GetComponent<TileController>().CheckAnchors(gameObject);
+            //tile.GetComponent<TileController>().CheckAnchors(gameObject);
         }
     }
 
     public void UpdateAllAnchors()
     {
+        // Iterate through all tiles placed this round and update anchors
+        Debug.Log("Updating " + gameController.tilesPlacedThisRound + " anchors.");
         foreach (var tile in gameController.tilesPlacedThisRound)
         {
             tile.GetComponent<TileController>().UpdateAnchors();
@@ -293,7 +406,11 @@ public class TileController : MonoBehaviour
 
     public void UpdateAnchors()
     {
-        // An anchor is an unconfirmed tile
+        // Looks to see if tile is in contact with a confirmed tile, or an anchored tile
+        // If in contact with a confirmed tile, this tile becomes an anchor
+        // if in contact with only an anchor, this tile becomes dependent on that anchor
+        // Track multiple anchors
+        // An anchor is an unconfirmed tile that has adjacency to this tile
         bool noAnchor = false;
         int numberOfAnchors = 0;
         foreach (var path in pathList)
@@ -309,22 +426,28 @@ public class TileController : MonoBehaviour
                 else if (path.GetComponent<PathController>().adjacentTile && path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>().isConfirmed == false)
                 {
                     Debug.Log("Touching a tile placed this round.");
-                    anchorTile = path.GetComponent<PathController>().adjacentTile;
+                    anchorTiles.Add(path.GetComponent<PathController>().adjacentTile);
                     numberOfAnchors++;
                 }
             }
         }
         if (noAnchor || numberOfAnchors > 1)
         {
-            anchorTile = null;
+            //anchorTiles. = null;
         }
     }
 
-    public void CheckAnchors(GameObject adjacentTile)
+    public void CheckAnchors()
     {
-        if (anchorTile == adjacentTile)
+        if (anchorTiles.Count == 0)
         {
             ResetToSpawn();
+        } else if (anchorTiles.Count == 1)
+        {
+            if (anchorTiles[0].GetComponent<TileController>().anchorTiles.Count == 1)
+            {
+                ResetToSpawn();
+            }
         }
     }
 
@@ -402,9 +525,12 @@ public class TileController : MonoBehaviour
     {
         if (isSpecial)
         {
-            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
+            gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Remove(gameObject);
         }
-        gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
+        else
+        {
+            gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
+        }
         isPlaced = false;
         transform.position = spawnPoint;
     }
@@ -418,11 +544,12 @@ public class TileController : MonoBehaviour
             checkingLegality = false;
             StartCoroutine(TileLegality(frame));
         }
+
     }
 
     IEnumerator CheckPotential(int startFrame)
     {
-        yield return new WaitUntil(() => frame >= startFrame + 5);
+        yield return new WaitUntil(() => frame >= startFrame + 10);
         foreach (var boardSpace in gameController.boardSpaceList)
         {
             BoardSpace boardSpaceToBeChecked = boardSpace.GetComponent<BoardSpace>();

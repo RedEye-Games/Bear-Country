@@ -49,7 +49,7 @@ public class PathController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (string.IsNullOrEmpty(other.gameObject.tag) == false && other.gameObject.tag != "Untagged")
+        if (string.IsNullOrEmpty(other.gameObject.tag) == false && other.gameObject.tag != "Untagged" && other.gameObject.tag != "Path")
         {
             string tilePathTag = other.gameObject.tag;
             if (validPathTags.Contains(tilePathTag) == true)
@@ -66,17 +66,21 @@ public class PathController : MonoBehaviour
                 {
                     isDoubledDeadEnd = true;
                 }
-                // ToDo: Check to see if path is alive. Check to see if it's a riverhead.
-                // Then create and store unique river/trail identifier.
             }
         }
     }
 
 private void OnTriggerExit(Collider other)
     {
+        adjacentPath = null;
+        adjacentTile = null;
         isDeadEnd = true;
         isDoubledDeadEnd = false;
         scoreToAdd = -1;
+        if (parentTile.isLegal && parentTile.isPlaced && !parentTile.checkingLegality)
+        {
+            parentTile.CheckLineage();
+        }
     }
 
 }

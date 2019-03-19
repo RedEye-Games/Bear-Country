@@ -31,6 +31,7 @@ public class GameController : MonoBehaviour
 
     // Placement Helpers
     public List<GameObject> tilesPlacedThisRound;
+    public List<GameObject> specialTilesPlacedThisRound;
 
     // Start is called before the first frame update
     void Start()
@@ -78,6 +79,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/tStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
+                        newBoardEdge.GetComponentInChildren<TileController>().isConfirmed = true;
                         PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                         
                     }
@@ -87,6 +89,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/rStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "River";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "River";
+                        newBoardEdge.GetComponentInChildren<TileController>().isConfirmed = true;
                         PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                     }
                     else if (y == 2 || y == 6)
@@ -95,6 +98,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/rStraight");
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "River";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "River";
+                        newBoardEdge.GetComponentInChildren<TileController>().isConfirmed = true;
                         newBoardEdge.transform.Rotate(Vector3.up * 90);
                         PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                     }
@@ -104,6 +108,7 @@ public class GameController : MonoBehaviour
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/tStraight"); 
                         newBoardEdge.GetComponentInChildren<TileController>().northPath.gameObject.tag = "Trail";
                         newBoardEdge.GetComponentInChildren<TileController>().southPath.gameObject.tag = "Trail";
+                        newBoardEdge.GetComponentInChildren<TileController>().isConfirmed = true;
                         newBoardEdge.transform.Rotate(Vector3.up * 90);
                         PopulateTileSystems(newBoardEdge.transform.GetChild(0).gameObject, true);
                     }
@@ -134,6 +139,7 @@ public class GameController : MonoBehaviour
             SceneManager.LoadScene(1);
         }
         RemoveMissingObjects();
+
     }
 
     public void AddScore(int newScoreValue)
@@ -199,6 +205,7 @@ public class GameController : MonoBehaviour
     public void EndRound() 
     {
         tilesPlacedThisRound.Clear();
+        specialTilesPlacedThisRound.Clear();
         RemoveMissingObjects();
     }
 

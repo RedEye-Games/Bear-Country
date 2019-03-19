@@ -30,6 +30,9 @@ public class TileController : MonoBehaviour
     public GameObject northPath;
     public GameObject southPath;
 
+    // Select Indicator
+   // Transform selectIndicator;
+
     // Path Components
     public List<GameObject> pathList = new List<GameObject>();
 
@@ -79,6 +82,9 @@ public class TileController : MonoBehaviour
         {
             Debug.Log("Cannot find 'GameController' script");
         }
+
+        // Identify selectIndicator
+        //selectIndicator = transform.Find("SelectIndicator");
 
         // Locate TileModifiers Script
         GameObject TileModifiersObject = GameObject.FindWithTag("TileModifiers");
@@ -168,6 +174,7 @@ public class TileController : MonoBehaviour
                         {
                             isPlaced = true;
                             gameController.GetComponent<GameController>().selectedTile = gameObject;
+                          //  selectIndicator.gameObject.SetActive(true);
                             Vector3 tilePosition = boardCheck.collider.transform.position;
                             tilePosition.y = 0;
                             transform.position = tilePosition;

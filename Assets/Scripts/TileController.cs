@@ -21,7 +21,7 @@ public class TileController : MonoBehaviour
     // GameController
     private GameController gameController;
 
-    // GameController
+    // TileModifiers
     private TileModifiers tileModifiers;
 
     // Tile Colliders
@@ -35,6 +35,8 @@ public class TileController : MonoBehaviour
 
     // Scoring Variables
     private int scoreToAdd;
+    public List<GameObject> tileSystemList = new List<GameObject>();
+    public bool isExit = false;
 
     // Tile Buttons
     Button rotateCWButton;
@@ -94,11 +96,7 @@ public class TileController : MonoBehaviour
         // Record spawn point
         spawnPoint = gameObject.transform.position;
 
-        // Populate Paths
-        pathList.Add(westPath);
-        pathList.Add(eastPath);
-        pathList.Add(southPath);
-        pathList.Add(northPath);
+
 
         // Set Placement
         isPlaced = false;
@@ -108,8 +106,19 @@ public class TileController : MonoBehaviour
         checkingLegalityDirection = "CW";
     }
 
+    public void PopulatePaths()
+    { 
+        pathList.Add(westPath);
+        pathList.Add(eastPath);
+        pathList.Add(southPath);
+        pathList.Add(northPath);
+    }
+
     void OnMouseDown()
     {
+        // Check to make sure it's not attached to only a tile placed this round
+        // ... to do
+
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
         if (isPlaced && !isConfirmed && !isSpecial) 
@@ -137,6 +146,7 @@ public class TileController : MonoBehaviour
             {
                 gameController.AddScore(4);
                 isPlaced = false;
+                gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
             }
             isArmed = true;
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
@@ -166,7 +176,9 @@ public class TileController : MonoBehaviour
                     {
                         if (boardCheck.collider.GetComponentInParent<BoardSpace>().isHighlighted)
                         {
+                            // All Checks Passed. Place the Tile
                             isPlaced = true;
+                            gameController.GetComponent<GameController>().tilesPlacedThisRound.Add(gameObject);
                             gameController.GetComponent<GameController>().selectedTile = gameObject;
                             Vector3 tilePosition = boardCheck.collider.transform.position;
                             tilePosition.y = 0;
@@ -264,7 +276,71 @@ public class TileController : MonoBehaviour
     public void ConfirmTile()
     {
         isConfirmed = true;
+        // Connect Systems for Scoring
         ScoreTile();
+    }
+
+    public void ScoreTile()
+    {
+        List<GameObject> flaggedForDeletion = new List<GameObject>();
+        List<GameObject> flaggedForAddition = new List<GameObject>();
+        foreach (var path in pathList)
+        {
+            if (!path.GetComponent<PathController>().isDeadEnd)
+            {
+                List<GameObject> adjacentTileSystems = path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>().tileSystemList;
+                if (adjacentTileSystems != null)
+                {
+                    foreach (var system in adjacentTileSystems)
+                    {
+                        if (system != null)
+                        {
+                            if (path.tag == system.GetComponent<TileSystem>().systemType)
+                            {
+                                foreach (var internalSystem in tileSystemList)
+                                {
+                                    if (internalSystem.GetComponent<TileSystem>().systemType == path.tag)
+                                    {
+                                        internalSystem.GetComponent<TileSystem>().MergeSystem(system);
+                                        flaggedForDeletion.Add(system);
+                                    }
+                                }
+                            }
+                            else if (system.GetComponent<TileSystem>().systemType == null)
+                            {
+                                // ToDo: DRY this up.
+                                foreach (var internalSystem in tileSystemList)
+                                {
+                                    if (internalSystem.GetComponent<TileSystem>().systemType == null)
+                                    {
+                                        internalSystem.GetComponent<TileSystem>().MergeSystem(system);
+                                        flaggedForDeletion.Add(system);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        foreach (var system in flaggedForDeletion)
+        {
+            if (!tileSystemList.Contains(system))
+            {
+                Destroy(system);
+            }
+        }
+        foreach (var system in tileSystemList)
+        {
+            foreach (var tile in system.GetComponent<TileSystem>().containedTiles)
+            {
+                if (!tile.GetComponent<TileController>().tileSystemList.Contains(system))
+                {
+                    tile.GetComponent<TileController>().tileSystemList.Add(system);
+                }
+            }
+        }
     }
 
     private void ResetToSpawn()
@@ -325,14 +401,14 @@ public class TileController : MonoBehaviour
 
     }
 
-    public void ScoreTile() 
+    public void AddToTileSystem() 
     {
         foreach (GameObject path in pathList)
         {
-            // Add up score.
-            scoreToAdd = path.GetComponent<PathController>().scoreToAdd;
-            gameController.AddScore(scoreToAdd);
-            Debug.Log(path.name + " has a score of " + scoreToAdd);
+            if (!path.GetComponent<PathController>().isDeadEnd)
+            {
+                //string tileSystem = path.transform.parent.GetComponent<TileController>().tileSystem;
+            }
         }
     }
 }

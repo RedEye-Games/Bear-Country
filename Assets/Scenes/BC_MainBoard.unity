@@ -695,6 +695,10 @@ MonoBehaviour:
   boardScale: 10
   boardSize: 9
   selectedTile: {fileID: 0}
+  tileSystemList: []
+  tileSystem: {fileID: 7591832815588949293, guid: 74df6c9acc73e48389d473c351abc000,
+    type: 3}
+  tilesPlacedThisRound: []
 --- !u!4 &345423400
 Transform:
   m_ObjectHideFlags: 0
@@ -2871,6 +2875,7 @@ RectTransform:
   - {fileID: 1867685968}
   - {fileID: 257232940}
   - {fileID: 1807585068}
+  - {fileID: 1816940135}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2993,6 +2998,59 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1807585067}
   m_CullTransparentMesh: 0
+--- !u!1 &1816940134
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1816940135}
+  - component: {fileID: 1816940136}
+  m_Layer: 5
+  m_Name: ScoreBoard
+  m_TagString: ScoreBoard
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1816940135
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816940134}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1751394497}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1816940136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816940134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e836e61ac0d364be39c8ca943dfdb299, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  systems: 0
+  longestTrail: 0
+  longestRiver: 0
+  bonusSpaces: 0
+  deadEnds: 0
 --- !u!1 &1867685967
 GameObject:
   m_ObjectHideFlags: 0

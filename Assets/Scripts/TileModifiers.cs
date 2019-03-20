@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TileModifiers : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class TileModifiers : MonoBehaviour
     {
         if (rotating)
         {
-            selectedTile.transform.rotation = Quaternion.Lerp(selectedTile.transform.rotation, to, 10 * smooth * Time.deltaTime);
+            selectedTile.transform.rotation = Quaternion.RotateTowards(selectedTile.transform.rotation, to, 540 * Time.deltaTime);
             if (selectedTile.transform.rotation == to)
             {
                 selectedTile.transform.rotation = to;
@@ -46,9 +47,27 @@ public class TileModifiers : MonoBehaviour
 
     public IEnumerator Flip()
     {
+        // Locate path which isn't a dead end. Flip along that axis.
+        Vector3 tileAxis = new Vector3(0,0,1);
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        selectedTile.GetComponent<TileController>().isFlipped = !selectedTile.GetComponent<TileController>().isFlipped;
+        List<GameObject> selectedTilePaths = selectedTile.GetComponent<TileController>().pathList;
+        foreach (var tilePath in selectedTilePaths)
+        {
+            if (!tilePath.GetComponent<PathController>().isDeadEnd)
+            {
+                if (tilePath.GetComponent<PathController>().name == "Path (North)" || tilePath.GetComponent<PathController>().name == "Path (South)")
+                {
+                    tileAxis = new Vector3(0, 0, 1);
+                }
+                else
+                {
+                    tileAxis = new Vector3(1, 0, 0);
+                }
+            }
+        }
         from = selectedTile.transform.rotation;
-        to = from * Quaternion.AngleAxis(180, Vector3.forward);
+        to = from * Quaternion.AngleAxis(180, tileAxis);
         rotating = true;
         while (rotating)
         {
@@ -61,9 +80,14 @@ public class TileModifiers : MonoBehaviour
 
     public IEnumerator RotateCW()
     {
+        float angle = 90;
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        if (selectedTile.GetComponent<TileController>().isFlipped)
+        {
+            angle = -90;
+        }
         from = selectedTile.transform.rotation;
-        to = from * Quaternion.AngleAxis(90, Vector3.up);
+        to = from * Quaternion.AngleAxis(angle, Vector3.up);
         rotating = true;
         while (rotating)
         {
@@ -75,9 +99,14 @@ public class TileModifiers : MonoBehaviour
 
     public IEnumerator RotateCCW()
     {
+        float angle = -90;
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        if (selectedTile.GetComponent<TileController>().isFlipped)
+        {
+            angle = 90;
+        }
         from = selectedTile.transform.rotation;
-        to = from * Quaternion.AngleAxis(-90, Vector3.up);
+        to = from * Quaternion.AngleAxis(angle, Vector3.up);
         rotating = true;
         while (rotating)
         {

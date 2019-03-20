@@ -51,6 +51,7 @@ public class TileController : MonoBehaviour
     public bool isPlaced = false;
     Vector3 spawnPoint;
     bool checkingPotential = false;
+    public bool isFlipped = false;
 
     // Tile Lineage
     public bool lineageBeingChecked = false;
@@ -249,7 +250,6 @@ public class TileController : MonoBehaviour
                 else
                 {
                     pathCount++;
-                    Debug.Log(isLegal);
                 }
             }
             while (pathCount < pathList.Count)

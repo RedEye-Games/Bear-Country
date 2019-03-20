@@ -6,6 +6,11 @@ using UnityEngine.UI;
 
 public class TileDisbursementController : MonoBehaviour
 {
+    // GameController
+    private GameController gameController;
+
+    // ScoreBoard
+    private ScoreBoard scoreBoard;
 
     public GameObject Tile;
     public Button disburseTilesButton;
@@ -28,6 +33,29 @@ public class TileDisbursementController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Locate GameController Script
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+        }
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'GameController' script");
+        }
+
+        // Locate ScoreBoard Script
+        // ToDo: Trigger to EventManager
+        GameObject scoreBoardObject = GameObject.FindWithTag("ScoreBoard");
+        if (scoreBoardObject != null)
+        {
+            scoreBoard = scoreBoardObject.GetComponent<ScoreBoard>();
+        }
+        if (scoreBoardObject == null)
+        {
+            Debug.Log("Cannot find 'ScoreBoard' script");
+        }
+
         PopulateTileOptions();
         DisburseTiles();
         DisburseSpecialTiles();
@@ -38,7 +66,7 @@ public class TileDisbursementController : MonoBehaviour
         // Check to see if all tiles are placed.
         // Check for tiles on board. Confirm them.
 
-        // CHeck to see if any special tiles remain
+        // Check to see if any special tiles remain
 
         if (remainingSpecialTiles != 1)
         {
@@ -51,21 +79,28 @@ public class TileDisbursementController : MonoBehaviour
             EnableSpecialTileTray();
         }
 
-        foreach (var tile in tiles)
+        foreach (var tile in gameController.GetComponent<GameController>().tilesPlacedThisRound)
         {
-            if (tile.GetComponent<TileController>().isPlaced)
-            {
-                tile.GetComponent<TileController>().ConfirmTile();
-            }
+            tile.GetComponent<TileController>().ConfirmTile();
         }
+        scoreBoard.GetComponent<ScoreBoard>().ScoreTiles();
+        gameController.EndRound();
 
-        foreach (var specialTile in specialTiles)
-        {
-            if (specialTile.GetComponent<TileController>().isPlaced)
-            {
-                specialTile.GetComponent<TileController>().ConfirmTile();
-            }
-        }
+        //foreach (var tile in tiles)
+        //{
+        //    if (tile.GetComponent<TileController>().isPlaced)
+        //    {
+        //        tile.GetComponent<TileController>().ConfirmTile();
+        //    }
+        //}
+
+        //foreach (var specialTile in specialTiles)
+        //{
+        //    if (specialTile.GetComponent<TileController>().isPlaced)
+        //    {
+        //        specialTile.GetComponent<TileController>().ConfirmTile();
+        //    }
+        //}
 
         for (int i = 0; i < tileSpawnPoints.Length; i++)
         {
@@ -91,6 +126,7 @@ public class TileDisbursementController : MonoBehaviour
                 newTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
                 newTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
                 newTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
+                gameController.PopulateTileSystems(newTile);
             }
         }
         tiles = GameObject.FindGameObjectsWithTag("Tile");
@@ -121,6 +157,7 @@ public class TileDisbursementController : MonoBehaviour
             newSpecialTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
             newSpecialTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
             newSpecialTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
+            gameController.PopulateTileSystems(newSpecialTile);
         }
         specialTiles = GameObject.FindGameObjectsWithTag("SpecialTile");
     }
@@ -232,4 +269,5 @@ public class TileDisbursementController : MonoBehaviour
         TileOptions.Add(new Tile("tCross", 3, "Trail", "Trail", "Trail", "Trail"));
         TileOptions.Add(new Tile("tCorner_rCorner", 3, "River", "Trail", "River", "Trail"));
     }
+
 }

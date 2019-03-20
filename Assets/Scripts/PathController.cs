@@ -11,6 +11,7 @@ public class PathController : MonoBehaviour
 
     private string pathTag;
     public bool isDeadEnd = true;
+    public bool isDoubledDeadEnd = false;
     public int scoreToAdd;
     public GameObject adjacentTile;
     public GameObject adjacentPath;
@@ -61,16 +62,20 @@ public class PathController : MonoBehaviour
                     isDeadEnd = false;
                     scoreToAdd = 1;
                 }
-                // To Do: Check to see if path is alive. Check to see if it's a riverhead.
+                else if ("River" == adjacentPath.tag || "Trail" == adjacentPath.tag)
+                {
+                    isDoubledDeadEnd = true;
+                }
+                // ToDo: Check to see if path is alive. Check to see if it's a riverhead.
                 // Then create and store unique river/trail identifier.
             }
         }
-
     }
 
-    private void OnTriggerExit(Collider other)
+private void OnTriggerExit(Collider other)
     {
         isDeadEnd = true;
+        isDoubledDeadEnd = false;
         scoreToAdd = -1;
     }
 

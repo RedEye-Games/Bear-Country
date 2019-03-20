@@ -44,11 +44,18 @@ public class TileModifiers : MonoBehaviour
         }
     }
 
-    public void Flip()
+    public IEnumerator Flip()
     {
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
-        selectedTile.transform.localScale = new Vector3(selectedTile.transform.localScale.x, selectedTile.transform.localScale.y, selectedTile.transform.localScale.z * -1);
+        from = selectedTile.transform.rotation;
+        to = from * Quaternion.AngleAxis(180, Vector3.forward);
+        rotating = true;
+        while (rotating)
+        {
+            yield return null;
+        }
         LegalityCheck("CW");
+        StartCoroutine(selectedTile.GetComponent<TileController>().TileLegality());
         TileEvent(TileEventName.Flipped, gameObject);
     }
 
@@ -82,13 +89,26 @@ public class TileModifiers : MonoBehaviour
 
     public void startRotationCW()
     {
+        rotating = true;
         StartCoroutine(RotateCW());
+    }
+
+    public void startRotationCCW()
+    {
+        rotating = true;
+        StartCoroutine(RotateCCW());
+    }
+
+    public void StartFlip()
+    {
+        rotating = true;
+        StartCoroutine(Flip());
     }
 
     public void LegalityCheck(string direction)
     {
         selectedTile.GetComponent<TileController>().ClearLegality();
         selectedTile.GetComponent<TileController>().checkingLegalityDirection = direction;
-        selectedTile.GetComponent<TileController>().checkingLegality = true;
+        StartCoroutine(selectedTile.GetComponent<TileController>().TileLegality());
     }
 }

@@ -3512,7 +3512,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1870723279617653533}
-        m_MethodName: RotateCCW
+        m_MethodName: startRotationCCW
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3736,7 +3736,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1870723279685938345}
-        m_MethodName: Flip
+        m_MethodName: StartFlip
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

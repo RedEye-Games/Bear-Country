@@ -227,20 +227,34 @@ public class TileController : MonoBehaviour
         }
         int startFrame = frame;
         //yield return new WaitUntil(() => frame >= startFrame + 1);
-        TileLegalityCheck();
+        StartCoroutine(TileLegalityCheck());
     }
 
-    public void TileLegalityCheck()
+    public IEnumerator TileLegalityCheck()
     {
         if (legalCheck < 4)
         {
+            int pathCount = 0;
             foreach (var path in pathList)
             {
+                while (path.GetComponent<PathController>().checkedDeadEnds == false)
+                {
+                    yield return null;
+                }
                 if (path.GetComponent<PathController>().isDeadEnd == false)
                 {
                     isLegal = true;
                     legalCheck = 0;
                 }
+                else
+                {
+                    pathCount++;
+                    Debug.Log(isLegal);
+                }
+            }
+            while (pathCount < pathList.Count)
+            {
+                yield return null;
             }
             if (!isLegal)
             {
@@ -398,7 +412,7 @@ public class TileController : MonoBehaviour
             {
                 isArmed = false;
 
-                Ray ray = new Ray(transform.position, -transform.up);
+                Ray ray = new Ray(transform.position, Vector3.down);
                 if (Physics.Raycast(ray, out RaycastHit boardCheck, Mathf.Infinity))
                 {
                     if (boardCheck.collider.tag == "BoardSpace")

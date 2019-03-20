@@ -18,6 +18,7 @@ public class PathController : MonoBehaviour
     public GameObject adjacentTile;
     public GameObject adjacentPath;
     List<string> validPathTags = new List<string>();
+    public bool checkedDeadEnds;
 
     // Start is called before the first frame update
     void Start()
@@ -62,6 +63,7 @@ public class PathController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        checkedDeadEnds = false;
         if (string.IsNullOrEmpty(other.gameObject.tag) == false && other.gameObject.tag != "Untagged" && other.gameObject.tag != "Path")
         {
             string tilePathTag = other.gameObject.tag;
@@ -81,18 +83,29 @@ public class PathController : MonoBehaviour
                 }
             }
         }
+        checkedDeadEnds = true;
     }
 
-private void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other)
+    {
+        StartCoroutine(BeginExit());
+    }
+
+    private IEnumerator BeginExit()
     {
         adjacentPath = null;
         adjacentTile = null;
         isDeadEnd = true;
+        checkedDeadEnds = false;
         isDoubledDeadEnd = false;
         scoreToAdd = -1;
-        if (parentTile.isLegal && parentTile.isPlaced && !parentTile.checkingLegality && !tileModifiers.rotating)
+        if (parentTile.isLegal && parentTile.isPlaced && !parentTile.checkingLegality)
         {
-            parentTile.CheckLineage();
+            while (tileModifiers.rotating)
+            {
+                yield return null;
+                parentTile.CheckLineage();
+            }
         }
     }
 

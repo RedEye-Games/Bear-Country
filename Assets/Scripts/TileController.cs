@@ -64,6 +64,7 @@ public class TileController : MonoBehaviour
     public bool isSpecial = false;
 
     // Mouse Drag Variables
+    private Vector3 tilePositionStart;
     private Vector3 screenPoint;
     private Vector3 offset;
     public float distance = 100;
@@ -135,13 +136,13 @@ public class TileController : MonoBehaviour
 
     void OnMouseDown()
     {
+        tilePositionStart = gameObject.transform.position;
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
 
         if (!isConfirmed)
         {
             // Highlight Compatible Board Spaces
-            checkingPotential = true;
             StartCoroutine(CheckPotential(frame));
 
             TileEvent(TileEventName.PickedUp, gameObject);
@@ -179,64 +180,7 @@ public class TileController : MonoBehaviour
 
     void OnMouseUp()
     {
-        // Sends tiles back to spawn point
-        checkingPotential = false;
-
-        if (isConfirmed == false)
-        {
-            if (isArmed && !isPlaced)
-            {
-                isArmed = false;
-
-                Ray ray = new Ray(transform.position, -transform.up);
-                if (Physics.Raycast(ray, out RaycastHit boardCheck, Mathf.Infinity))
-                {
-                    if (boardCheck.collider.tag == "BoardSpace")
-                    {
-                        if (boardCheck.collider.GetComponentInParent<BoardSpace>().isHighlighted)
-                        {
-                            // All Checks Passed. Place the Tile
-                            isPlaced = true;
-                            if (isSpecial)
-                            {
-                                gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Add(gameObject);
-                            }
-                            else
-                            {
-                                gameController.GetComponent<GameController>().tilesPlacedThisRound.Add(gameObject);
-                            }
-                            gameController.GetComponent<GameController>().selectedTile = gameObject;
-                            Vector3 tilePosition = boardCheck.collider.transform.position;
-                            tilePosition.y = 0;
-                            transform.position = tilePosition;
-                            boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
-
-                            // Rotate Tile if Illegal
-                            checkingLegality = true;
-                            StartCoroutine(TileLegality(frame));
-                            TileEvent(TileEventName.SuccessfullyPlaced, gameObject);
-                        }
-                        else 
-                        {
-                            TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
-                            ResetToSpawn();
-                        }
-                    }
-                    else
-                    {
-                        TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
-                        ResetToSpawn();
-                    }
-                }
-                else
-                {
-                    TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
-                    ResetToSpawn();
-                }
-            }
-        }
-        ClearPotential();
-
+        StartCoroutine(DropTile());
         tileDisbursementController.ToggleButtons();
     }
 
@@ -413,6 +357,7 @@ public class TileController : MonoBehaviour
 
     IEnumerator CheckPotential(int startFrame)
     {
+        checkingPotential = true;
         yield return new WaitUntil(() => frame >= startFrame + 5);
         foreach (var boardSpace in gameController.boardSpaceList)
         {
@@ -432,6 +377,77 @@ public class TileController : MonoBehaviour
                 }
             }
         }
+        checkingPotential = false;
+    }
+
+    private IEnumerator DropTile()
+    {
+        Debug.Log(checkingPotential);
+        while (checkingPotential)
+        {
+            yield return null;
+        }
+
+        // Sends tiles back to spawn point
+
+        if (isConfirmed == false)
+        {
+            if (isArmed && !isPlaced)
+            {
+                isArmed = false;
+
+                Ray ray = new Ray(transform.position, -transform.up);
+                if (Physics.Raycast(ray, out RaycastHit boardCheck, Mathf.Infinity))
+                {
+                    if (boardCheck.collider.tag == "BoardSpace")
+                    {
+                        if (boardCheck.collider.GetComponentInParent<BoardSpace>().isHighlighted)
+                        {
+                            // All Checks Passed. Place the Tile
+                            isPlaced = true;
+                            if (isSpecial)
+                            {
+                                gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Add(gameObject);
+                            }
+                            else
+                            {
+                                gameController.GetComponent<GameController>().tilesPlacedThisRound.Add(gameObject);
+                            }
+                            gameController.GetComponent<GameController>().selectedTile = gameObject;
+                            Vector3 tilePosition = boardCheck.collider.transform.position;
+                            tilePosition.y = 0;
+                            transform.position = tilePosition;
+                            boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
+
+                            // Rotate Tile if Illegal
+                            checkingLegality = true;
+                            StartCoroutine(TileLegality(frame));
+                            TileEvent(TileEventName.SuccessfullyPlaced, gameObject);
+                        }
+                        else
+                        {
+                            TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
+                            ResetToSpawn();
+                            Debug.Log("Did Highlighted Else.");
+                        }
+                    }
+                    else
+                    {
+                        TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
+                        ResetToSpawn();
+                        Debug.Log("Did Else.");
+                    }
+                }
+                else
+                {
+                    TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
+                    ResetToSpawn();
+                    Debug.Log("Did Final Else.");
+                }
+            }
+        }
+
+        ClearPotential();
     }
 
     public void ClearPotential()

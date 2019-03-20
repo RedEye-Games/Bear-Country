@@ -138,7 +138,7 @@ public class TileController : MonoBehaviour
     {
         tilePositionStart = gameObject.transform.position;
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y - 50, screenPoint.z));
 
         if (!isConfirmed)
         {
@@ -186,7 +186,6 @@ public class TileController : MonoBehaviour
 
     public void CheckLineage()
     {
-        Debug.Log("Checking " + gameObject.GetComponentInChildren<SpriteRenderer>().sprite + "'s lineage");
         if (!gameObject.GetComponent<TileController>().HasLineage())
         {
             gameObject.GetComponent<TileController>().ResetToSpawn();
@@ -257,7 +256,6 @@ public class TileController : MonoBehaviour
         {
             ResetToSpawn();
             legalCheck = 0;
-            Debug.Log("No legal moves.");
             // And perhaps end round?
         }
     }
@@ -428,21 +426,18 @@ public class TileController : MonoBehaviour
                         {
                             TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                             ResetToSpawn();
-                            Debug.Log("Did Highlighted Else.");
                         }
                     }
                     else
                     {
                         TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                         ResetToSpawn();
-                        Debug.Log("Did Else.");
                     }
                 }
                 else
                 {
                     TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                     ResetToSpawn();
-                    Debug.Log("Did Final Else.");
                 }
             }
         }

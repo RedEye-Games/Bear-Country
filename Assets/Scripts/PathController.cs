@@ -6,6 +6,8 @@ public class PathController : MonoBehaviour
 {
     // GameController
     private GameController gameController;
+    // TileModifiers
+    private TileModifiers tileModifiers;
 
     private TileController parentTile;
 
@@ -36,6 +38,17 @@ public class PathController : MonoBehaviour
 
         // Locate Parent Tile Controller
         parentTile = gameObject.GetComponentInParent<TileController>();
+
+        // Locate TileModifiers Script
+        GameObject TileModifiersObject = GameObject.FindWithTag("TileModifiers");
+        if (TileModifiersObject != null)
+        {
+            tileModifiers = TileModifiersObject.GetComponent<TileModifiers>();
+        }
+        if (tileModifiers == null)
+        {
+            Debug.Log("Cannot find 'TileModifiers' script");
+        }
 
     }
 
@@ -77,7 +90,7 @@ private void OnTriggerExit(Collider other)
         isDeadEnd = true;
         isDoubledDeadEnd = false;
         scoreToAdd = -1;
-        if (parentTile.isLegal && parentTile.isPlaced && !parentTile.checkingLegality)
+        if (parentTile.isLegal && parentTile.isPlaced && !parentTile.checkingLegality && !tileModifiers.rotating)
         {
             parentTile.CheckLineage();
         }

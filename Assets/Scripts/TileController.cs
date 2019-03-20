@@ -121,7 +121,7 @@ public class TileController : MonoBehaviour
         if (checkingLegality)
         {
             checkingLegality = false;
-            StartCoroutine(TileLegality(frame));
+            StartCoroutine(TileLegality());
         }
 
     }
@@ -219,9 +219,14 @@ public class TileController : MonoBehaviour
         return hasLineage;
     }
 
-    public IEnumerator TileLegality(int startFrame)
+    public IEnumerator TileLegality()
     {
-        yield return new WaitUntil(() => frame >= startFrame + 5);
+        while (tileModifiers.rotating)
+        {
+            yield return null;
+        }
+        int startFrame = frame;
+        //yield return new WaitUntil(() => frame >= startFrame + 1);
         TileLegalityCheck();
     }
 
@@ -241,15 +246,15 @@ public class TileController : MonoBehaviour
             {
                 if (checkingLegalityDirection == "CW")
                 {
-                    tileModifiers.RotateCW();
+                    StartCoroutine(tileModifiers.RotateCW());
                 }
                 else 
                 {
-                    tileModifiers.RotateCCW();
+                    StartCoroutine(tileModifiers.RotateCCW());
                 }
 
                 legalCheck++;
-                StartCoroutine(TileLegality(frame));
+                //StartCoroutine(TileLegality());
             }
         }
         else
@@ -380,7 +385,6 @@ public class TileController : MonoBehaviour
 
     private IEnumerator DropTile()
     {
-        Debug.Log(checkingPotential);
         while (checkingPotential)
         {
             yield return null;
@@ -419,7 +423,7 @@ public class TileController : MonoBehaviour
 
                             // Rotate Tile if Illegal
                             checkingLegality = true;
-                            StartCoroutine(TileLegality(frame));
+                            StartCoroutine(TileLegality());
                             TileEvent(TileEventName.SuccessfullyPlaced, gameObject);
                         }
                         else

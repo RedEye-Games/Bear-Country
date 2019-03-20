@@ -1,11 +1,18 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections;
 
 public class TileModifiers : MonoBehaviour
 {
     // GameController
     private GameController gameController;
     private GameObject selectedTile;
+
+    // Animation
+    public Quaternion from;
+    public Quaternion to;
+    public bool rotating = false;
+    private float smooth = 1f;
 
     public static event Action<TileEventName, GameObject> TileEvent;
 
@@ -24,6 +31,19 @@ public class TileModifiers : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (rotating)
+        {
+            selectedTile.transform.rotation = Quaternion.Lerp(selectedTile.transform.rotation, to, 10 * smooth * Time.deltaTime);
+            if (selectedTile.transform.rotation == to)
+            {
+                selectedTile.transform.rotation = to;
+                rotating = false;
+            }
+        }
+    }
+
     public void Flip()
     {
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
@@ -32,20 +52,37 @@ public class TileModifiers : MonoBehaviour
         TileEvent(TileEventName.Flipped, gameObject);
     }
 
-    public void RotateCW()
+    public IEnumerator RotateCW()
     {
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
-        selectedTile.transform.Rotate(0, 90, 0);
+        from = selectedTile.transform.rotation;
+        to = from * Quaternion.AngleAxis(90, Vector3.up);
+        rotating = true;
+        while (rotating)
+        {
+            yield return null;
+        }
         LegalityCheck("CW");
         TileEvent(TileEventName.Rotated, gameObject);
     }
 
-    public void RotateCCW()
+    public IEnumerator RotateCCW()
     {
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
-        selectedTile.transform.Rotate(0, -90, 0);
+        from = selectedTile.transform.rotation;
+        to = from * Quaternion.AngleAxis(-90, Vector3.up);
+        rotating = true;
+        while (rotating)
+        {
+            yield return null;
+        }
         LegalityCheck("CCW");
         TileEvent(TileEventName.Rotated, gameObject);
+    }
+
+    public void startRotationCW()
+    {
+        StartCoroutine(RotateCW());
     }
 
     public void LegalityCheck(string direction)

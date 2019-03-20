@@ -227,7 +227,7 @@ public class TileController : MonoBehaviour
             yield return null;
         }
         int startFrame = frame;
-        //yield return new WaitUntil(() => frame >= startFrame + 1);
+        yield return new WaitUntil(() => frame >= startFrame + 5);
         StartCoroutine(TileLegalityCheck());
     }
 

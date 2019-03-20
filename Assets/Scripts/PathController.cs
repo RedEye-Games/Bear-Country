@@ -99,14 +99,17 @@ public class PathController : MonoBehaviour
         checkedDeadEnds = false;
         isDoubledDeadEnd = false;
         scoreToAdd = -1;
-        if (parentTile.isLegal && parentTile.isPlaced && !parentTile.checkingLegality)
+        if (parentTile.isLegal && parentTile.isPlaced && !tileModifiers.isRotating)
         {
-            while (tileModifiers.rotating)
+            while (parentTile.checkingLegality)
             {
+                Debug.Log("Did this a bunch.");
                 yield return null;
-                parentTile.CheckLineage();
             }
+            Debug.Log("Got here.");
+            parentTile.CheckLineage();
         }
+
     }
 
 }

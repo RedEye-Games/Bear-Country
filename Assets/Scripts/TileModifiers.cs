@@ -12,7 +12,7 @@ public class TileModifiers : MonoBehaviour
     // Animation
     public Quaternion from;
     public Quaternion to;
-    public bool rotating = false;
+    public bool isRotating = false;
     private float smooth = 1f;
 
     public static event Action<TileEventName, GameObject> TileEvent;
@@ -34,13 +34,13 @@ public class TileModifiers : MonoBehaviour
 
     void Update()
     {
-        if (rotating)
+        if (isRotating)
         {
             selectedTile.transform.rotation = Quaternion.RotateTowards(selectedTile.transform.rotation, to, 540 * Time.deltaTime);
             if (selectedTile.transform.rotation == to)
             {
                 selectedTile.transform.rotation = to;
-                rotating = false;
+                isRotating = false;
             }
         }
     }
@@ -68,13 +68,12 @@ public class TileModifiers : MonoBehaviour
         }
         from = selectedTile.transform.rotation;
         to = from * Quaternion.AngleAxis(180, tileAxis);
-        rotating = true;
-        while (rotating)
+        isRotating = true;
+        while (isRotating)
         {
             yield return null;
         }
         LegalityCheck("CW");
-        StartCoroutine(selectedTile.GetComponent<TileController>().TileLegality());
         TileEvent(TileEventName.Flipped, gameObject);
     }
 
@@ -88,8 +87,8 @@ public class TileModifiers : MonoBehaviour
         }
         from = selectedTile.transform.rotation;
         to = from * Quaternion.AngleAxis(angle, Vector3.up);
-        rotating = true;
-        while (rotating)
+        isRotating = true;
+        while (isRotating)
         {
             yield return null;
         }
@@ -107,8 +106,8 @@ public class TileModifiers : MonoBehaviour
         }
         from = selectedTile.transform.rotation;
         to = from * Quaternion.AngleAxis(angle, Vector3.up);
-        rotating = true;
-        while (rotating)
+        isRotating = true;
+        while (isRotating)
         {
             yield return null;
         }
@@ -118,20 +117,29 @@ public class TileModifiers : MonoBehaviour
 
     public void startRotationCW()
     {
-        rotating = true;
-        StartCoroutine(RotateCW());
+        if (isRotating == false)
+        {
+            //isRotating = true;
+            StartCoroutine(RotateCW());
+        }
     }
 
     public void startRotationCCW()
     {
-        rotating = true;
-        StartCoroutine(RotateCCW());
+        if (isRotating == false)
+        {
+            //isRotating = true;
+            StartCoroutine(RotateCCW());
+        }
     }
 
     public void StartFlip()
     {
-        rotating = true;
-        StartCoroutine(Flip());
+        if (isRotating == false)
+        {
+            isRotating = true;
+            StartCoroutine(Flip());
+        }
     }
 
     public void LegalityCheck(string direction)

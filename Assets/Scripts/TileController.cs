@@ -119,12 +119,6 @@ public class TileController : MonoBehaviour
     void Update()
     {
         frame++;
-        if (checkingLegality)
-        {
-            checkingLegality = false;
-            StartCoroutine(TileLegality());
-        }
-
     }
 
     public void PopulatePaths()
@@ -222,7 +216,8 @@ public class TileController : MonoBehaviour
 
     public IEnumerator TileLegality()
     {
-        while (tileModifiers.rotating)
+        checkingLegality = true;
+        while (tileModifiers.isRotating)
         {
             yield return null;
         }
@@ -238,10 +233,6 @@ public class TileController : MonoBehaviour
             int pathCount = 0;
             foreach (var path in pathList)
             {
-                while (path.GetComponent<PathController>().checkedDeadEnds == false)
-                {
-                    yield return null;
-                }
                 if (path.GetComponent<PathController>().isDeadEnd == false)
                 {
                     isLegal = true;
@@ -251,10 +242,6 @@ public class TileController : MonoBehaviour
                 {
                     pathCount++;
                 }
-            }
-            while (pathCount < pathList.Count)
-            {
-                yield return null;
             }
             if (!isLegal)
             {
@@ -268,23 +255,23 @@ public class TileController : MonoBehaviour
                 }
 
                 legalCheck++;
-                //StartCoroutine(TileLegality());
+            }
+            else
+            {
+                checkingLegality = false;
             }
         }
         else
         {
             ResetToSpawn();
             legalCheck = 0;
-            // And perhaps end round?
         }
+        yield return null;
     }
 
     public void ClearLegality()
     {
-        foreach (var path in pathList)
-        {
-            isLegal = false;
-        }
+        isLegal = false;
         legalCheck = 0;
     }
 
@@ -436,7 +423,6 @@ public class TileController : MonoBehaviour
                             boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
 
                             // Rotate Tile if Illegal
-                            checkingLegality = true;
                             StartCoroutine(TileLegality());
                             TileEvent(TileEventName.SuccessfullyPlaced, gameObject);
                         }

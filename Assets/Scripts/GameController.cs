@@ -115,7 +115,7 @@ public class GameController : MonoBehaviour
                     else
                     {
                         SpriteRenderer tileSprite = newBoardEdge.GetComponentInChildren<SpriteRenderer>();
-                        tileSprite.sprite = Resources.Load<Sprite>("Sprites/");
+                        tileSprite.sprite = Resources.Load<Sprite>("Sprites/neutral");
                     }
                 }
                 else
@@ -129,6 +129,7 @@ public class GameController : MonoBehaviour
             spawnPosition.z = spawnPosition.z + boardScale;
         }
     }
+
     // Update is called once per frame
 
     void Update()

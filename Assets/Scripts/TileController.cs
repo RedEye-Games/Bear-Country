@@ -51,6 +51,7 @@ public class TileController : MonoBehaviour
     public bool isPlaced = false;
     Vector3 spawnPoint;
     bool checkingPotential = false;
+    public bool isFlipped = false;
 
     // Tile Lineage
     public bool lineageBeingChecked = false;
@@ -121,7 +122,7 @@ public class TileController : MonoBehaviour
         if (checkingLegality)
         {
             checkingLegality = false;
-            StartCoroutine(TileLegality(frame));
+            StartCoroutine(TileLegality());
         }
 
     }
@@ -138,7 +139,7 @@ public class TileController : MonoBehaviour
     {
         tilePositionStart = gameObject.transform.position;
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y - 75, screenPoint.z));
 
         if (!isConfirmed)
         {
@@ -186,7 +187,6 @@ public class TileController : MonoBehaviour
 
     public void CheckLineage()
     {
-        Debug.Log("Checking " + gameObject.GetComponentInChildren<SpriteRenderer>().sprite + "'s lineage");
         if (!gameObject.GetComponent<TileController>().HasLineage())
         {
             gameObject.GetComponent<TileController>().ResetToSpawn();
@@ -220,44 +220,61 @@ public class TileController : MonoBehaviour
         return hasLineage;
     }
 
-    public IEnumerator TileLegality(int startFrame)
+    public IEnumerator TileLegality()
     {
-        yield return new WaitUntil(() => frame >= startFrame + 5);
-        TileLegalityCheck();
+        while (tileModifiers.rotating)
+        {
+            yield return null;
+        }
+        int startFrame = frame;
+        //yield return new WaitUntil(() => frame >= startFrame + 1);
+        StartCoroutine(TileLegalityCheck());
     }
 
-    public void TileLegalityCheck()
+    public IEnumerator TileLegalityCheck()
     {
         if (legalCheck < 4)
         {
+            int pathCount = 0;
             foreach (var path in pathList)
             {
+                while (path.GetComponent<PathController>().checkedDeadEnds == false)
+                {
+                    yield return null;
+                }
                 if (path.GetComponent<PathController>().isDeadEnd == false)
                 {
                     isLegal = true;
                     legalCheck = 0;
                 }
+                else
+                {
+                    pathCount++;
+                }
+            }
+            while (pathCount < pathList.Count)
+            {
+                yield return null;
             }
             if (!isLegal)
             {
                 if (checkingLegalityDirection == "CW")
                 {
-                    tileModifiers.RotateCW();
+                    StartCoroutine(tileModifiers.RotateCW());
                 }
                 else 
                 {
-                    tileModifiers.RotateCCW();
+                    StartCoroutine(tileModifiers.RotateCCW());
                 }
 
                 legalCheck++;
-                StartCoroutine(TileLegality(frame));
+                //StartCoroutine(TileLegality());
             }
         }
         else
         {
             ResetToSpawn();
             legalCheck = 0;
-            Debug.Log("No legal moves.");
             // And perhaps end round?
         }
     }
@@ -382,7 +399,6 @@ public class TileController : MonoBehaviour
 
     private IEnumerator DropTile()
     {
-        Debug.Log(checkingPotential);
         while (checkingPotential)
         {
             yield return null;
@@ -396,7 +412,7 @@ public class TileController : MonoBehaviour
             {
                 isArmed = false;
 
-                Ray ray = new Ray(transform.position, -transform.up);
+                Ray ray = new Ray(transform.position, Vector3.down);
                 if (Physics.Raycast(ray, out RaycastHit boardCheck, Mathf.Infinity))
                 {
                     if (boardCheck.collider.tag == "BoardSpace")
@@ -421,28 +437,25 @@ public class TileController : MonoBehaviour
 
                             // Rotate Tile if Illegal
                             checkingLegality = true;
-                            StartCoroutine(TileLegality(frame));
+                            StartCoroutine(TileLegality());
                             TileEvent(TileEventName.SuccessfullyPlaced, gameObject);
                         }
                         else
                         {
                             TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                             ResetToSpawn();
-                            Debug.Log("Did Highlighted Else.");
                         }
                     }
                     else
                     {
                         TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                         ResetToSpawn();
-                        Debug.Log("Did Else.");
                     }
                 }
                 else
                 {
                     TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
                     ResetToSpawn();
-                    Debug.Log("Did Final Else.");
                 }
             }
         }

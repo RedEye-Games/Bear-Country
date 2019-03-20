@@ -104,7 +104,7 @@ public class TileDisbursementController : MonoBehaviour
                 GameObject newTile = Instantiate(Tile, tileSpawnPoints[i].position, tileSpawnPoints[i].rotation);
                 unplacedTiles = unplacedTiles + 1;
                 remainingTiles = remainingTiles - 1;
-                SpriteRenderer tileSprite = newTile.GetComponentInChildren<SpriteRenderer>();
+                SpriteRenderer[] tileSprites = newTile.GetComponentsInChildren<SpriteRenderer>();
 
                 if (i == tileSpawnPoints.Length - 1)
                 {
@@ -115,8 +115,10 @@ public class TileDisbursementController : MonoBehaviour
                     tileChoices = TileOptions.Where(x => (x.rarity == 1)).ToList();
                 }
                 var tileChoice = tileChoices[Random.Range(0, tileChoices.Count)];
-
-                tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+                foreach (var tileSprite in tileSprites)
+                {
+                    tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+                }
                 newTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
                 newTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
                 newTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
@@ -144,10 +146,13 @@ public class TileDisbursementController : MonoBehaviour
             GameObject newSpecialTile = Instantiate(SpecialTile, specialTileSpawnPoints[i].position, specialTileSpawnPoints[i].rotation);
             newSpecialTile.GetComponentInChildren<TileController>().isSpecial = true;
             newSpecialTile.tag = "SpecialTile";
-            SpriteRenderer tileSprite = newSpecialTile.GetComponentInChildren<SpriteRenderer>();
+            SpriteRenderer[] tileSprites = newSpecialTile.GetComponentsInChildren<SpriteRenderer>();
             tileChoices = TileOptions.Where(x => (x.rarity == 3)).ToList();
             var tileChoice = tileChoices[i];
-            tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+            foreach (var tileSprite in tileSprites)
+            {
+                tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+            }
             newSpecialTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
             newSpecialTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
             newSpecialTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;

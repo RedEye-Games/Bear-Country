@@ -20,7 +20,7 @@ public class TileController : MonoBehaviour
 
     // GameController
     private GameController gameController;
-
+    private TileDisbursementController tileDisbursementController;
     // TileModifiers
     private TileModifiers tileModifiers;
 
@@ -29,9 +29,6 @@ public class TileController : MonoBehaviour
     public GameObject eastPath;
     public GameObject northPath;
     public GameObject southPath;
-
-    // Select Indicator
-   // Transform selectIndicator;
 
     // Path Components
     public List<GameObject> pathList = new List<GameObject>();
@@ -49,14 +46,18 @@ public class TileController : MonoBehaviour
 
     // Placement Variables
     bool isArmed = false;
-    bool isConfirmed = false;
+    public bool isConfirmed = false;
     int legalCheck = 0;
     public bool isPlaced = false;
     Vector3 spawnPoint;
     bool checkingPotential = false;
+    public bool isFlipped = false;
+
+    // Tile Lineage
+    public bool lineageBeingChecked = false;
 
     // Legality
-    bool isLegal = false;
+    public bool isLegal = false;
     public bool checkingLegality;
     public string checkingLegalityDirection;
 
@@ -64,6 +65,7 @@ public class TileController : MonoBehaviour
     public bool isSpecial = false;
 
     // Mouse Drag Variables
+    private Vector3 tilePositionStart;
     private Vector3 screenPoint;
     private Vector3 offset;
     public float distance = 100;
@@ -85,8 +87,8 @@ public class TileController : MonoBehaviour
             Debug.Log("Cannot find 'GameController' script");
         }
 
-        // Identify selectIndicator
-        //selectIndicator = transform.Find("SelectIndicator");
+        // Locate TileDisbursementController Script
+        tileDisbursementController = gameControllerObject.GetComponent<TileDisbursementController>();
 
         // Locate TileModifiers Script
         GameObject TileModifiersObject = GameObject.FindWithTag("TileModifiers");
@@ -110,6 +112,19 @@ public class TileController : MonoBehaviour
         // Setting Legality
         checkingLegality = false;
         checkingLegalityDirection = "CW";
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        frame++;
+        if (checkingLegality)
+        {
+            checkingLegality = false;
+            StartCoroutine(TileLegality());
+        }
+
     }
 
     public void PopulatePaths()
@@ -122,19 +137,13 @@ public class TileController : MonoBehaviour
 
     void OnMouseDown()
     {
-        // Check to make sure it's not attached to only a tile placed this round
-        // ... to do
-
+        tilePositionStart = gameObject.transform.position;
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-        if (isPlaced && !isConfirmed && !isSpecial) 
-        {
-            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
-        }
+        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y - 75, screenPoint.z));
+
         if (!isConfirmed)
         {
             // Highlight Compatible Board Spaces
-            checkingPotential = true;
             StartCoroutine(CheckPotential(frame));
 
             TileEvent(TileEventName.PickedUp, gameObject);
@@ -150,9 +159,15 @@ public class TileController : MonoBehaviour
         {
             if (isPlaced)
             {
-                gameController.AddScore(4);
                 isPlaced = false;
-                gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
+                if (isSpecial)
+                {
+                    gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Remove(gameObject);
+                }
+                else
+                {
+                    gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
+                }
             }
             isArmed = true;
             Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
@@ -166,107 +181,100 @@ public class TileController : MonoBehaviour
 
     void OnMouseUp()
     {
-        // Sends tiles back to spawn point
-        checkingPotential = false;
+        StartCoroutine(DropTile());
+        tileDisbursementController.ToggleButtons();
+    }
 
-        if (isConfirmed == false)
+    public void CheckLineage()
+    {
+        if (!gameObject.GetComponent<TileController>().HasLineage())
         {
-            if (isArmed && !isPlaced)
+            gameObject.GetComponent<TileController>().ResetToSpawn();
+        }
+    }
+
+    // Check to make sure tile connects to confirmed tile
+    public bool HasLineage()
+    {
+        lineageBeingChecked = true;
+        bool hasLineage = false;
+        foreach (var path in pathList)
+        {
+            if (path.GetComponent<PathController>().adjacentTile && !path.GetComponent<PathController>().isDeadEnd)
             {
-                isArmed = false;
-
-                Ray ray = new Ray(transform.position, -transform.up);
-                if (Physics.Raycast(ray, out RaycastHit boardCheck, Mathf.Infinity))
+                TileController adjacentTileController = path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>();
+                if (adjacentTileController.isConfirmed)
                 {
-                    if (boardCheck.collider.tag == "BoardSpace")
-                    {
-                        if (boardCheck.collider.GetComponentInParent<BoardSpace>().isHighlighted)
-                        {
-                            // All Checks Passed. Place the Tile
-                            isPlaced = true;
-                            gameController.GetComponent<GameController>().tilesPlacedThisRound.Add(gameObject);
-                            gameController.GetComponent<GameController>().selectedTile = gameObject;
-                          //  selectIndicator.gameObject.SetActive(true);
-                            Vector3 tilePosition = boardCheck.collider.transform.position;
-                            tilePosition.y = 0;
-                            transform.position = tilePosition;
-                            boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
-
-                            if (isSpecial)
-                            {
-                                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1, true);
-                            }
-                            else
-                            {
-                                gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
-                            }
-
-                            // Rotate Tile if Illegal
-                            checkingLegality = true;
-                            StartCoroutine(TileLegality(frame));
-                            TileEvent(TileEventName.SuccessfullyPlaced, gameObject);
-                        }
-                        else 
-                        {
-                            TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
-                            ResetToSpawn();
-                        }
-                    }
-                    else
-                    {
-                        TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
-                        ResetToSpawn();
-                    }
+                    lineageBeingChecked = false;
+                    return true;
                 }
                 else
                 {
-                    TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
-                    ResetToSpawn();
+                    if (!adjacentTileController.lineageBeingChecked)
+                    {
+                        hasLineage = adjacentTileController.HasLineage();
+                    }
                 }
             }
         }
-
-        ClearPotential();
+        return hasLineage;
     }
 
-    public IEnumerator TileLegality(int startFrame)
+    public IEnumerator TileLegality()
     {
-        yield return new WaitUntil(() => frame >= startFrame + 5);
-        TileLegalityCheck();
+        while (tileModifiers.rotating)
+        {
+            yield return null;
+        }
+        int startFrame = frame;
+        //yield return new WaitUntil(() => frame >= startFrame + 1);
+        StartCoroutine(TileLegalityCheck());
     }
 
-    public void TileLegalityCheck()
+    public IEnumerator TileLegalityCheck()
     {
         if (legalCheck < 4)
         {
+            int pathCount = 0;
             foreach (var path in pathList)
             {
+                while (path.GetComponent<PathController>().checkedDeadEnds == false)
+                {
+                    yield return null;
+                }
                 if (path.GetComponent<PathController>().isDeadEnd == false)
                 {
                     isLegal = true;
                     legalCheck = 0;
                 }
+                else
+                {
+                    pathCount++;
+                }
+            }
+            while (pathCount < pathList.Count)
+            {
+                yield return null;
             }
             if (!isLegal)
             {
                 if (checkingLegalityDirection == "CW")
                 {
-                    tileModifiers.RotateCW();
+                    StartCoroutine(tileModifiers.RotateCW());
                 }
                 else 
                 {
-                    tileModifiers.RotateCCW();
+                    StartCoroutine(tileModifiers.RotateCCW());
                 }
 
                 legalCheck++;
-                StartCoroutine(TileLegality(frame));
+                //StartCoroutine(TileLegality());
             }
         }
         else
         {
             ResetToSpawn();
             legalCheck = 0;
-            Debug.Log("No legal moves.");
             // And perhaps end round?
         }
     }
@@ -354,25 +362,19 @@ public class TileController : MonoBehaviour
     {
         if (isSpecial)
         {
-            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1, true);
+            gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Remove(gameObject);
         }
-
-        transform.position = spawnPoint;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        frame++;
-        if (checkingLegality)
+        else
         {
-            checkingLegality = false;
-            StartCoroutine(TileLegality(frame));
+            gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
         }
+        isPlaced = false;
+        transform.position = spawnPoint;
     }
 
     IEnumerator CheckPotential(int startFrame)
     {
+        checkingPotential = true;
         yield return new WaitUntil(() => frame >= startFrame + 5);
         foreach (var boardSpace in gameController.boardSpaceList)
         {
@@ -392,6 +394,73 @@ public class TileController : MonoBehaviour
                 }
             }
         }
+        checkingPotential = false;
+    }
+
+    private IEnumerator DropTile()
+    {
+        while (checkingPotential)
+        {
+            yield return null;
+        }
+
+        // Sends tiles back to spawn point
+
+        if (isConfirmed == false)
+        {
+            if (isArmed && !isPlaced)
+            {
+                isArmed = false;
+
+                Ray ray = new Ray(transform.position, Vector3.down);
+                if (Physics.Raycast(ray, out RaycastHit boardCheck, Mathf.Infinity))
+                {
+                    if (boardCheck.collider.tag == "BoardSpace")
+                    {
+                        if (boardCheck.collider.GetComponentInParent<BoardSpace>().isHighlighted)
+                        {
+                            // All Checks Passed. Place the Tile
+                            isPlaced = true;
+                            if (isSpecial)
+                            {
+                                gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Add(gameObject);
+                            }
+                            else
+                            {
+                                gameController.GetComponent<GameController>().tilesPlacedThisRound.Add(gameObject);
+                            }
+                            gameController.GetComponent<GameController>().selectedTile = gameObject;
+                            Vector3 tilePosition = boardCheck.collider.transform.position;
+                            tilePosition.y = 0;
+                            transform.position = tilePosition;
+                            boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
+
+                            // Rotate Tile if Illegal
+                            checkingLegality = true;
+                            StartCoroutine(TileLegality());
+                            TileEvent(TileEventName.SuccessfullyPlaced, gameObject);
+                        }
+                        else
+                        {
+                            TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
+                            ResetToSpawn();
+                        }
+                    }
+                    else
+                    {
+                        TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
+                        ResetToSpawn();
+                    }
+                }
+                else
+                {
+                    TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
+                    ResetToSpawn();
+                }
+            }
+        }
+
+        ClearPotential();
     }
 
     public void ClearPotential()
@@ -403,19 +472,4 @@ public class TileController : MonoBehaviour
         }
     }
 
-    public void UpdateScore(int score) 
-    {
-
-    }
-
-    public void AddToTileSystem() 
-    {
-        foreach (GameObject path in pathList)
-        {
-            if (!path.GetComponent<PathController>().isDeadEnd)
-            {
-                //string tileSystem = path.transform.parent.GetComponent<TileController>().tileSystem;
-            }
-        }
-    }
 }

@@ -88,10 +88,13 @@ public class PathController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        StartCoroutine(BeginExit());
+        if ("Trail" == other.gameObject.tag || "River" == other.gameObject.tag)
+        {
+            BeginExit();
+        }
     }
 
-    private IEnumerator BeginExit()
+    private void BeginExit()
     {
         adjacentPath = null;
         adjacentTile = null;
@@ -99,15 +102,9 @@ public class PathController : MonoBehaviour
         checkedDeadEnds = false;
         isDoubledDeadEnd = false;
         scoreToAdd = -1;
-        if (parentTile.isLegal && parentTile.isPlaced && !tileModifiers.isRotating)
+        if (parentTile.isLegal && parentTile.isPlaced)
         {
-            while (parentTile.checkingLegality)
-            {
-                Debug.Log("Did this a bunch.");
-                yield return null;
-            }
-            Debug.Log("Got here.");
-            parentTile.CheckLineage();
+            StartCoroutine(parentTile.CheckLineage());
         }
 
     }

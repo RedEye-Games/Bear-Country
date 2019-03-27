@@ -12,7 +12,7 @@ public class TileModifiers : MonoBehaviour
     // Animation
     public Quaternion from;
     public Quaternion to;
-    public bool isRotating = false;
+    public bool isRotating;
     private float smooth = 1f;
 
     public static event Action<TileEventName, GameObject> TileEvent;
@@ -30,6 +30,8 @@ public class TileModifiers : MonoBehaviour
         {
             Debug.Log("Cannot find 'GameController' script");
         }
+        isRotating = false;
+
     }
 
     void Update()
@@ -41,6 +43,8 @@ public class TileModifiers : MonoBehaviour
             {
                 selectedTile.transform.rotation = to;
                 isRotating = false;
+
+                StartCoroutine(selectedTile.GetComponent<TileController>().CheckLineage());
             }
         }
     }
@@ -68,6 +72,7 @@ public class TileModifiers : MonoBehaviour
         }
         from = selectedTile.transform.rotation;
         to = from * Quaternion.AngleAxis(180, tileAxis);
+        selectedTile.GetComponent<TileController>().isLegal = false;
         isRotating = true;
         while (isRotating)
         {
@@ -87,11 +92,9 @@ public class TileModifiers : MonoBehaviour
         }
         from = selectedTile.transform.rotation;
         to = from * Quaternion.AngleAxis(angle, Vector3.up);
+        selectedTile.GetComponent<TileController>().isLegal = false;
         isRotating = true;
-        while (isRotating)
-        {
-            yield return null;
-        }
+        yield return new WaitUntil(() => !isRotating);
         LegalityCheck("CW");
         TileEvent(TileEventName.Rotated, gameObject);
     }
@@ -106,11 +109,9 @@ public class TileModifiers : MonoBehaviour
         }
         from = selectedTile.transform.rotation;
         to = from * Quaternion.AngleAxis(angle, Vector3.up);
+        selectedTile.GetComponent<TileController>().isLegal = false;
         isRotating = true;
-        while (isRotating)
-        {
-            yield return null;
-        }
+        yield return new WaitUntil(() => !isRotating);
         LegalityCheck("CCW");
         TileEvent(TileEventName.Rotated, gameObject);
     }
@@ -119,7 +120,6 @@ public class TileModifiers : MonoBehaviour
     {
         if (isRotating == false)
         {
-            //isRotating = true;
             StartCoroutine(RotateCW());
         }
     }
@@ -128,7 +128,6 @@ public class TileModifiers : MonoBehaviour
     {
         if (isRotating == false)
         {
-            //isRotating = true;
             StartCoroutine(RotateCCW());
         }
     }
@@ -137,7 +136,6 @@ public class TileModifiers : MonoBehaviour
     {
         if (isRotating == false)
         {
-            isRotating = true;
             StartCoroutine(Flip());
         }
     }

@@ -179,9 +179,10 @@ public class TileController : MonoBehaviour
         tileDisbursementController.ToggleButtons();
     }
 
-    public void CheckLineage()
+    public IEnumerator CheckLineage()
     {
-        if (!gameObject.GetComponent<TileController>().HasLineage())
+        yield return new WaitUntil(() => !tileModifiers.isRotating);
+        if (!gameObject.GetComponent<TileController>().HasLineage() && isLegal)
         {
             gameObject.GetComponent<TileController>().ResetToSpawn();
         }

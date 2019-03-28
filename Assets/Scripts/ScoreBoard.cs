@@ -124,23 +124,26 @@ public class ScoreBoard : MonoBehaviour
 
     private void UpdateScore()
     {
-        foreach (var scoreKeeper in scoreKeepers)
+        if (scoreKeepers != null)
         {
-            if (scoreKeeper.gameObject.name == "Exits")
+            foreach (var scoreKeeper in scoreKeepers)
             {
-                scoreKeeper.text = "Exit Points: " + exitPoints;
-            }
-            if (scoreKeeper.gameObject.name == "River")
-            {
-                scoreKeeper.text = "River: " + exitPoints;
-            }
-            if (scoreKeeper.gameObject.name == "Trail")
-            {
-                scoreKeeper.text = "Trail: " + exitPoints;
-            }
-            if (scoreKeeper.gameObject.name == "Total Score")
-            {
-                scoreKeeper.text = "Total: " + exitPoints;
+                if (scoreKeeper.gameObject.name == "Exits")
+                {
+                    scoreKeeper.text = "Exit Points: " + exitPoints;
+                }
+                if (scoreKeeper.gameObject.name == "River")
+                {
+                    scoreKeeper.text = "River: " + exitPoints;
+                }
+                if (scoreKeeper.gameObject.name == "Trail")
+                {
+                    scoreKeeper.text = "Trail: " + exitPoints;
+                }
+                if (scoreKeeper.gameObject.name == "Total Score")
+                {
+                    scoreKeeper.text = "Total: " + exitPoints;
+                }
             }
         }
     }

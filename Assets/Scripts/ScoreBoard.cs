@@ -134,11 +134,22 @@ public class ScoreBoard : MonoBehaviour
                 }
                 if (scoreKeeper.gameObject.name == "River")
                 {
-                    scoreKeeper.text = "River: " + exitPoints;
+                    scoreKeeper.text = "River: " + longestRiver;
                 }
                 if (scoreKeeper.gameObject.name == "Trail")
                 {
-                    scoreKeeper.text = "Trail: " + exitPoints;
+                    scoreKeeper.text = "Trail: " + longestTrail;
+                }
+                if (scoreKeeper.gameObject.name == "Dead Ends")
+                {
+                    if (deadEnds == 0)
+                    {
+                        scoreKeeper.text = "Dead Ends: " + deadEnds;
+                    }
+                    else
+                    {
+                        scoreKeeper.text = "Dead Ends: -" + deadEnds;
+                    }
                 }
                 if (scoreKeeper.gameObject.name == "Total Score")
                 {

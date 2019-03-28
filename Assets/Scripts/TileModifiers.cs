@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class TileModifiers : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class TileModifiers : MonoBehaviour
     public Quaternion to;
     public bool isRotating;
     private float smooth = 1f;
+
+    // Button Control
+    public bool togglingButtons;
 
     public static event Action<TileEventName, GameObject> TileEvent;
 
@@ -31,6 +35,7 @@ public class TileModifiers : MonoBehaviour
             Debug.Log("Cannot find 'GameController' script");
         }
         isRotating = false;
+        togglingButtons = false;
 
     }
 
@@ -84,15 +89,16 @@ public class TileModifiers : MonoBehaviour
 
     public IEnumerator RotateCW()
     {
-        float angle = 90;
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        selectedTile.GetComponent<TileController>().isLegal = false;
+        StartCoroutine(ToggleButtons());
+        float angle = 90;
         if (selectedTile.GetComponent<TileController>().isFlipped)
         {
             angle = -90;
         }
         from = selectedTile.transform.rotation;
         to = from * Quaternion.AngleAxis(angle, Vector3.up);
-        selectedTile.GetComponent<TileController>().isLegal = false;
         isRotating = true;
         yield return new WaitUntil(() => !isRotating);
         LegalityCheck("CW");
@@ -118,7 +124,8 @@ public class TileModifiers : MonoBehaviour
 
     public void startRotationCW()
     {
-        if (isRotating == false)
+        selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        if (selectedTile && isRotating == false)
         {
             StartCoroutine(RotateCW());
         }
@@ -126,7 +133,8 @@ public class TileModifiers : MonoBehaviour
 
     public void startRotationCCW()
     {
-        if (isRotating == false)
+        selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        if (selectedTile && isRotating == false)
         {
             StartCoroutine(RotateCCW());
         }
@@ -134,7 +142,8 @@ public class TileModifiers : MonoBehaviour
 
     public void StartFlip()
     {
-        if (isRotating == false)
+        selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        if (selectedTile && isRotating == false)
         {
             StartCoroutine(Flip());
         }
@@ -145,5 +154,26 @@ public class TileModifiers : MonoBehaviour
         selectedTile.GetComponent<TileController>().ClearLegality();
         selectedTile.GetComponent<TileController>().checkingLegalityDirection = direction;
         StartCoroutine(selectedTile.GetComponent<TileController>().TileLegality());
+    }
+
+    private IEnumerator ToggleButtons()
+    {
+        if (!togglingButtons)
+        {
+            togglingButtons = true;
+            GameObject[] tileButtons = GameObject.FindGameObjectsWithTag("TileButton");
+            foreach (var tileButton in tileButtons)
+            {
+                tileButton.GetComponent<Button>().interactable = false;
+
+            }
+            yield return new WaitUntil(() => selectedTile.GetComponent<TileController>().isLegal);
+            foreach (var tileButton in tileButtons)
+            {
+                tileButton.GetComponent<Button>().interactable = true;
+            }
+            togglingButtons = false;
+        }
+
     }
 }

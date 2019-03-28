@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreBoard : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class ScoreBoard : MonoBehaviour
     private int deadEnds = 0;
     readonly int[] exitScoreTable = new int[] {0, 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 45};
     public int totalScore = 0;
+
+    Text[] scoreKeepers;
 
     // GameController
     private GameController gameController;
@@ -30,6 +33,7 @@ public class ScoreBoard : MonoBehaviour
         {
             Debug.Log("Cannot find 'GameController' script");
         }
+        scoreKeepers = gameObject.GetComponentsInChildren<Text>();
     }
 
     // Update is called once per frame
@@ -48,6 +52,7 @@ public class ScoreBoard : MonoBehaviour
         GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
         CountSystems(tileSystems);
         CountDeadEnds(tiles);
+        UpdateScore();
     }
 
     private void CountSystems(GameObject[] tileSystems)
@@ -115,6 +120,29 @@ public class ScoreBoard : MonoBehaviour
     private void CountTotalScore()
     {
         totalScore = exitPoints + longestRiver + longestTrail - deadEnds;
+    }
+
+    private void UpdateScore()
+    {
+        foreach (var scoreKeeper in scoreKeepers)
+        {
+            if (scoreKeeper.gameObject.name == "Exits")
+            {
+                scoreKeeper.text = "Exit Points: " + exitPoints;
+            }
+            if (scoreKeeper.gameObject.name == "River")
+            {
+                scoreKeeper.text = "River: " + exitPoints;
+            }
+            if (scoreKeeper.gameObject.name == "Trail")
+            {
+                scoreKeeper.text = "Trail: " + exitPoints;
+            }
+            if (scoreKeeper.gameObject.name == "Total Score")
+            {
+                scoreKeeper.text = "Total: " + exitPoints;
+            }
+        }
     }
 
 }

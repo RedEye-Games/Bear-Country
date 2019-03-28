@@ -12,6 +12,8 @@ public class TileDisbursementController : MonoBehaviour
     // ScoreBoard
     private ScoreBoard scoreBoard;
 
+    public GameObject roundCounter;
+
     public GameObject Tile;
     public Button disburseTilesButton;
     public Transform[] tileSpawnPoints;
@@ -45,6 +47,10 @@ public class TileDisbursementController : MonoBehaviour
         {
             Debug.Log("Cannot find 'GameController' script");
         }
+
+        // Locate RoundCOunter Script
+        roundCounter = GameObject.FindWithTag("RoundCounter");
+        roundCounter.GetComponent<Text>().text = "7";
 
         // Locate ScoreBoard Script
         // ToDo: Trigger to EventManager
@@ -127,6 +133,8 @@ public class TileDisbursementController : MonoBehaviour
             }
         }
         tiles = GameObject.FindGameObjectsWithTag("Tile");
+        int roundsLeft = (remainingTiles / 4) + 1;
+        roundCounter.GetComponent<Text>().text = roundsLeft.ToString();
         if (remainingTiles > 0)
         {
             disburseTilesButton.GetComponentInChildren<Text>().text = "Place all tiles.";

@@ -57,8 +57,10 @@ public class TileModifiers : MonoBehaviour
     public IEnumerator Flip()
     {
         // Locate path which isn't a dead end. Flip along that axis.
-        Vector3 tileAxis = new Vector3(0,0,1);
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        selectedTile.GetComponent<TileController>().isLegal = false;
+        StartCoroutine(ToggleButtons());
+        Vector3 tileAxis = new Vector3(0,0,1);
         selectedTile.GetComponent<TileController>().isFlipped = !selectedTile.GetComponent<TileController>().isFlipped;
         List<GameObject> selectedTilePaths = selectedTile.GetComponent<TileController>().pathList;
         foreach (var tilePath in selectedTilePaths)
@@ -77,7 +79,6 @@ public class TileModifiers : MonoBehaviour
         }
         from = selectedTile.transform.rotation;
         to = from * Quaternion.AngleAxis(180, tileAxis);
-        selectedTile.GetComponent<TileController>().isLegal = false;
         isRotating = true;
         while (isRotating)
         {
@@ -107,15 +108,16 @@ public class TileModifiers : MonoBehaviour
 
     public IEnumerator RotateCCW()
     {
-        float angle = -90;
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        selectedTile.GetComponent<TileController>().isLegal = false;
+        StartCoroutine(ToggleButtons());
+        float angle = -90;
         if (selectedTile.GetComponent<TileController>().isFlipped)
         {
             angle = 90;
         }
         from = selectedTile.transform.rotation;
         to = from * Quaternion.AngleAxis(angle, Vector3.up);
-        selectedTile.GetComponent<TileController>().isLegal = false;
         isRotating = true;
         yield return new WaitUntil(() => !isRotating);
         LegalityCheck("CCW");

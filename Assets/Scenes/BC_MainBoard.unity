@@ -638,7 +638,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Total Score:'
+  m_Text: 'Total Score: 0'
 --- !u!222 &190495567
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1145,7 +1145,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Trail:'
+  m_Text: 'Trail: 0'
 --- !u!222 &381711938
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1224,7 +1224,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Exits:'
+  m_Text: 'Exits: 0'
 --- !u!222 &447147711
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1782,7 +1782,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'River:'
+  m_Text: 'River: 0'
 --- !u!222 &592091872
 CanvasRenderer:
   m_ObjectHideFlags: 0

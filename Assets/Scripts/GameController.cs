@@ -168,6 +168,24 @@ public class GameController : MonoBehaviour
         tile.GetComponent<TileController>().tileSystemList.Add(newTileSystem);
     }
 
+    public void SelectTile(GameObject tile)
+    {
+        if (selectedTile != null)
+        {
+            SpriteRenderer[] tileSprites = selectedTile.GetComponentsInChildren<SpriteRenderer>();
+            foreach (var sprite in tileSprites)
+            {
+                if (sprite.gameObject.name == "Highlight")
+                {
+                    sprite.color = new Color(1, 1, 1, 0);
+                }
+            }
+            selectedTile.GetComponent<TileController>().isSelected = false;
+        }
+        selectedTile = tile;
+        selectedTile.GetComponent<TileController>().isSelected = true;
+    }
+
     private string GenerateTileName()
     {
         string newTileName = "";

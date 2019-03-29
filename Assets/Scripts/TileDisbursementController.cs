@@ -123,7 +123,10 @@ public class TileDisbursementController : MonoBehaviour
                 var tileChoice = tileChoices[Random.Range(0, tileChoices.Count)];
                 foreach (var tileSprite in tileSprites)
                 {
-                    tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+                    if (tileSprite.gameObject.name == "Tile Sprite")
+                    {
+                        tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+                    }
                 }
                 newTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
                 newTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
@@ -159,7 +162,10 @@ public class TileDisbursementController : MonoBehaviour
             var tileChoice = tileChoices[i];
             foreach (var tileSprite in tileSprites)
             {
-                tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+                if (tileSprite.gameObject.name == "Tile Sprite")
+                {
+                    tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+                }
             }
             newSpecialTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
             newSpecialTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;

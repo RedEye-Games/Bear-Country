@@ -53,6 +53,9 @@ public class TileController : MonoBehaviour
     bool checkingPotential = false;
     public bool isFlipped = false;
 
+    // Selection
+    public bool isSelected;
+
     // Tile Lineage
     public bool lineageBeingChecked = false;
 
@@ -114,6 +117,8 @@ public class TileController : MonoBehaviour
         // Set Placement
         isPlaced = false;
 
+        isSelected = false;
+
         // Setting Legality
         checkingLegality = false;
         checkingLegalityDirection = "CW";
@@ -135,6 +140,17 @@ public class TileController : MonoBehaviour
                 transform.position = offset;
             }
 
+        }
+        if (isSelected)
+        {
+            SpriteRenderer[] tileSprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
+            foreach (var sprite in tileSprites)
+            {
+                if (sprite.gameObject.name == "Highlight")
+                {
+                    sprite.color = new Color(1, 1, 1, 0.5f);
+                }
+            }
         }
     }
 
@@ -188,6 +204,7 @@ public class TileController : MonoBehaviour
     {
         slowMovement = true;
 
+        gameController.GetComponent<GameController>().SelectTile(gameObject);
         TileEvent(TileEventName.PickedUp, gameObject);
 
         yield return new WaitForSeconds(.10f);       
@@ -443,7 +460,7 @@ public class TileController : MonoBehaviour
                             {
                                 gameController.GetComponent<GameController>().tilesPlacedThisRound.Add(gameObject);
                             }
-                            gameController.GetComponent<GameController>().selectedTile = gameObject;
+                            //gameController.GetComponent<GameController>().SelectTile(gameObject);
                             Vector3 tilePosition = boardCheck.collider.transform.position;
                             tilePosition.y = 0;
                             transform.position = tilePosition;

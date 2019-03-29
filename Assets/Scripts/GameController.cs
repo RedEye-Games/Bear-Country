@@ -168,6 +168,17 @@ public class GameController : MonoBehaviour
         tile.GetComponent<TileController>().tileSystemList.Add(newTileSystem);
     }
 
+    public void SelectTile(GameObject tile)
+    {
+        if (selectedTile != null)
+        {
+
+            selectedTile.GetComponent<TileController>().StopBreathing();
+        }
+        selectedTile = tile;
+        selectedTile.GetComponent<TileController>().isSelected = true;
+    }
+
     private string GenerateTileName()
     {
         string newTileName = "";

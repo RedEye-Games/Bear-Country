@@ -86,7 +86,10 @@ public class TileModifiers : MonoBehaviour
         {
             yield return null;
         }
-        LegalityCheck("CW");
+        if (selectedTile.GetComponent<TileController>().isPlaced)
+        {
+            LegalityCheck("CW");
+        }
         TileEvent(TileEventName.Flipped, gameObject);
     }
 
@@ -104,7 +107,10 @@ public class TileModifiers : MonoBehaviour
         to = from * Quaternion.AngleAxis(angle, Vector3.up);
         isRotating = true;
         yield return new WaitUntil(() => !isRotating);
-        LegalityCheck("CW");
+        if (selectedTile.GetComponent<TileController>().isPlaced)
+        {
+            LegalityCheck("CW");
+        }
         TileEvent(TileEventName.Rotated, gameObject);
     }
 
@@ -122,7 +128,10 @@ public class TileModifiers : MonoBehaviour
         to = from * Quaternion.AngleAxis(angle, Vector3.up);
         isRotating = true;
         yield return new WaitUntil(() => !isRotating);
-        LegalityCheck("CCW");
+        if (selectedTile.GetComponent<TileController>().isPlaced)
+        {
+            LegalityCheck("CCW");
+        }
         TileEvent(TileEventName.Rotated, gameObject);
     }
 
@@ -171,7 +180,15 @@ public class TileModifiers : MonoBehaviour
                 tileButton.GetComponent<Button>().interactable = false;
 
             }
-            yield return new WaitUntil(() => selectedTile.GetComponent<TileController>().isLegal);
+            if (selectedTile.GetComponent<TileController>().isPlaced)
+            {
+                yield return new WaitUntil(() => selectedTile.GetComponent<TileController>().isLegal);
+
+            }
+            else
+            {
+                yield return new WaitUntil(() => !isRotating);
+            }
             foreach (var tileButton in tileButtons)
             {
                 tileButton.GetComponent<Button>().interactable = true;

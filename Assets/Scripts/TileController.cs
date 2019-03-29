@@ -60,6 +60,7 @@ public class TileController : MonoBehaviour
 
     // Tile Lineage
     public bool lineageBeingChecked = false;
+    public bool hasLineage;
 
     // Legality
     public bool isLegal = false;
@@ -283,20 +284,45 @@ public class TileController : MonoBehaviour
         isSelected = false;
     }
 
-    public IEnumerator CheckLineage()
+    // Explicit predicate delegate.
+    private static bool FindLiveEnds(GameObject path)
     {
-        yield return new WaitUntil(() => !tileModifiers.isRotating);
-        if (!gameObject.GetComponent<TileController>().HasLineage() && isLegal)
+
+        if (path.GetComponent<PathController>().isDeadEnd == false)
         {
-            gameObject.GetComponent<TileController>().ResetToSpawn();
+            return true;
         }
+        else
+        {
+            return false;
+        }
+
     }
 
-    // Check to make sure tile connects to confirmed tile
-    public bool HasLineage()
+    public IEnumerator CheckLineage()
     {
+
+        yield return new WaitUntil(() => !tileModifiers.isRotating);
+
         lineageBeingChecked = true;
-        bool hasLineage = false;
+        hasLineage = false;
+
+        // First Determine if two adjacent tiles have only each other as living ends. If so, reset both to spawn.
+        List<GameObject> livePaths = pathList.FindAll(FindLiveEnds);
+        if (livePaths.Count == 1 && !isConfirmed)
+        {
+            List<GameObject> adjacentLivePaths = livePaths[0].GetComponent<PathController>().adjacentTile.GetComponentInParent<TileController>().pathList.FindAll(FindLiveEnds);
+            if (adjacentLivePaths.Count == 1)
+            {
+                // Make sure other tile is not an edge.
+                if (!adjacentLivePaths[0].GetComponentInParent<TileController>().isConfirmed)
+                {
+                    adjacentLivePaths[0].GetComponentInParent<TileController>().ResetToSpawn();
+                    ResetToSpawn();
+                }
+            }
+        }
+
         foreach (var path in pathList)
         {
             if (path.GetComponent<PathController>().adjacentTile && !path.GetComponent<PathController>().isDeadEnd)
@@ -305,18 +331,30 @@ public class TileController : MonoBehaviour
                 if (adjacentTileController.isConfirmed)
                 {
                     lineageBeingChecked = false;
-                    return true;
+                    hasLineage = true;
                 }
                 else
                 {
                     if (!adjacentTileController.lineageBeingChecked)
                     {
-                        hasLineage = adjacentTileController.HasLineage();
+                        adjacentTileController.lineageBeingChecked = true;
+                        IEnumerator adjacentCheck = adjacentTileController.CheckLineage();
+                        StartCoroutine(adjacentCheck);
+                    }
+                    yield return new WaitUntil(() => !adjacentTileController.lineageBeingChecked);
+                    if (adjacentTileController.hasLineage)
+                    {
+                        hasLineage = true;
                     }
                 }
             }
         }
-        return hasLineage;
+
+        if (!hasLineage && isLegal)
+        {
+            gameObject.GetComponent<TileController>().ResetToSpawn();
+        }
+        lineageBeingChecked = false;
     }
 
     public IEnumerator TileLegality()
@@ -470,6 +508,8 @@ public class TileController : MonoBehaviour
             gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
         }
         isPlaced = false;
+        hasLineage = false;
+        lineageBeingChecked = false;
         transform.position = spawnPoint;
     }
 

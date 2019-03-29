@@ -64,14 +64,17 @@ public class TileController : MonoBehaviour
     // Special Tile Variables
     public bool isSpecial = false;
 
-    // Mouse Drag Variables
+    // Drag Variables
     private Vector3 tilePositionStart;
     private Vector3 screenPoint;
     private Vector3 offset;
-    public float distance = 100;
+    public float distance = 125;
+    private bool isLifted;
+    private bool slowMovement;
 
     // Coroutine Setup
     public int frame;
+    private IEnumerator coroutine;
 
     // Start is called before the first frame update
     void Start()
@@ -104,7 +107,9 @@ public class TileController : MonoBehaviour
         // Record spawn point
         spawnPoint = gameObject.transform.position;
 
-
+        // Drag Variables
+        isLifted = false;
+        slowMovement = true;
 
         // Set Placement
         isPlaced = false;
@@ -119,6 +124,18 @@ public class TileController : MonoBehaviour
     void Update()
     {
         frame++;
+        if (isLifted)
+        {
+            if (slowMovement)
+            {
+                transform.position = Vector3.Lerp(transform.position, offset, 15 * Time.deltaTime);
+            }
+            else
+            {
+                transform.position = offset;
+            }
+
+        }
     }
 
     public void PopulatePaths()
@@ -131,25 +148,16 @@ public class TileController : MonoBehaviour
 
     void OnMouseDown()
     {
-        tilePositionStart = gameObject.transform.position;
-        screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y - 75, screenPoint.z));
-
         if (!isConfirmed)
         {
-            // Highlight Compatible Board Spaces
-            StartCoroutine(CheckPotential(frame));
-
-            TileEvent(TileEventName.PickedUp, gameObject);
-
-            // Clear Legality
-            ClearLegality();
+            coroutine = BeginLift();
+            StartCoroutine(coroutine);
         }
     }
 
     void OnMouseDrag()
     {
-        if (isConfirmed == false)
+        if (isConfirmed == false && isLifted == true)
         {
             if (isPlaced)
             {
@@ -164,19 +172,37 @@ public class TileController : MonoBehaviour
                 }
             }
             isArmed = true;
-            Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-            Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
-            Vector3 tilePosition = cursorPosition;
-            tilePosition.y = 5;
-            transform.position = tilePosition;
-
+            offset = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y+distance, screenPoint.z + 145));
         }
     }
 
     void OnMouseUp()
     {
+        isLifted = false;
         StartCoroutine(DropTile());
         tileDisbursementController.ToggleButtons();
+        StopCoroutine(coroutine);
+    }
+
+    public IEnumerator BeginLift()
+    {
+        slowMovement = true;
+
+        TileEvent(TileEventName.PickedUp, gameObject);
+
+        yield return new WaitForSeconds(.10f);       
+         
+        // Clear Legality
+        ClearLegality();
+
+        // Highlight Compatible Board Spaces
+        StartCoroutine(CheckPotential(frame));
+
+        isLifted = true;
+
+        yield return new WaitForSeconds(.25f);
+        slowMovement = false;
+
     }
 
     public IEnumerator CheckLineage()

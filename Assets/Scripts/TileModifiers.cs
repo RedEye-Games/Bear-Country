@@ -15,6 +15,7 @@ public class TileModifiers : MonoBehaviour
     public Quaternion to;
     public bool isRotating;
     private float smooth = 1f;
+    public int rotationSpeed;
 
     // Button Control
     public bool togglingButtons;
@@ -36,6 +37,7 @@ public class TileModifiers : MonoBehaviour
         }
         isRotating = false;
         togglingButtons = false;
+        rotationSpeed = 54;
 
     }
 
@@ -43,7 +45,7 @@ public class TileModifiers : MonoBehaviour
     {
         if (isRotating)
         {
-            selectedTile.transform.rotation = Quaternion.RotateTowards(selectedTile.transform.rotation, to, 540 * Time.deltaTime);
+            selectedTile.transform.rotation = Quaternion.RotateTowards(selectedTile.transform.rotation, to, rotationSpeed * 10 * Time.deltaTime);
             if (selectedTile.transform.rotation == to)
             {
                 selectedTile.transform.rotation = to;

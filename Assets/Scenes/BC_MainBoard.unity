@@ -4759,14 +4759,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1870723279617653532}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 669324687b2ab47bc870101e082c7cad, type: 3}
+  m_Script: {fileID: 11500000, guid: fbc0ecf788e544d05b2a5b806e72aa72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  from: {x: 0, y: 0, z: 0, w: 0}
-  to: {x: 0, y: 0, z: 0, w: 0}
-  isRotating: 0
-  rotationSpeed: 54
-  togglingButtons: 0
 --- !u!114 &1870723279617653534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4808,7 +4803,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1870723279617653533}
-        m_MethodName: startRotationCCW
+        m_MethodName: RotateCCW
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4985,14 +4980,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1870723279685938344}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 669324687b2ab47bc870101e082c7cad, type: 3}
+  m_Script: {fileID: 11500000, guid: fbc0ecf788e544d05b2a5b806e72aa72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  from: {x: 0, y: 0, z: 0, w: 0}
-  to: {x: 0, y: 0, z: 0, w: 0}
-  isRotating: 0
-  rotationSpeed: 54
-  togglingButtons: 0
 --- !u!114 &1870723279685938346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5034,7 +5024,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1870723279685938345}
-        m_MethodName: StartFlip
+        m_MethodName: Flip
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5194,8 +5184,8 @@ GameObject:
   - component: {fileID: 1870723280065308824}
   - component: {fileID: 1870723280065308825}
   - component: {fileID: 1870723280065308822}
-  - component: {fileID: 1870723280065308821}
   - component: {fileID: 1870723280065308826}
+  - component: {fileID: 1870723280065308821}
   m_Layer: 5
   m_Name: RotateCWButton
   m_TagString: TileButton
@@ -5212,14 +5202,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1870723280065308820}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 669324687b2ab47bc870101e082c7cad, type: 3}
+  m_Script: {fileID: 11500000, guid: fbc0ecf788e544d05b2a5b806e72aa72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  from: {x: 0, y: 0, z: 0, w: 0}
-  to: {x: 0, y: 0, z: 0, w: 0}
-  isRotating: 0
-  rotationSpeed: 54
-  togglingButtons: 0
 --- !u!114 &1870723280065308822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5261,7 +5246,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1870723280065308821}
-        m_MethodName: startRotationCW
+        m_MethodName: RotateCW
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

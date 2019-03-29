@@ -172,15 +172,8 @@ public class GameController : MonoBehaviour
     {
         if (selectedTile != null)
         {
-            SpriteRenderer[] tileSprites = selectedTile.GetComponentsInChildren<SpriteRenderer>();
-            foreach (var sprite in tileSprites)
-            {
-                if (sprite.gameObject.name == "Highlight")
-                {
-                    sprite.color = new Color(1, 1, 1, 0);
-                }
-            }
-            selectedTile.GetComponent<TileController>().isSelected = false;
+
+            selectedTile.GetComponent<TileController>().StopBreathing();
         }
         selectedTile = tile;
         selectedTile.GetComponent<TileController>().isSelected = true;

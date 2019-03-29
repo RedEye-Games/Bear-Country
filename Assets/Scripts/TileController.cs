@@ -55,6 +55,8 @@ public class TileController : MonoBehaviour
 
     // Selection
     public bool isSelected;
+    SpriteRenderer[] tileSprites;
+    IEnumerator breathing;
 
     // Tile Lineage
     public bool lineageBeingChecked = false;
@@ -119,9 +121,12 @@ public class TileController : MonoBehaviour
 
         isSelected = false;
 
+        tileSprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
+
         // Setting Legality
         checkingLegality = false;
         checkingLegalityDirection = "CW";
+
 
     }
 
@@ -143,7 +148,7 @@ public class TileController : MonoBehaviour
         }
         if (isSelected)
         {
-            SpriteRenderer[] tileSprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
+            tileSprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
             foreach (var sprite in tileSprites)
             {
                 if (sprite.gameObject.name == "Highlight")
@@ -205,6 +210,8 @@ public class TileController : MonoBehaviour
         slowMovement = true;
 
         gameController.GetComponent<GameController>().SelectTile(gameObject);
+        breathing = StartBreathing();
+        StartCoroutine(breathing);
         TileEvent(TileEventName.PickedUp, gameObject);
 
         yield return new WaitForSeconds(.10f);       
@@ -220,6 +227,60 @@ public class TileController : MonoBehaviour
         yield return new WaitForSeconds(.25f);
         slowMovement = false;
 
+    }
+
+    public IEnumerator StartBreathing()
+    {
+
+
+        // Track how many seconds we've been fading.
+        int duration = 1;
+        float t = 0;
+
+        float startOpacity = 0.5f;
+        float endOpacity = 1.0f;
+        while (isSelected)
+        {
+            while (t < duration)
+            {
+                // Step the fade forward one frame.
+                t += Time.deltaTime;
+                // Turn the time into an interpolation factor between 0 and 1.
+                float blend = Mathf.Clamp01(t / duration);
+                foreach (var sprite in tileSprites)
+                {
+                    if (sprite.gameObject.name == "Highlight")
+                    {
+                        // Blend to the corresponding opacity between start & target.
+                        sprite.color = new Color(1, 1, 1, Mathf.Lerp(startOpacity, endOpacity, blend));
+                    }
+                }
+
+                // Wait one frame, and repeat.
+                yield return null;
+            }
+            if (t >= duration)
+            {
+                t = 0;
+                float swapOpacity = startOpacity;
+                startOpacity = endOpacity;
+                endOpacity = swapOpacity;
+            }
+        }
+
+    }
+
+    public void StopBreathing()
+    {
+        StopCoroutine(breathing);
+        foreach (var sprite in tileSprites)
+        {
+            if (sprite.gameObject.name == "Highlight")
+            {
+                sprite.color = new Color(1, 1, 1, 0);
+            }
+        }
+        isSelected = false;
     }
 
     public IEnumerator CheckLineage()
@@ -322,6 +383,15 @@ public class TileController : MonoBehaviour
     public void ConfirmTile()
     {
         isConfirmed = true;
+        isSelected = false;
+        StopBreathing();
+        foreach (var tileSprite in tileSprites)
+        {
+            if (tileSprite.gameObject.name == "Tile Sprite")
+            {
+                tileSprite.color = new Color(1, 1, 1, 1);
+            }
+        }
         // Connect Systems for Scoring
         ScoreTile();
     }

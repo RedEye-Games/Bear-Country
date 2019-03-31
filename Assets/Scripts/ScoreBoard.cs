@@ -14,6 +14,7 @@ public class ScoreBoard : MonoBehaviour
     private int deadEnds = 0;
     readonly int[] exitScoreTable = new int[] {0, 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 45};
     public int totalScore = 0;
+    public bool isScoring;
 
     Text[] scoreKeepers;
 
@@ -34,6 +35,7 @@ public class ScoreBoard : MonoBehaviour
             Debug.Log("Cannot find 'GameController' script");
         }
         scoreKeepers = gameObject.GetComponentsInChildren<Text>();
+        isScoring = false;
     }
 
     // Update is called once per frame
@@ -124,6 +126,7 @@ public class ScoreBoard : MonoBehaviour
 
     private void UpdateScore()
     {
+        isScoring = true;
         if (scoreKeepers != null)
         {
             foreach (var scoreKeeper in scoreKeepers)
@@ -157,6 +160,7 @@ public class ScoreBoard : MonoBehaviour
                 }
             }
         }
+        isScoring = false;
     }
 
 }

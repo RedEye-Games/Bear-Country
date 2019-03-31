@@ -197,7 +197,14 @@ public class TileDisbursementController : MonoBehaviour
 
         if (gameController.tilesPlacedThisRound.Count == 4 && !disbursingTiles)
         {
-            EnableButton();
+            if (remainingTiles == 0)
+            {
+                EnableButton(true);
+            }
+            else
+            {
+                EnableButton();
+            }
         } else
         {
             DisableButton();
@@ -223,14 +230,26 @@ public class TileDisbursementController : MonoBehaviour
         }
     }
 
-    void EnableButton() 
+    void EnableButton(bool endGame = false) 
     {
+        if (endGame)
+        {
+            disburseTilesButton.GetComponentInChildren<Text>().text = "End Game";
+            disburseTilesButton.interactable = true;
+            disburseTilesButton.onClick.AddListener(EndGame);
+        } 
+        else 
         if (!disburseTilesButton.interactable)
         {
             disburseTilesButton.GetComponentInChildren<Text>().text = "Confirm Placement";
             disburseTilesButton.interactable = true;
             disburseTilesButton.onClick.AddListener(DisburseTiles);
         }
+    }
+
+    void EndGame ()
+    {
+        StartCoroutine(gameController.EndGame());
     }
 
     void DisableButton()

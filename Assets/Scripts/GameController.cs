@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
 
     // ScoreBoard
     private ScoreBoard scoreBoard;
+    public GameObject endGameOverlay;
 
     private int score;
 
@@ -261,6 +262,9 @@ public class GameController : MonoBehaviour
         yield return new WaitUntil(() => !scoreBoard.isScoring);
         int highScore = scoreBoard.GetComponent<ScoreBoard>().totalScore;
         scoreBoard.GetComponent<HighScoreSaver>().SaveScore(highScore);
+        HighScoreData highScores = scoreBoard.GetComponent<HighScoreSaver>().highScoreData;
+        endGameOverlay.SetActive(true);
+        endGameOverlay.GetComponentInChildren<HighScoreController>().UpdateScores(highScores);
     }
 
 }

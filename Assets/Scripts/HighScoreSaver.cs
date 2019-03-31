@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
@@ -49,7 +50,8 @@ public class HighScoreSaver : MonoBehaviour
         {
             score = newScore,
             seed = newSeed,
-            shared = newShared
+            shared = newShared,
+            timeStamp = DateTime.Now
         };
         highScoreData.scores.Add(scoreToAdd);
 

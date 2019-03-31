@@ -1021,6 +1021,7 @@ MonoBehaviour:
   boardScale: 10
   boardSize: 9
   selectedTile: {fileID: 0}
+  endGameOverlay: {fileID: 1392175293}
   tileSystemList: []
   tileSystem: {fileID: 7591832815588949293, guid: 74df6c9acc73e48389d473c351abc000,
     type: 3}
@@ -2407,6 +2408,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 692f3c4dbb47b430187e86d8ac408b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  highScoreData:
+    scores: []
 --- !u!1 &967598380
 GameObject:
   m_ObjectHideFlags: 0
@@ -3724,7 +3727,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 0.392}
+  m_Color: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3758,6 +3761,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1435286457}
   - component: {fileID: 1435286459}
+  - component: {fileID: 1435286460}
   - component: {fileID: 1435286458}
   m_Layer: 5
   m_Name: High Score List
@@ -3794,49 +3798,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1435286456}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 1297475563, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.6627451, g: 0.48235294, b: 0.3372549, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_FontData:
-    m_Font: {fileID: 12800000, guid: 69d2f0fdaaddd4ebcb5c2835fa64e37c, type: 3}
-    m_FontSize: 72
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 0
-    m_MaxSize: 112
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1.2
-  m_Text: '1.
-
-    2.
-
-    3.
-
-    4.
-
-    5.
-
-    6.
-
-    7.
-
-    8.
-
-    9.
-
-    10.'
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 25
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
 --- !u!222 &1435286459
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3845,6 +3820,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1435286456}
   m_CullTransparentMesh: 0
+--- !u!114 &1435286460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435286456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4e2c1dc19794f1c9dc74781d78ead2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scorePrefab: {fileID: 1398254299776014031, guid: 90f07b03937f24e91bdc9b95ab63327a,
+    type: 3}
 --- !u!1 &1541454133
 GameObject:
   m_ObjectHideFlags: 0
@@ -4929,7 +4918,7 @@ GameObject:
   - component: {fileID: 2128645254}
   - component: {fileID: 2128645253}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: High Score Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

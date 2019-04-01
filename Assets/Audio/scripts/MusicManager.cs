@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Audio;
 using UnityEngine;
 
 public class MusicManager : MonoBehaviour
@@ -20,6 +21,7 @@ public class MusicManager : MonoBehaviour
                 source.clip = clip;
                 source.volume = 1;
                 source.pitch = 1;
+                //source.outputAudioMixerGroup = AudioMixerGroup;
                 source.loop = true;
                 s.sources.Add(source);
             }

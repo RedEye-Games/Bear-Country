@@ -1,11 +1,24 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class TileModifiers : MonoBehaviour
 {
     // GameController
     private GameController gameController;
     private GameObject selectedTile;
+
+    // Animation
+    public Quaternion from;
+    public Quaternion to;
+    public bool isRotating;
+    private float smooth = 1f;
+    public int rotationSpeed;
+
+    // Button Control
+    public bool togglingButtons;
 
     public static event Action<TileEventName, GameObject> TileEvent;
 
@@ -22,36 +35,166 @@ public class TileModifiers : MonoBehaviour
         {
             Debug.Log("Cannot find 'GameController' script");
         }
+        isRotating = false;
+        togglingButtons = false;
+        rotationSpeed = 54;
+
     }
 
-    public void Flip()
+    void Update()
     {
+        if (isRotating)
+        {
+            selectedTile.transform.rotation = Quaternion.RotateTowards(selectedTile.transform.rotation, to, rotationSpeed * 10 * Time.deltaTime);
+            if (selectedTile.transform.rotation == to)
+            {
+                selectedTile.transform.rotation = to;
+                isRotating = false;
+
+                StartCoroutine(selectedTile.GetComponent<TileController>().CheckLineage());
+            }
+        }
+    }
+
+    public IEnumerator Flip()
+    {
+        // Locate path which isn't a dead end. Flip along that axis.
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
-        selectedTile.transform.localScale = new Vector3(selectedTile.transform.localScale.x, selectedTile.transform.localScale.y, selectedTile.transform.localScale.z * -1);
-        LegalityCheck("CW");
+        selectedTile.GetComponent<TileController>().isLegal = false;
+        StartCoroutine(ToggleButtons());
+        Vector3 tileAxis = new Vector3(0,0,1);
+        selectedTile.GetComponent<TileController>().isFlipped = !selectedTile.GetComponent<TileController>().isFlipped;
+        List<GameObject> selectedTilePaths = selectedTile.GetComponent<TileController>().pathList;
+        foreach (var tilePath in selectedTilePaths)
+        {
+            if (!tilePath.GetComponent<PathController>().isDeadEnd)
+            {
+                if (tilePath.GetComponent<PathController>().name == "Path (North)" || tilePath.GetComponent<PathController>().name == "Path (South)")
+                {
+                    tileAxis = new Vector3(0, 0, 1);
+                }
+                else
+                {
+                    tileAxis = new Vector3(1, 0, 0);
+                }
+            }
+        }
+        from = selectedTile.transform.rotation;
+        to = from * Quaternion.AngleAxis(180, tileAxis);
+        isRotating = true;
+        while (isRotating)
+        {
+            yield return null;
+        }
+        if (selectedTile.GetComponent<TileController>().isPlaced)
+        {
+            LegalityCheck("CW");
+        }
         TileEvent(TileEventName.Flipped, gameObject);
     }
 
-    public void RotateCW()
+    public IEnumerator RotateCW()
     {
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
-        selectedTile.transform.Rotate(0, 90, 0);
-        LegalityCheck("CW");
+        selectedTile.GetComponent<TileController>().isLegal = false;
+        StartCoroutine(ToggleButtons());
+        float angle = 90;
+        if (selectedTile.GetComponent<TileController>().isFlipped)
+        {
+            angle = -90;
+        }
+        from = selectedTile.transform.rotation;
+        to = from * Quaternion.AngleAxis(angle, Vector3.up);
+        isRotating = true;
+        yield return new WaitUntil(() => !isRotating);
+        if (selectedTile.GetComponent<TileController>().isPlaced)
+        {
+            LegalityCheck("CW");
+        }
         TileEvent(TileEventName.Rotated, gameObject);
     }
 
-    public void RotateCCW()
+    public IEnumerator RotateCCW()
     {
         selectedTile = gameController.GetComponent<GameController>().selectedTile;
-        selectedTile.transform.Rotate(0, -90, 0);
-        LegalityCheck("CCW");
+        selectedTile.GetComponent<TileController>().isLegal = false;
+        StartCoroutine(ToggleButtons());
+        float angle = -90;
+        if (selectedTile.GetComponent<TileController>().isFlipped)
+        {
+            angle = 90;
+        }
+        from = selectedTile.transform.rotation;
+        to = from * Quaternion.AngleAxis(angle, Vector3.up);
+        isRotating = true;
+        yield return new WaitUntil(() => !isRotating);
+        if (selectedTile.GetComponent<TileController>().isPlaced)
+        {
+            LegalityCheck("CCW");
+        }
         TileEvent(TileEventName.Rotated, gameObject);
+    }
+
+    public void startRotationCW()
+    {
+        selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        if (selectedTile && isRotating == false)
+        {
+            StartCoroutine(RotateCW());
+        }
+    }
+
+    public void startRotationCCW()
+    {
+        selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        if (selectedTile && isRotating == false)
+        {
+            StartCoroutine(RotateCCW());
+        }
+    }
+
+    public void StartFlip()
+    {
+        selectedTile = gameController.GetComponent<GameController>().selectedTile;
+        if (selectedTile && isRotating == false)
+        {
+            StartCoroutine(Flip());
+        }
     }
 
     public void LegalityCheck(string direction)
     {
         selectedTile.GetComponent<TileController>().ClearLegality();
         selectedTile.GetComponent<TileController>().checkingLegalityDirection = direction;
-        selectedTile.GetComponent<TileController>().checkingLegality = true;
+        StartCoroutine(selectedTile.GetComponent<TileController>().TileLegality());
+    }
+
+    private IEnumerator ToggleButtons()
+    {
+        if (!togglingButtons)
+        {
+            togglingButtons = true;
+            GameObject[] tileButtons = GameObject.FindGameObjectsWithTag("TileButton");
+            foreach (var tileButton in tileButtons)
+            {
+                tileButton.GetComponent<Button>().interactable = false;
+
+            }
+            if (selectedTile.GetComponent<TileController>().isPlaced)
+            {
+                yield return new WaitUntil(() => selectedTile.GetComponent<TileController>().isLegal);
+
+            }
+            else
+            {
+                yield return new WaitUntil(() => !isRotating);
+            }
+            foreach (var tileButton in tileButtons)
+            {
+                tileButton.GetComponent<Button>().interactable = true;
+            }
+            togglingButtons = false;
+        }
+
     }
 }

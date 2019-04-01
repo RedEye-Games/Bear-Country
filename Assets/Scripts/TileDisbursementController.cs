@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 public class TileDisbursementController : MonoBehaviour
 {
+    // GameController
+    private GameController gameController;
+
+    // ScoreBoard
+    private ScoreBoard scoreBoard;
+
+    public GameObject roundCounter;
 
     public GameObject Tile;
     public Button disburseTilesButton;
@@ -25,9 +32,38 @@ public class TileDisbursementController : MonoBehaviour
     List<Tile> TileOptions = new List<Tile>();
     private List<Tile> tileChoices;
 
+    private bool disbursingTiles = false;
+
     // Start is called before the first frame update
     void Start()
     {
+        // Locate GameController Script
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+        }
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'GameController' script");
+        }
+
+        // Locate RoundCOunter Script
+        roundCounter = GameObject.FindWithTag("RoundCounter");
+        roundCounter.GetComponent<Text>().text = "7";
+
+        // Locate ScoreBoard Script
+        // ToDo: Trigger to EventManager
+        GameObject scoreBoardObject = GameObject.FindWithTag("ScoreBoard");
+        if (scoreBoardObject != null)
+        {
+            scoreBoard = scoreBoardObject.GetComponent<ScoreBoard>();
+        }
+        if (scoreBoardObject == null)
+        {
+            Debug.Log("Cannot find 'ScoreBoard' script");
+        }
+
         PopulateTileOptions();
         DisburseTiles();
         DisburseSpecialTiles();
@@ -35,38 +71,38 @@ public class TileDisbursementController : MonoBehaviour
 
     void DisburseTiles()
     {
+        DisableButton();
+        disbursingTiles = true;
         // Check to see if all tiles are placed.
         // Check for tiles on board. Confirm them.
 
-        // CHeck to see if any special tiles remain
+        // Check to see if any special tiles remain
 
         if (remainingSpecialTiles != 1)
         {
-            if (specialTilePlacedThisRound == true)
+            if (gameController.specialTilesPlacedThisRound.Any())
             {
                 remainingSpecialTiles--;
             }
             // Reset Special Tile
-            specialTilePlacedThisRound = false;
             EnableSpecialTileTray();
         }
 
-        foreach (var tile in tiles)
+        foreach (var tile in gameController.GetComponent<GameController>().tilesPlacedThisRound)
         {
-            if (tile.GetComponent<TileController>().isPlaced)
-            {
-                tile.GetComponent<TileController>().ConfirmTile();
-            }
+            tile.GetComponent<TileController>().ConfirmTile();
+        }
+        foreach (var tile in gameController.GetComponent<GameController>().specialTilesPlacedThisRound)
+        {
+            tile.GetComponent<TileController>().ConfirmTile();
         }
 
-        foreach (var specialTile in specialTiles)
-        {
-            if (specialTile.GetComponent<TileController>().isPlaced)
-            {
-                specialTile.GetComponent<TileController>().ConfirmTile();
-            }
-        }
+        // Round Cleanup
+        // ToDo: Move to more appropriate class.
+        scoreBoard.GetComponent<ScoreBoard>().ScoreTiles();
+        gameController.EndRound();
 
+        // Begin Dispersal
         for (int i = 0; i < tileSpawnPoints.Length; i++)
         {
             if (remainingTiles > 0)
@@ -74,7 +110,7 @@ public class TileDisbursementController : MonoBehaviour
                 GameObject newTile = Instantiate(Tile, tileSpawnPoints[i].position, tileSpawnPoints[i].rotation);
                 unplacedTiles = unplacedTiles + 1;
                 remainingTiles = remainingTiles - 1;
-                SpriteRenderer tileSprite = newTile.GetComponentInChildren<SpriteRenderer>();
+                SpriteRenderer[] tileSprites = newTile.GetComponentsInChildren<SpriteRenderer>();
 
                 if (i == tileSpawnPoints.Length - 1)
                 {
@@ -85,15 +121,24 @@ public class TileDisbursementController : MonoBehaviour
                     tileChoices = TileOptions.Where(x => (x.rarity == 1)).ToList();
                 }
                 var tileChoice = tileChoices[Random.Range(0, tileChoices.Count)];
-
-                tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+                foreach (var tileSprite in tileSprites)
+                {
+                    if (tileSprite.gameObject.name == "Tile Sprite")
+                    {
+                        tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+                        tileSprite.color = new Color(1, 1, 1, 0.5f);
+                    }
+                }
                 newTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
                 newTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
                 newTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
                 newTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
+                gameController.PopulateTileSystems(newTile);
             }
         }
         tiles = GameObject.FindGameObjectsWithTag("Tile");
+        int roundsLeft = (remainingTiles / 4) + 1;
+        roundCounter.GetComponent<Text>().text = roundsLeft.ToString();
         if (remainingTiles > 0)
         {
             disburseTilesButton.GetComponentInChildren<Text>().text = "Place all tiles.";
@@ -102,7 +147,7 @@ public class TileDisbursementController : MonoBehaviour
         {
             disburseTilesButton.GetComponentInChildren<Text>().text = "Place last tiles!";
         }
-        DisableButton();
+        disbursingTiles = false;
     }
 
     void DisburseSpecialTiles()
@@ -113,14 +158,22 @@ public class TileDisbursementController : MonoBehaviour
             GameObject newSpecialTile = Instantiate(SpecialTile, specialTileSpawnPoints[i].position, specialTileSpawnPoints[i].rotation);
             newSpecialTile.GetComponentInChildren<TileController>().isSpecial = true;
             newSpecialTile.tag = "SpecialTile";
-            SpriteRenderer tileSprite = newSpecialTile.GetComponentInChildren<SpriteRenderer>();
+            SpriteRenderer[] tileSprites = newSpecialTile.GetComponentsInChildren<SpriteRenderer>();
             tileChoices = TileOptions.Where(x => (x.rarity == 3)).ToList();
             var tileChoice = tileChoices[i];
-            tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+            foreach (var tileSprite in tileSprites)
+            {
+                if (tileSprite.gameObject.name == "Tile Sprite")
+                {
+                    tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
+                    tileSprite.color = new Color(1, 1, 1, 0.5f);
+                }
+            }
             newSpecialTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
             newSpecialTile.GetComponentInChildren<TileController>().southPath.gameObject.tag = tileChoice.southPath;
             newSpecialTile.GetComponentInChildren<TileController>().eastPath.gameObject.tag = tileChoice.eastPath;
             newSpecialTile.GetComponentInChildren<TileController>().westPath.gameObject.tag = tileChoice.westPath;
+            gameController.PopulateTileSystems(newSpecialTile);
         }
         specialTiles = GameObject.FindGameObjectsWithTag("SpecialTile");
     }
@@ -128,36 +181,34 @@ public class TileDisbursementController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
     }
 
-    public void UpdatePlaceCount(int count, bool isSpecial = false)
+
+    public void ToggleButtons()
     {
-        if (isSpecial == true) 
+        if (gameController.specialTilesPlacedThisRound.Count == 1)
         {
-            if (count == -1)
+            DisableSpecialTileTray();
+        } else
+        {
+            EnableSpecialTileTray();
+        }
+
+        if (gameController.tilesPlacedThisRound.Count == 4 && !disbursingTiles)
+        {
+            if (remainingTiles == 0)
             {
-                specialTilePlacedThisRound = true;
-                DisableSpecialTileTray();
+                EnableButton(true);
             }
             else
-            {
-                specialTilePlacedThisRound = false;
-                EnableSpecialTileTray();
-            }
-        }
-        else
-        {
-            unplacedTiles = unplacedTiles + count;
-            if (unplacedTiles == 0)
             {
                 EnableButton();
             }
-            else
-            {
-                DisableButton();
-            }
+        } else
+        {
+            DisableButton();
         }
-        //        Debug.Log(unplacedTiles);
     }
 
     void EnableSpecialTiles()
@@ -175,36 +226,46 @@ public class TileDisbursementController : MonoBehaviour
             if (specialTiles[i].GetComponentInChildren<TileController>().isPlaced == false)
             {
                 specialTiles[i].SetActive(false);
-                Debug.Log("Inactive.");
             }
         }
     }
 
-    void EnableButton() 
+    void EnableButton(bool endGame = false) 
     {
-        disburseTilesButton.GetComponentInChildren<Text>().text = "Confirm Placement";
-        //isEnabled = true;
-        disburseTilesButton.interactable = true;
-        disburseTilesButton.onClick.AddListener(DisburseTiles);
+        if (endGame)
+        {
+            disburseTilesButton.GetComponentInChildren<Text>().text = "End Game";
+            disburseTilesButton.interactable = true;
+            disburseTilesButton.onClick.AddListener(EndGame);
+        } 
+        else 
+        if (!disburseTilesButton.interactable)
+        {
+            disburseTilesButton.GetComponentInChildren<Text>().text = "Confirm Placement";
+            disburseTilesButton.interactable = true;
+            disburseTilesButton.onClick.AddListener(DisburseTiles);
+        }
+    }
+
+    void EndGame ()
+    {
+        StartCoroutine(gameController.EndGame());
     }
 
     void DisableButton()
     {
-        //isEnabled = false;
         disburseTilesButton.interactable = false;
         disburseTilesButton.onClick.RemoveListener(DisburseTiles);
     }
 
     void DisableSpecialTileTray()
     {
-        //isEnabled = false;
         specialTileTray.SetActive(false);
         DisableSpecialTiles();
     }
 
     void EnableSpecialTileTray()
     {
-        //isEnabled = false;
         specialTileTray.SetActive(true);
         EnableSpecialTiles();
     }
@@ -232,4 +293,5 @@ public class TileDisbursementController : MonoBehaviour
         TileOptions.Add(new Tile("tCross", 3, "Trail", "Trail", "Trail", "Trail"));
         TileOptions.Add(new Tile("tCorner_rCorner", 3, "River", "Trail", "River", "Trail"));
     }
+
 }

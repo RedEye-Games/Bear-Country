@@ -44,10 +44,12 @@ public class BoardSpace : MonoBehaviour
         isHighlighted = highlight;
         if (hasPotential)
         {
+            gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.gray;
             rend.material.color = Color.green;
         } 
-        else 
+        else
         {
+            gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.white;
             rend.material.color = Color.clear;
         }
 

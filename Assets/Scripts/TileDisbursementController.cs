@@ -77,13 +77,13 @@ public class TileDisbursementController : MonoBehaviour
         // Check for tiles on board. Confirm them.
 
         // Check to see if any special tiles remain
-
-        if (remainingSpecialTiles != 1)
+        if (gameController.specialTilesPlacedThisRound.Any())
         {
-            if (gameController.specialTilesPlacedThisRound.Any())
-            {
-                remainingSpecialTiles--;
-            }
+            remainingSpecialTiles--;
+        }
+        if (remainingSpecialTiles > 0)
+        {
+
             // Reset Special Tile
             EnableSpecialTileTray();
         }

@@ -15,8 +15,7 @@ public class SpecialRemainingController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        text = GetComponent<Text>();
-        text.text = "let's go";
+        text.text = "Specials Used: 0/3";
     }
 
     // Update is called once per frame

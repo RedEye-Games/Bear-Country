@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;// Required when using Event data.
 
 public class SharedGameController : MonoBehaviour
 {
     readonly string shareCodeGenerationString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     bool joiningSharedGame;
 
-    public Button joinButton;
-    public Button hostButton;
+    public Toggle joinButton;
+    public Toggle hostButton;
     public Button startButton;
     //public Button closeButton;
     public GameObject selector;
@@ -28,12 +29,19 @@ public class SharedGameController : MonoBehaviour
 
     private void OnEnable()
     {
-        JoinSharedGame();
-        joinButton.onClick.AddListener(JoinSharedGame);
-        hostButton.onClick.AddListener(HostSharedGame);
-        startButton.onClick.AddListener(InitiateSharedGame);
+        JoinSharedGame(true);
+        joinButton.onValueChanged.AddListener(delegate {
+            JoinSharedGame(joinButton);
+        });
+        hostButton.onValueChanged.AddListener(delegate {
+            HostSharedGame(joinButton);
+        });
+        //joinButton.OnSelect.AddListener(JoinSharedGame);
+        //hostButton.onClick.AddListener(HostSharedGame);
+        //startButton.onClick.AddListener(InitiateSharedGame);
         //closeButton.onClick.AddListener(ClosePanel);
-        joinButton.Select();
+        //joinButton.Select();
+        //joinButton.OnSelect(null);
     }
 
     // Update is called once per frame
@@ -64,21 +72,25 @@ public class SharedGameController : MonoBehaviour
         return shareString;
     }
 
-    public void JoinSharedGame()
+    public void JoinSharedGame(bool state)
     {
-        if (!joiningSharedGame)
+        if (state)
         {
-            joiningSharedGame = true;
-            DataHolder.sharedString = null;
-            gameObject.GetComponentInChildren<InputField>().text = null;
-            gameObject.GetComponentInChildren<InputField>().enabled = true;
-            RotateSelector(-180);
+            if (!joiningSharedGame)
+            {
+                joiningSharedGame = true;
+                DataHolder.sharedString = null;
+                gameObject.GetComponentInChildren<InputField>().text = null;
+                gameObject.GetComponentInChildren<InputField>().enabled = true;
+                RotateSelector(-180);
+            }
         }
+
     }
 
-    public void HostSharedGame()
+    public void HostSharedGame(bool state)
     {
-        if (joiningSharedGame)
+        if (state && joiningSharedGame)
         {
             joiningSharedGame = false;
             DataHolder.sharedString = GenerateShareCode();

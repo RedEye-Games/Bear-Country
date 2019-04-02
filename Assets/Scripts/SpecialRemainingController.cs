@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class SpecialRemainingController : MonoBehaviour
 {
-    public int remainingSpecials;
     public GameObject gameController;
     public GameObject remaining01;
     public GameObject remaining02;
@@ -21,22 +20,26 @@ public class SpecialRemainingController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        remainingSpecials = gameController.GetComponent<TileDisbursementController>().remainingSpecialTiles;
 
+    }
+
+    public void UpdateSpecials()
+    {
+        int remainingSpecials = 3 - gameController.GetComponent<TileDisbursementController>().remainingSpecialTiles;
+        text.text = "Specials Used: " + remainingSpecials + "/3";
+
+        // ToDo: Update UI with Visual Indicators
         if (remainingSpecials == 2)
         {
             remaining01.SetActive(false);
-            text.text = "Specials Used: 1/3";
         }
         if (remainingSpecials == 1)
         {
             remaining02.SetActive(false);
-            text.text = "Specials Used: 2/3";
         }
         if (remainingSpecials == 0)
         {
             remaining03.SetActive(false);
-            text.text = "Specials Used: 3/3";
         }
     }
 }

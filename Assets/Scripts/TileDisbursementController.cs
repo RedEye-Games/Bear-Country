@@ -14,6 +14,8 @@ public class TileDisbursementController : MonoBehaviour
 
     public GameObject roundCounter;
 
+    public GameObject specialsRemaining;
+
     public GameObject Tile;
     public Button disburseTilesButton;
     public Transform[] tileSpawnPoints;
@@ -80,6 +82,7 @@ public class TileDisbursementController : MonoBehaviour
         if (gameController.specialTilesPlacedThisRound.Any())
         {
             remainingSpecialTiles--;
+            specialsRemaining.GetComponent<SpecialRemainingController>().UpdateSpecials();
         }
         if (remainingSpecialTiles > 0)
         {

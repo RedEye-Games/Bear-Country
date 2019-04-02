@@ -1130,6 +1130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roundCounter: {fileID: 0}
+  specialsRemaining: {fileID: 1330389242}
   Tile: {fileID: 4897010689499159677, guid: fc5a7363f3c69437b80caa4828e17d48, type: 3}
   disburseTilesButton: {fileID: 257232941}
   tileSpawnPoints:

@@ -21,6 +21,10 @@ public class GameController : MonoBehaviour
     // tileDisbursementController
     private TileDisbursementController tileDisbursementController;
 
+    // ScoreBoard
+    private ScoreBoard scoreBoard;
+    public GameObject endGameOverlay;
+
     private int score;
 
     // Scoring Systems
@@ -46,6 +50,18 @@ public class GameController : MonoBehaviour
         {
             Debug.Log("Cannot find 'GameController' script");
             boardPosZ = 0;
+        }
+
+        // Locate ScoreBoard Script
+        // ToDo: Trigger to EventManager
+        GameObject scoreBoardObject = GameObject.FindWithTag("ScoreBoard");
+        if (scoreBoardObject != null)
+        {
+            scoreBoard = scoreBoardObject.GetComponent<ScoreBoard>();
+        }
+        if (scoreBoardObject == null)
+        {
+            Debug.Log("Cannot find 'ScoreBoard' script");
         }
 
         // Locate TileDisbursementController Script
@@ -238,6 +254,17 @@ public class GameController : MonoBehaviour
             }
         }
 
+    }
+
+    public IEnumerator EndGame()
+    {
+        scoreBoard.GetComponent<ScoreBoard>().ScoreTiles();
+        yield return new WaitUntil(() => !scoreBoard.isScoring);
+        int highScore = scoreBoard.GetComponent<ScoreBoard>().totalScore;
+        scoreBoard.GetComponent<HighScoreSaver>().SaveScore(highScore);
+        HighScoreData highScores = scoreBoard.GetComponent<HighScoreSaver>().highScoreData;
+        endGameOverlay.SetActive(true);
+        endGameOverlay.GetComponentInChildren<HighScoreController>().UpdateScores(highScores);
     }
 
 }

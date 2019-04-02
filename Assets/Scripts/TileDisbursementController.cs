@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Text;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,6 +39,12 @@ public class TileDisbursementController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (DataHolder.sharedString != null)
+        {
+            UnityEngine.Random.InitState(DataHolder.sharedString.GetHashCode());
+            Debug.Log("Seeded with "+ DataHolder.sharedString);
+        }
+
         // Locate GameController Script
         GameObject gameControllerObject = GameObject.FindWithTag("GameController");
         if (gameControllerObject != null)
@@ -120,7 +128,7 @@ public class TileDisbursementController : MonoBehaviour
                 {
                     tileChoices = TileOptions.Where(x => (x.rarity == 1)).ToList();
                 }
-                var tileChoice = tileChoices[Random.Range(0, tileChoices.Count)];
+                var tileChoice = tileChoices[UnityEngine.Random.Range(0, tileChoices.Count)];
                 foreach (var tileSprite in tileSprites)
                 {
                     if (tileSprite.gameObject.name == "Tile Sprite")

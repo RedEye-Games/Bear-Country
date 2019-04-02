@@ -12,7 +12,7 @@ public class SharedGameController : MonoBehaviour
     public Button joinButton;
     public Button hostButton;
     public Button startButton;
-    public Button closeButton;
+    //public Button closeButton;
     public GameObject selector;
 
     private bool isRotating;
@@ -32,7 +32,7 @@ public class SharedGameController : MonoBehaviour
         joinButton.onClick.AddListener(JoinSharedGame);
         hostButton.onClick.AddListener(HostSharedGame);
         startButton.onClick.AddListener(InitiateSharedGame);
-        closeButton.onClick.AddListener(ClosePanel);
+        //closeButton.onClick.AddListener(ClosePanel);
         joinButton.Select();
     }
 

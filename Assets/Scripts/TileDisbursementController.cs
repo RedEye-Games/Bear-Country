@@ -16,6 +16,8 @@ public class TileDisbursementController : MonoBehaviour
 
     public GameObject roundCounter;
 
+    public GameObject specialsRemaining;
+
     public GameObject Tile;
     public Button disburseTilesButton;
     public Transform[] tileSpawnPoints;
@@ -85,13 +87,14 @@ public class TileDisbursementController : MonoBehaviour
         // Check for tiles on board. Confirm them.
 
         // Check to see if any special tiles remain
-
-        if (remainingSpecialTiles != 1)
+        if (gameController.specialTilesPlacedThisRound.Any())
         {
-            if (gameController.specialTilesPlacedThisRound.Any())
-            {
-                remainingSpecialTiles--;
-            }
+            remainingSpecialTiles--;
+            specialsRemaining.GetComponent<SpecialRemainingController>().UpdateSpecials();
+        }
+        if (remainingSpecialTiles > 0)
+        {
+
             // Reset Special Tile
             EnableSpecialTileTray();
         }

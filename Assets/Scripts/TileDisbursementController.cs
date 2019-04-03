@@ -152,7 +152,7 @@ public class TileDisbursementController : MonoBehaviour
         roundCounter.GetComponent<Text>().text = roundsLeft.ToString();
         if (remainingTiles > 0)
         {
-            disburseTilesButton.GetComponentInChildren<Text>().text = "Place all tiles.";
+            disburseTilesButton.GetComponentInChildren<Text>().text = "Place all tiles";
         }
         else
         {
@@ -252,7 +252,7 @@ public class TileDisbursementController : MonoBehaviour
         else 
         if (!disburseTilesButton.interactable)
         {
-            disburseTilesButton.GetComponentInChildren<Text>().text = "Confirm Placement";
+            disburseTilesButton.GetComponentInChildren<Text>().text = "Ready!";
             disburseTilesButton.interactable = true;
             disburseTilesButton.onClick.AddListener(DisburseTiles);
         }

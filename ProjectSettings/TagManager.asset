@@ -9,14 +9,6 @@ TagManager:
   - Path
   - BoardSpace
   - River
-  - TileModifiers
-  - Board
-  - SpecialTile
-  - BoardEdge
-  - Trail
-  - TileSystem
-  - ScoreBoard
-  - RoundCounter
   layers:
   - Default
   - TransparentFX

@@ -14,21 +14,20 @@ public class TileCollider : MonoBehaviour {
     void Start()
     {
         rend = GetComponent<Renderer>();
-        rend.material.color = Color.red;
-
+   
     }
 
     void OnTriggerEnter (Collider other)
     {
         if (other.CompareTag ("Tile") && isEmpty)
         {
-            //rend.material.color = Color.green;
+            rend.material.color = Color.green;
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        //rend.material.color = Color.red;
+        rend.material.color = Color.red;
     }
 
     // Update is called once per frame

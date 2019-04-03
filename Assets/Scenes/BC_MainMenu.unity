@@ -2351,7 +2351,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6577e758771e440ea491b294bba8832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadingScreen: {fileID: 1361645309}
+  activate: {fileID: 1361645309}
+  deactivate: {fileID: 0}
 --- !u!1 &878187125
 GameObject:
   m_ObjectHideFlags: 0
@@ -3724,7 +3725,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6577e758771e440ea491b294bba8832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadingScreen: {fileID: 1361645309}
+  activate: {fileID: 1361645309}
+  deactivate: {fileID: 0}
 --- !u!114 &1689333869
 MonoBehaviour:
   m_ObjectHideFlags: 0

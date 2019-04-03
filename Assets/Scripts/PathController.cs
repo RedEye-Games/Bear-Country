@@ -4,19 +4,52 @@ using UnityEngine;
 
 public class PathController : MonoBehaviour
 {
+    // GameController
+    private GameController gameController;
+    // TileModifiers
+    private TileModifiers tileModifiers;
+
     private TileController parentTile;
 
     private string pathTag;
-    private bool isDeadEnd = true;
+    public bool isDeadEnd = true;
+    public bool isDoubledDeadEnd = false;
     public int scoreToAdd;
+    public GameObject adjacentTile;
+    public GameObject adjacentPath;
+    List<string> validPathTags = new List<string>();
+    public bool checkedDeadEnds;
 
     // Start is called before the first frame update
     void Start()
     {
+        // Locate GameController Script
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+            validPathTags = gameController.validPathTags;
+        }
+        if (gameController == null)
+        {
+            Debug.Log("Cannot find 'GameController' script");
+        }
+
         pathTag = gameObject.tag;
 
         // Locate Parent Tile Controller
         parentTile = gameObject.GetComponentInParent<TileController>();
+
+        // Locate TileModifiers Script
+        GameObject TileModifiersObject = GameObject.FindWithTag("TileModifiers");
+        if (TileModifiersObject != null)
+        {
+            tileModifiers = TileModifiersObject.GetComponent<TileModifiers>();
+        }
+        if (tileModifiers == null)
+        {
+            Debug.Log("Cannot find 'TileModifiers' script");
+        }
 
     }
 
@@ -30,29 +63,50 @@ public class PathController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
-        if (other.CompareTag(pathTag))
+        checkedDeadEnds = false;
+        if (string.IsNullOrEmpty(other.gameObject.tag) == false && other.gameObject.tag != "Untagged" && other.gameObject.tag != "Path")
         {
-            GameObject adjacentPath = other.gameObject;
-
-            //var adjacentPathName = other.gameObject.name;
-            if (pathTag == gameObject.tag)
+            string tilePathTag = other.gameObject.tag;
+            if (validPathTags.Contains(tilePathTag) == true)
             {
-                Debug.Log("Touched a shared " + pathTag + " tag");
-                isDeadEnd = false;
-                scoreToAdd = 1;
+                adjacentPath = other.gameObject;
+                adjacentTile = other.gameObject.transform.parent.gameObject;
+
+                if (pathTag == adjacentPath.tag)
+                {
+                    isDeadEnd = false;
+                    scoreToAdd = 1;
+                }
+                else if ("River" == adjacentPath.tag || "Trail" == adjacentPath.tag)
+                {
+                    isDoubledDeadEnd = true;
+                }
             }
-            // Check to see if path is alive. Check to see if it's a riverhead.
-            // Then create and store unique river/trail identifier.
-            //gameController.AddScore(1);
         }
+        checkedDeadEnds = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
+        if ("Trail" == other.gameObject.tag || "River" == other.gameObject.tag)
+        {
+            BeginExit();
+        }
+    }
+
+    private void BeginExit()
+    {
+        adjacentPath = null;
+        adjacentTile = null;
         isDeadEnd = true;
-        //gameController.AddScore(-1);
+        checkedDeadEnds = false;
+        isDoubledDeadEnd = false;
         scoreToAdd = -1;
+        if (parentTile.isLegal && parentTile.isPlaced)
+        {
+            StartCoroutine(parentTile.CheckLineage());
+        }
+
     }
 
 }

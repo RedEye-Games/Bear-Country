@@ -2,12 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
-public class TileController : MonoBehaviour
+public enum TileEventName
 {
+    PickedUp,
+    SuccessfullyPlaced,
+    UnsuccessfullyPlaced,
+    Rotated,
+    Flipped
+}
+
+public class TileController : MonoBehaviour 
+{ 
+
+    public static event Action<TileEventName, GameObject> TileEvent;
 
     // GameController
     private GameController gameController;
+    private TileDisbursementController tileDisbursementController;
+    // TileModifiers
+    private TileModifiers tileModifiers;
 
     // Tile Colliders
     public GameObject westPath;
@@ -20,6 +35,8 @@ public class TileController : MonoBehaviour
 
     // Scoring Variables
     private int scoreToAdd;
+    public List<GameObject> tileSystemList = new List<GameObject>();
+    public bool isExit = false;
 
     // Tile Buttons
     Button rotateCWButton;
@@ -27,19 +44,43 @@ public class TileController : MonoBehaviour
     Button flipButton;
     public GameObject thisTile;
 
-
     // Placement Variables
     bool isArmed = false;
-    bool isConfirmed = false;
+    public bool isConfirmed = false;
+    int legalCheck = 0;
     public bool isPlaced = false;
-    bool isSelected = false;
-    Vector3 theSquarePosition;
     Vector3 spawnPoint;
+    bool checkingPotential = false;
+    public bool isFlipped = false;
 
-    // Mouse Drag Variables
+    // Selection
+    public bool isSelected;
+    SpriteRenderer[] tileSprites;
+    IEnumerator breathing;
+
+    // Tile Lineage
+    public bool lineageBeingChecked = false;
+    public bool hasLineage;
+
+    // Legality
+    public bool isLegal = false;
+    public bool checkingLegality;
+    public string checkingLegalityDirection;
+
+    // Special Tile Variables
+    public bool isSpecial = false;
+
+    // Drag Variables
+    private Vector3 tilePositionStart;
     private Vector3 screenPoint;
     private Vector3 offset;
-    public float distance = 100;
+    public float distance = 125;
+    private bool isLifted;
+    private bool slowMovement;
+
+    // Coroutine Setup
+    public int frame;
+    private IEnumerator coroutine;
 
     // Start is called before the first frame update
     void Start()
@@ -55,166 +96,520 @@ public class TileController : MonoBehaviour
             Debug.Log("Cannot find 'GameController' script");
         }
 
-        // Find this tile's position
-        theSquarePosition = gameObject.transform.position;
+        // Locate TileDisbursementController Script
+        tileDisbursementController = gameControllerObject.GetComponent<TileDisbursementController>();
+
+        // Locate TileModifiers Script
+        GameObject TileModifiersObject = GameObject.FindWithTag("TileModifiers");
+        if (TileModifiersObject != null)
+        {
+            tileModifiers = TileModifiersObject.GetComponent<TileModifiers>();
+        }
+        if (tileModifiers == null)
+        {
+            Debug.Log("Cannot find 'TileModifiers' script");
+        }
+
         // Record spawn point
         spawnPoint = gameObject.transform.position;
 
-        // Locate Tile Adjuster Buttons
-        flipButton = GameObject.Find("FlipButton").GetComponent<Button>();
-        rotateCCWButton = GameObject.Find("RotateCCWButton").GetComponent<Button>();
-        rotateCWButton = GameObject.Find("RotateCWButton").GetComponent<Button>();
+        // Drag Variables
+        isLifted = false;
+        slowMovement = true;
 
-        //Announcing the buttons
-        flipButton.onClick.AddListener(Flip);
-        rotateCWButton.onClick.AddListener(RotateCW);
-        rotateCCWButton.onClick.AddListener(RotateCCW);
+        // Set Placement
+        isPlaced = false;
 
-        // Populate Paths
+        isSelected = false;
+
+        tileSprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
+
+        // Setting Legality
+        checkingLegality = false;
+        checkingLegalityDirection = "CW";
+
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        frame++;
+        if (isLifted)
+        {
+            if (slowMovement)
+            {
+                transform.position = Vector3.Lerp(transform.position, offset, 15 * Time.deltaTime);
+            }
+            else
+            {
+                transform.position = offset;
+            }
+
+        }
+        if (isSelected)
+        {
+            tileSprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
+            foreach (var sprite in tileSprites)
+            {
+                if (sprite.gameObject.name == "Highlight")
+                {
+                    sprite.color = new Color(1, 1, 1, 0.5f);
+                }
+            }
+        }
+    }
+
+    public void PopulatePaths()
+    { 
         pathList.Add(westPath);
         pathList.Add(eastPath);
         pathList.Add(southPath);
         pathList.Add(northPath);
-
-        // Set Placement
-        isPlaced = false;
     }
 
     void OnMouseDown()
     {
-        screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-        if (isPlaced && !isConfirmed) 
+        if (!isConfirmed)
         {
-            gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(1);
+            coroutine = BeginLift();
+            StartCoroutine(coroutine);
         }
     }
 
     void OnMouseDrag()
     {
-        if (isConfirmed == false)
+        if (isConfirmed == false && isLifted == true)
         {
             if (isPlaced)
             {
-                gameController.AddScore(4);
+                isPlaced = false;
+                if (isSpecial)
+                {
+                    gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Remove(gameObject);
+                }
+                else
+                {
+                    gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
+                }
             }
             isArmed = true;
-            isPlaced = false;
-            Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-            Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
-            transform.parent.gameObject.transform.position = cursorPosition;
+            offset = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y+distance, screenPoint.z + 145));
         }
     }
 
     void OnMouseUp()
     {
+        isLifted = false;
+        StartCoroutine(DropTile());
+        tileDisbursementController.ToggleButtons();
+        StopCoroutine(coroutine);
+    }
+
+    public IEnumerator BeginLift()
+    {
+        slowMovement = true;
+
+        gameController.GetComponent<GameController>().SelectTile(gameObject);
+        breathing = StartBreathing();
+        StartCoroutine(breathing);
+        TileEvent(TileEventName.PickedUp, gameObject);
+
+        yield return new WaitForSeconds(.10f);       
+         
+        // Clear Legality
+        ClearLegality();
+
+        // Highlight Compatible Board Spaces
+        StartCoroutine(CheckPotential(frame));
+
+        isLifted = true;
+
+        yield return new WaitForSeconds(.25f);
+        slowMovement = false;
+
+    }
+
+    public IEnumerator StartBreathing()
+    {
+
+
+        // Track how many seconds we've been fading.
+        int duration = 1;
+        float t = 0;
+
+        float startOpacity = 0.5f;
+        float endOpacity = 1.0f;
+        while (isSelected)
+        {
+            while (t < duration)
+            {
+                // Step the fade forward one frame.
+                t += Time.deltaTime;
+                // Turn the time into an interpolation factor between 0 and 1.
+                float blend = Mathf.Clamp01(t / duration);
+                foreach (var sprite in tileSprites)
+                {
+                    if (sprite.gameObject.name == "Highlight")
+                    {
+                        // Blend to the corresponding opacity between start & target.
+                        sprite.color = new Color(1, 1, 1, Mathf.Lerp(startOpacity, endOpacity, blend));
+                    }
+                }
+
+                // Wait one frame, and repeat.
+                yield return null;
+            }
+            if (t >= duration)
+            {
+                t = 0;
+                float swapOpacity = startOpacity;
+                startOpacity = endOpacity;
+                endOpacity = swapOpacity;
+            }
+        }
+
+    }
+
+    public void StopBreathing()
+    {
+        StopCoroutine(breathing);
+        foreach (var sprite in tileSprites)
+        {
+            if (sprite.gameObject.name == "Highlight")
+            {
+                sprite.color = new Color(1, 1, 1, 0);
+            }
+        }
+        isSelected = false;
+    }
+
+    // Explicit predicate delegate.
+    private static bool FindLiveEnds(GameObject path)
+    {
+
+        if (path.GetComponent<PathController>().isDeadEnd == false)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    public IEnumerator CheckLineage()
+    {
+
+        yield return new WaitUntil(() => !tileModifiers.isRotating);
+
+        lineageBeingChecked = true;
+        hasLineage = false;
+
+        // First Determine if two adjacent tiles have only each other as living ends. If so, reset both to spawn.
+        List<GameObject> livePaths = pathList.FindAll(FindLiveEnds);
+        if (livePaths.Count == 1 && !isConfirmed)
+        {
+            List<GameObject> adjacentLivePaths = livePaths[0].GetComponent<PathController>().adjacentTile.GetComponentInParent<TileController>().pathList.FindAll(FindLiveEnds);
+            if (adjacentLivePaths.Count == 1)
+            {
+                // Make sure other tile is not an edge.
+                if (!adjacentLivePaths[0].GetComponentInParent<TileController>().isConfirmed)
+                {
+                    adjacentLivePaths[0].GetComponentInParent<TileController>().ResetToSpawn();
+                    ResetToSpawn();
+                }
+            }
+        }
+
+        foreach (var path in pathList)
+        {
+            if (path.GetComponent<PathController>().adjacentTile && !path.GetComponent<PathController>().isDeadEnd)
+            {
+                TileController adjacentTileController = path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>();
+                if (adjacentTileController.isConfirmed)
+                {
+                    lineageBeingChecked = false;
+                    hasLineage = true;
+                }
+                else
+                {
+                    if (!adjacentTileController.lineageBeingChecked)
+                    {
+                        adjacentTileController.lineageBeingChecked = true;
+                        IEnumerator adjacentCheck = adjacentTileController.CheckLineage();
+                        StartCoroutine(adjacentCheck);
+                    }
+                    yield return new WaitUntil(() => !adjacentTileController.lineageBeingChecked);
+                    if (adjacentTileController.hasLineage)
+                    {
+                        hasLineage = true;
+                    }
+                }
+            }
+        }
+
+        if (!hasLineage && isLegal)
+        {
+            gameObject.GetComponent<TileController>().ResetToSpawn();
+        }
+        lineageBeingChecked = false;
+    }
+
+    public IEnumerator TileLegality()
+    {
+        checkingLegality = true;
+        while (tileModifiers.isRotating)
+        {
+            yield return null;
+        }
+        int startFrame = frame;
+        yield return new WaitUntil(() => frame >= startFrame + 5);
+        StartCoroutine(TileLegalityCheck());
+    }
+
+    public IEnumerator TileLegalityCheck()
+    {
+        if (legalCheck < 4)
+        {
+            int pathCount = 0;
+            foreach (var path in pathList)
+            {
+                if (path.GetComponent<PathController>().isDeadEnd == false)
+                {
+                    isLegal = true;
+                    legalCheck = 0;
+                }
+                else
+                {
+                    pathCount++;
+                }
+            }
+            if (!isLegal)
+            {
+                if (checkingLegalityDirection == "CW")
+                {
+                    StartCoroutine(tileModifiers.RotateCW());
+                }
+                else 
+                {
+                    StartCoroutine(tileModifiers.RotateCCW());
+                }
+
+                legalCheck++;
+            }
+            else
+            {
+                checkingLegality = false;
+            }
+        }
+        else
+        {
+            ResetToSpawn();
+            legalCheck = 0;
+        }
+        yield return null;
+    }
+
+    public void ClearLegality()
+    {
+        isLegal = false;
+        legalCheck = 0;
+    }
+
+    public void ConfirmTile()
+    {
+        isConfirmed = true;
+        isSelected = false;
+        StopBreathing();
+        foreach (var tileSprite in tileSprites)
+        {
+            if (tileSprite.gameObject.name == "Tile Sprite")
+            {
+                tileSprite.color = new Color(1, 1, 1, 1);
+            }
+        }
+        // Connect Systems for Scoring
+        ScoreTile();
+    }
+
+    public void ScoreTile()
+    {
+        List<GameObject> flaggedForDeletion = new List<GameObject>();
+        List<GameObject> flaggedForAddition = new List<GameObject>();
+        foreach (var path in pathList)
+        {
+            if (!path.GetComponent<PathController>().isDeadEnd)
+            {
+                List<GameObject> adjacentTileSystems = path.GetComponent<PathController>().adjacentTile.GetComponent<TileController>().tileSystemList;
+                if (adjacentTileSystems != null)
+                {
+                    foreach (var system in adjacentTileSystems)
+                    {
+                        if (system != null)
+                        {
+                            if (path.tag == system.GetComponent<TileSystem>().systemType)
+                            {
+                                foreach (var internalSystem in tileSystemList)
+                                {
+                                    if (internalSystem.GetComponent<TileSystem>().systemType == path.tag)
+                                    {
+                                        internalSystem.GetComponent<TileSystem>().MergeSystem(system);
+                                        flaggedForDeletion.Add(system);
+                                    }
+                                }
+                            }
+                            else if (system.GetComponent<TileSystem>().systemType == null)
+                            {
+                                // ToDo: DRY this up.
+                                foreach (var internalSystem in tileSystemList)
+                                {
+                                    if (internalSystem.GetComponent<TileSystem>().systemType == null)
+                                    {
+                                        internalSystem.GetComponent<TileSystem>().MergeSystem(system);
+                                        flaggedForDeletion.Add(system);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        foreach (var system in flaggedForDeletion)
+        {
+            if (!tileSystemList.Contains(system))
+            {
+                Destroy(system);
+            }
+        }
+        foreach (var system in tileSystemList)
+        {
+            foreach (var tile in system.GetComponent<TileSystem>().containedTiles)
+            {
+                if (!tile.GetComponent<TileController>().tileSystemList.Contains(system))
+                {
+                    tile.GetComponent<TileController>().tileSystemList.Add(system);
+                }
+            }
+        }
+    }
+
+    private void ResetToSpawn()
+    {
+        if (isSpecial)
+        {
+            gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Remove(gameObject);
+        }
+        else
+        {
+            gameController.GetComponent<GameController>().tilesPlacedThisRound.Remove(gameObject);
+        }
+        isPlaced = false;
+        hasLineage = false;
+        lineageBeingChecked = false;
+        transform.position = spawnPoint;
+    }
+
+    IEnumerator CheckPotential(int startFrame)
+    {
+        checkingPotential = true;
+        yield return new WaitUntil(() => frame >= startFrame + 5);
+        foreach (var boardSpace in gameController.boardSpaceList)
+        {
+            BoardSpace boardSpaceToBeChecked = boardSpace.GetComponent<BoardSpace>();
+            foreach (GameObject path in pathList)
+            {
+                if (path.tag != "Path")
+                {
+                    boardSpaceToBeChecked.CheckPotential(path.tag);
+                }
+            }
+            if (boardSpaceToBeChecked.hasPotential)
+            {
+                if (checkingPotential)
+                {
+                    boardSpaceToBeChecked.Highlight(true);
+                }
+            }
+        }
+        checkingPotential = false;
+    }
+
+    private IEnumerator DropTile()
+    {
+        while (checkingPotential)
+        {
+            yield return null;
+        }
+
         // Sends tiles back to spawn point
-       
+
         if (isConfirmed == false)
         {
             if (isArmed && !isPlaced)
             {
                 isArmed = false;
 
-                RaycastHit boardCheck;
-                Ray ray = new Ray(transform.position, -transform.up);
-                if (Physics.Raycast(ray, out boardCheck, Mathf.Infinity))
+                Ray ray = new Ray(transform.position, Vector3.down);
+                if (Physics.Raycast(ray, out RaycastHit boardCheck, Mathf.Infinity))
                 {
-                    if (boardCheck.collider.name == "boardSpaceMain" || boardCheck.collider.name == "boardSpaceCollider01")
+                    if (boardCheck.collider.tag == "BoardSpace")
                     {
-                        isPlaced = true;
-                        transform.parent.gameObject.transform.position = new Vector3(theSquarePosition.x, transform.position.y, theSquarePosition.z);
-                        gameController.GetComponent<TileDisbursementController>().UpdatePlaceCount(-1);
+                        if (boardCheck.collider.GetComponentInParent<BoardSpace>().isHighlighted)
+                        {
+                            // All Checks Passed. Place the Tile
+                            isPlaced = true;
+                            if (isSpecial)
+                            {
+                                gameController.GetComponent<GameController>().specialTilesPlacedThisRound.Add(gameObject);
+                            }
+                            else
+                            {
+                                gameController.GetComponent<GameController>().tilesPlacedThisRound.Add(gameObject);
+                            }
+                            //gameController.GetComponent<GameController>().SelectTile(gameObject);
+                            Vector3 tilePosition = boardCheck.collider.transform.position;
+                            tilePosition.y = 0;
+                            transform.position = tilePosition;
+                            boardCheck.collider.GetComponent<BoardSpace>().isOccupied = true;
+
+                            // Rotate Tile if Illegal
+                            StartCoroutine(TileLegality());
+                            TileEvent(TileEventName.SuccessfullyPlaced, gameObject);
+                        }
+                        else
+                        {
+                            TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
+                            ResetToSpawn();
+                        }
                     }
                     else
                     {
-                        theSquarePosition = spawnPoint;
-                        transform.parent.gameObject.transform.position = spawnPoint;
+                        TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
+                        ResetToSpawn();
                     }
-                }
-            }
-        }
-    }
-
-    // Button functions
-    void Flip()
-    {
-        if (isSelected && isPlaced)
-        {
-            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, -transform.localScale.z);
-        }
-    }
-
-    void RotateCW()
-    {
-        if (isSelected && isPlaced)
-        {
-            transform.Rotate(0, 90, 0);
-        }
-    }
-
-    void RotateCCW()
-    {
-        if (isSelected && isPlaced)
-        {
-            transform.Rotate(0, -90, 0);
-        }
-    }
-
-    public void ConfirmTile()
-    {
-        isConfirmed = true;
-        ScoreTile();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                if (hit.collider.gameObject == thisTile)
-                {
-                    isSelected = true;
                 }
                 else
                 {
-                    isSelected = false;
+                    TileEvent(TileEventName.UnsuccessfullyPlaced, gameObject);
+                    ResetToSpawn();
                 }
             }
         }
+
+        ClearPotential();
     }
 
-    void OnTriggerEnter(Collider other)
+    public void ClearPotential()
     {
-        if (other.CompareTag("BoardSpace"))
+        checkingPotential = false;
+        foreach (var boardSpace in gameController.boardSpaceList)
         {
-            GameObject theSquare = other.gameObject;
-            theSquarePosition = other.gameObject.transform.position;
-            TileCollider tileCollider = theSquare.GetComponent<TileCollider>();
-            if (tileCollider.isEmpty == true)
-            {
-                isArmed = true;
-            }
+            boardSpace.GetComponent<BoardSpace>().ClearPotential();
         }
     }
 
-    public void UpdateScore(int score) 
-    {
-
-    }
-
-    public void ScoreTile() 
-    {
-        foreach (GameObject path in pathList)
-        {
-            // Add up score.
-            scoreToAdd = path.GetComponent<PathController>().scoreToAdd;
-            gameController.AddScore(scoreToAdd);
-            Debug.Log(path.name + " has a score of " + scoreToAdd);
-        }
-    }
 }

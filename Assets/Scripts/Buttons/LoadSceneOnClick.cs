@@ -9,7 +9,10 @@ public class LoadSceneOnClick : MonoBehaviour
 
     public void LoadByIndex(int sceneIndex)
     {
-        loadingScreen.enabled = true;
+        if (loadingScreen != null)
+        {
+            loadingScreen.enabled = true;
+        }
         SceneManager.LoadScene(sceneIndex);
     }
 }

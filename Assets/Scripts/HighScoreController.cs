@@ -7,36 +7,24 @@ using UnityEngine.UI;
 public class HighScoreController : MonoBehaviour
 {
     public GameObject scorePrefab;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void UpdateScores(HighScoreData highScores)
     {
         highScores.scores.Sort((Score x, Score y) => DateTime.Compare(x.timeStamp, y.timeStamp));
+
         Score recentScore = highScores.scores[0];
         highScores.scores.Sort(SortByScore);
         int recentScoreRank = highScores.scores.FindIndex(x => x == recentScore);
         int listSize;
-        if (highScores.scores.Count > 10)
-        {
-            listSize = 10;
-        }
-        else
-        {
-            listSize = highScores.scores.Count;
-        }
+
+        if (highScores.scores.Count > 10) { listSize = 10; }
+        else { listSize = highScores.scores.Count; }
+
         List<Score> returningScores = highScores.scores.GetRange(0, listSize);
         returningScores.Reverse();
+
         int index = 1;
+
         foreach (var score in returningScores)
         {
             GameObject newReturningScore = Instantiate(scorePrefab, transform, false);

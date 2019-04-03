@@ -21,12 +21,6 @@ public class SharedGameController : MonoBehaviour
     private int rotationSpeed = 90;
     private Quaternion to;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     private void OnEnable()
     {
         JoinSharedGame(true);
@@ -44,7 +38,6 @@ public class SharedGameController : MonoBehaviour
         //joinButton.OnSelect(null);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (isRotating)

@@ -2,18 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-// quick scene reset for debugging
 using UnityEngine.SceneManagement;
 
 
 public class GameController : MonoBehaviour
 {
-    private float boardPosZ;
+    private GameData game;
+
     public GameObject boardSpace;
+    public GameObject boardEdge;
+
+    private float boardPosZ;
+
     public List<GameObject> boardSpaceList;
     public List<string> validPathTags = new List<string>();
-    public GameObject boardEdge;
     public float boardScale = 10;
     public int boardSize = 9;
     public GameObject selectedTile;
@@ -37,7 +39,6 @@ public class GameController : MonoBehaviour
     public List<GameObject> tilesPlacedThisRound;
     public List<GameObject> specialTilesPlacedThisRound;
 
-    // Start is called before the first frame update
     void Start()
     {
         // Locate Board
@@ -70,6 +71,10 @@ public class GameController : MonoBehaviour
         Vector3 BoardCenter = new Vector3(boardScale / 2, 0, boardScale / 2 + boardPosZ);
         GenerateBoard(boardSize, boardSize, BoardCenter);
         score = 0;
+
+        GameSettings gameSettings = new GameSettings();
+        game = new GameData(gameSettings, DataHolder.sharedString);
+        game.Begin();
 
         // Define Valid Path Tags
         validPathTags.Add("Trail");
@@ -146,23 +151,20 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-
     void Update()
     {
        // quick scene reset for debugging
        if (Input.GetKeyDown("backspace"))
-        {
+       {
             SceneManager.LoadScene(1);
-        }
-        RemoveMissingObjects();
-
+       }
+       RemoveMissingObjects();
     }
 
     public void AddScore(int newScoreValue)
     {
         score += newScoreValue;
-//        Debug.Log("The score is " + score + " points");
+        // Debug.Log("The score is " + score + " points");
     }
 
     // Scoring

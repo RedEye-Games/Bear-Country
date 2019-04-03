@@ -6,7 +6,6 @@ public class SplashMenuAnimator : MonoBehaviour
 {
     public Animator anim;
 
-    // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -14,6 +13,7 @@ public class SplashMenuAnimator : MonoBehaviour
 
     public void SignArrive()
     {
+        AnalyticsWrapper.Report.ScreenVisit("new game menu", "main menu");
         anim.Play("SignArrive");
     }
 
@@ -34,11 +34,13 @@ public class SplashMenuAnimator : MonoBehaviour
 
     public void SharedGameWindowOpen()
     {
+        AnalyticsWrapper.Report.ScreenVisit("shared game menu", "new game menu");
         anim.Play("SharedGameWindow_Open");
     }
 
     public void SharedGameWindowStandby()
     {
+        AnalyticsWrapper.Report.ScreenVisit("new game menu", "shared game menu");
         anim.Play("SharedGameWindow_Standby");
     }
 

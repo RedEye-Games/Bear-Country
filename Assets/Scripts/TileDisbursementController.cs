@@ -137,7 +137,7 @@ public class TileDisbursementController : MonoBehaviour
                     if (tileSprite.gameObject.name == "Tile Sprite")
                     {
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
-                        tileSprite.color = new Color(1, 1, 1, 0.5f);
+                        //tileSprite.color = new Color(1, 1, 1, 0.5f);
                     }
                 }
                 newTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
@@ -177,7 +177,7 @@ public class TileDisbursementController : MonoBehaviour
                 if (tileSprite.gameObject.name == "Tile Sprite")
                 {
                     tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
-                    tileSprite.color = new Color(1, 1, 1, 0.5f);
+                    //tileSprite.color = new Color(1, 1, 1, 0.5f);
                 }
             }
             newSpecialTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;

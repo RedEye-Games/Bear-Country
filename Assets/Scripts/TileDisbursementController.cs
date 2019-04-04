@@ -60,7 +60,7 @@ public class TileDisbursementController : MonoBehaviour
 
         // Locate RoundCOunter Script
         roundCounter = GameObject.FindWithTag("RoundCounter");
-        roundCounter.GetComponent<Text>().text = "7";
+        roundCounter.GetComponent<Text>().text = "6";
 
         // Locate ScoreBoard Script
         // ToDo: Trigger to EventManager
@@ -148,7 +148,7 @@ public class TileDisbursementController : MonoBehaviour
             }
         }
         tiles = GameObject.FindGameObjectsWithTag("Tile");
-        int roundsLeft = (remainingTiles / 4) + 1;
+        int roundsLeft = (remainingTiles / 4);
         roundCounter.GetComponent<Text>().text = roundsLeft.ToString();
         if (remainingTiles > 0)
         {
@@ -214,7 +214,7 @@ public class TileDisbursementController : MonoBehaviour
             }
             else
             {
-                EnableButton();
+                EnableButton(true);
             }
         } else
         {

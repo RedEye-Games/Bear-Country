@@ -36,6 +36,12 @@ public class HighScoreSaver : MonoBehaviour
 
     public void SaveScore(int newScore, string newSeed = "", bool newShared = false)
     {
+        string folderPath = Path.Combine(Application.persistentDataPath, folderName);
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+        }
+
         string[] filePaths = GetFilePaths();
 
         if (filePaths.Length > 0)
@@ -54,12 +60,6 @@ public class HighScoreSaver : MonoBehaviour
             timeStamp = DateTime.Now
         };
         highScoreData.scores.Add(scoreToAdd);
-
-        string folderPath = Path.Combine(Application.persistentDataPath, folderName);
-        if (!Directory.Exists(folderPath))
-        {
-            Directory.CreateDirectory(folderPath);
-        }
 
         string dataPath = Path.Combine(folderPath, "HighScores" + fileExtension);
         SaveScores(highScoreData, dataPath);
@@ -87,7 +87,8 @@ public class HighScoreSaver : MonoBehaviour
 
     static string[] GetFilePaths ()
     {
-        string folderPath = Path.Combine(Application.persistentDataPath, folderName);
-        return Directory.GetFiles (folderPath, "*"+fileExtension);
+        string folderPath = Path.Combine(Application.persistentDataPath, folderName) + "/";
+        Debug.Log(folderPath);
+        return Directory.GetFiles (folderPath+"/", "*"+fileExtension);
     }
 }

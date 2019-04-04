@@ -214,7 +214,7 @@ public class TileDisbursementController : MonoBehaviour
             }
             else
             {
-                EnableButton(true);
+                EnableButton();
             }
         } else
         {

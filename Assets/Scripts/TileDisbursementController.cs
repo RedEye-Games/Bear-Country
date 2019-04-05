@@ -277,8 +277,11 @@ public class TileDisbursementController : MonoBehaviour
 
     void EnableSpecialTileTray()
     {
-        specialTileTray.SetActive(true);
-        EnableSpecialTiles();
+        if (remainingSpecialTiles > 0)
+        {
+            specialTileTray.SetActive(true);
+            EnableSpecialTiles();
+        }
     }
 
     void PopulateTileOptions() 

@@ -10,6 +10,7 @@ public class HelpController : MonoBehaviour
     public Button helpCloseButton;
     public Button helpCloseButton02;
     public GameObject tutorialPanel;
+    public GameObject blocker;
     //Animator anim;
 
     public ScrollRect myScrollRect;
@@ -41,10 +42,12 @@ public class HelpController : MonoBehaviour
         //Set scroll to top of page
         myScrollRect.verticalNormalizedPosition = 1;
         //anim.Play("HowToPlay_Open");
+        blocker.SetActive(true);
 
     }
     void CloseTutorial()
     {
         tutorialPanel.SetActive(false);
+        blocker.SetActive(false);
     }
 }

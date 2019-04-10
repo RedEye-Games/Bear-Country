@@ -38,9 +38,6 @@ public class GameData
     public void NextRound()
     {
         if (CurrentRound < Settings.numberOfRounds) CurrentRound++;
-        else
-        {
-            Debug.LogError("tried to advance beyond number of rounds");
-        }
+        else { Debug.LogError("tried to advance beyond number of rounds"); }
     }
 }

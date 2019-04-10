@@ -71,12 +71,15 @@ public static class AnalyticsWrapper
             AnalyticsEvent.GameStart();
         }
 
-        public static void GameFinish()
+        public static void GameFinish(GameData gameData)
         {
             string debugMessage = "gameFinish";
             if (!PreCall(debugMessage)) return;
 
-            AnalyticsEvent.GameOver();
+            AnalyticsEvent.GameOver(null, new Dictionary<string, object>
+            {
+                { "gameData", gameData }
+            });
         }
     }
 }

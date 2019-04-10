@@ -3,13 +3,19 @@ using UnityEngine.SceneManagement;
 
 public class LoadSceneOnClick : MonoBehaviour
 {
-    public Canvas loadingScreen;
+
+    public Canvas activate;
+    public GameObject deactivate;
 
     public void LoadByIndex(int sceneIndex)
     {
-        if (loadingScreen != null)
+        if (activate != null)
         {
-            loadingScreen.enabled = true;
+            activate.enabled = true;
+        }
+        if (deactivate !=null)
+        {
+            deactivate.SetActive(false);
         }
         SceneManager.LoadScene(sceneIndex);
     }

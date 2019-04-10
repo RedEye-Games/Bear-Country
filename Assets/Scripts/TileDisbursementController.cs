@@ -60,7 +60,7 @@ public class TileDisbursementController : MonoBehaviour
 
         // Locate RoundCOunter Script
         roundCounter = GameObject.FindWithTag("RoundCounter");
-        roundCounter.GetComponent<Text>().text = "7";
+        roundCounter.GetComponent<Text>().text = "6";
 
         // Locate ScoreBoard Script
         // ToDo: Trigger to EventManager
@@ -137,7 +137,7 @@ public class TileDisbursementController : MonoBehaviour
                     if (tileSprite.gameObject.name == "Tile Sprite")
                     {
                         tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
-                        tileSprite.color = new Color(1, 1, 1, 0.5f);
+                        //tileSprite.color = new Color(1, 1, 1, 0.5f);
                     }
                 }
                 newTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
@@ -148,11 +148,11 @@ public class TileDisbursementController : MonoBehaviour
             }
         }
         tiles = GameObject.FindGameObjectsWithTag("Tile");
-        int roundsLeft = (remainingTiles / 4) + 1;
+        int roundsLeft = (remainingTiles / 4);
         roundCounter.GetComponent<Text>().text = roundsLeft.ToString();
         if (remainingTiles > 0)
         {
-            disburseTilesButton.GetComponentInChildren<Text>().text = "Place all tiles.";
+            disburseTilesButton.GetComponentInChildren<Text>().text = "Place all tiles";
         }
         else
         {
@@ -177,7 +177,7 @@ public class TileDisbursementController : MonoBehaviour
                 if (tileSprite.gameObject.name == "Tile Sprite")
                 {
                     tileSprite.sprite = Resources.Load<Sprite>("Sprites/" + tileChoice.tileType);
-                    tileSprite.color = new Color(1, 1, 1, 0.5f);
+                    //tileSprite.color = new Color(1, 1, 1, 0.5f);
                 }
             }
             newSpecialTile.GetComponentInChildren<TileController>().northPath.gameObject.tag = tileChoice.northPath;
@@ -252,7 +252,7 @@ public class TileDisbursementController : MonoBehaviour
         else 
         if (!disburseTilesButton.interactable)
         {
-            disburseTilesButton.GetComponentInChildren<Text>().text = "Confirm Placement";
+            disburseTilesButton.GetComponentInChildren<Text>().text = "Ready!";
             disburseTilesButton.interactable = true;
             disburseTilesButton.onClick.AddListener(DisburseTiles);
         }
@@ -277,8 +277,11 @@ public class TileDisbursementController : MonoBehaviour
 
     void EnableSpecialTileTray()
     {
-        specialTileTray.SetActive(true);
-        EnableSpecialTiles();
+        if (remainingSpecialTiles > 0)
+        {
+            specialTileTray.SetActive(true);
+            EnableSpecialTiles();
+        }
     }
 
     void PopulateTileOptions() 

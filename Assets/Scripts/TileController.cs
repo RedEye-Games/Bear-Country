@@ -152,9 +152,24 @@ public class TileController : MonoBehaviour
             tileSprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
             foreach (var sprite in tileSprites)
             {
+                if (sprite.gameObject.name == "PlacedTile")
+                {
+                    sprite.color = new Color(1, 1, 1, 0);
+                }
                 if (sprite.gameObject.name == "Highlight")
                 {
                     sprite.color = new Color(1, 1, 1, 0.5f);
+                }
+            }
+        }
+        if (isPlaced && !isSelected && !isConfirmed)
+        {
+            tileSprites = gameObject.GetComponentsInChildren<SpriteRenderer>();
+            foreach (var sprite in tileSprites)
+            {
+                if (sprite.gameObject.name == "PlacedTile")
+                {
+                    sprite.color = new Color(1, 1, 1, 1);
                 }
             }
         }
@@ -428,6 +443,10 @@ public class TileController : MonoBehaviour
             if (tileSprite.gameObject.name == "Tile Sprite")
             {
                 tileSprite.color = new Color(1, 1, 1, 1);
+            }
+            if (tileSprite.gameObject.name == "PlacedTile")
+            {
+                tileSprite.color = new Color(1, 1, 1, 0);
             }
         }
         // Connect Systems for Scoring

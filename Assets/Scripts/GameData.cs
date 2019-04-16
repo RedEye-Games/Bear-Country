@@ -14,19 +14,26 @@ public class GameData
     public bool HasStarted { get; private set; }
     public bool IsComplete { get; private set; }
     public int CurrentRound { get; private set; }
+    public bool UsedSharedString { get; private set; }
     public float GameDuration => _timeFinished - _timeStarted;
-
+    public LaunchedFromValue LaunchedFrom;
 
     public GameData(GameSettings gameSettings, string sharedString) {
         Settings = gameSettings;
         SharedString = sharedString;
+        UsedSharedString = sharedString != null;
     }
 
-    public void Begin()
+    public int roundsRemaining => Settings.numberOfRounds - CurrentRound;
+
+    public enum LaunchedFromValue { main_menu, play_again_button }
+    public void Begin(LaunchedFromValue launchedFrom)
     {
         _timeStarted = Time.time;
         HasStarted = true;
-        CurrentRound = 1;
+        CurrentRound = 0;
+        this.LaunchedFrom = launchedFrom;
+        AnalyticsWrapper.Report.GameStart(this);
     }
 
     public void Complete()
@@ -35,9 +42,10 @@ public class GameData
         IsComplete = true;
     }
 
-    public void NextRound()
+    public void GoToNextRound()
     {
         if (CurrentRound < Settings.numberOfRounds) CurrentRound++;
         else { Debug.LogError("tried to advance beyond number of rounds"); }
+        Debug.Log("hey, now it is round " + CurrentRound);
     }
 }

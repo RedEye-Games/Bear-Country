@@ -6,13 +6,14 @@ using UnityEngine.Analytics;
 public static class AnalyticsWrapper
 {
     private static bool ShouldSendEvent() {
-        return Debug.isDebugBuild == false;
+        //return Debug.isDebugBuild == false;
+        return true;
     }
 
     private static void PreProcessParams(Dictionary<string, object> eventParams)
     {
-        eventParams.Add("appVersion", Application.version);
-        eventParams.Add("isDebugBuild", Debug.isDebugBuild);
+        //eventParams.Add("appVersion", Application.version);
+        //eventParams.Add("isDebugBuild", Debug.isDebugBuild);
     }
 
     private static bool PreCall(string debugMessage, Dictionary<string, object> eventParams)
@@ -21,6 +22,7 @@ public static class AnalyticsWrapper
         PreProcessParams(eventParams);
         return ShouldSendEvent();
     }
+
 
     public static class Report
     {
@@ -75,10 +77,16 @@ public static class AnalyticsWrapper
             if (shouldSend) AnalyticsEvent.ScreenVisit(screenName, eventParams);
         }
 
-        public static void GameStart()
+        public static void GameStart(GameData gameData)
         {
             string debugMessage = "gameStart";
             Dictionary<string, object> eventParams = new Dictionary<string, object>();
+
+            eventParams.Add("numberOfRounds", gameData.Settings.numberOfRounds);
+            eventParams.Add("boardWidth", gameData.Settings.boardWidth);
+            eventParams.Add("boardHeight", gameData.Settings.boardHeight);
+            eventParams.Add("usedSharedString", gameData.UsedSharedString);
+            eventParams.Add("launchedFrom", gameData.LaunchedFrom);
             if (PreCall(debugMessage, eventParams)) AnalyticsEvent.GameStart(eventParams);
         }
 

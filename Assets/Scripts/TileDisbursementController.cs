@@ -8,10 +8,7 @@ using UnityEngine.UI;
 
 public class TileDisbursementController : MonoBehaviour
 {
-    // GameController
     private GameController gameController;
-
-    // ScoreBoard
     private ScoreBoard scoreBoard;
 
     public GameObject roundCounter;
@@ -38,7 +35,6 @@ public class TileDisbursementController : MonoBehaviour
 
     private bool disbursingTiles = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         if (DataHolder.sharedString != null)
@@ -58,7 +54,7 @@ public class TileDisbursementController : MonoBehaviour
             Debug.Log("Cannot find 'GameController' script");
         }
 
-        // Locate RoundCOunter Script
+        // Locate RoundCounter Script
         roundCounter = GameObject.FindWithTag("RoundCounter");
         roundCounter.GetComponent<Text>().text = "6";
 
@@ -188,13 +184,6 @@ public class TileDisbursementController : MonoBehaviour
         }
         specialTiles = GameObject.FindGameObjectsWithTag("SpecialTile");
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
 
     public void ToggleButtons()
     {

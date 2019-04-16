@@ -73,8 +73,8 @@ public class GameController : MonoBehaviour
         score = 0;
 
         GameSettings gameSettings = new GameSettings();
-        game = new GameData(gameSettings, DataHolder.sharedString);
-        game.Begin();
+        game = new GameData( gameSettings, DataHolder.sharedString );
+        game.Begin( GameData.LaunchedFromValue.main_menu );
 
         // Define Valid Path Tags
         validPathTags.Add("Trail");
@@ -190,7 +190,6 @@ public class GameController : MonoBehaviour
     {
         if (selectedTile != null)
         {
-
             selectedTile.GetComponent<TileController>().StopBreathing();
         }
         selectedTile = tile;
@@ -237,6 +236,7 @@ public class GameController : MonoBehaviour
         tilesPlacedThisRound.Clear();
         specialTilesPlacedThisRound.Clear();
         RemoveMissingObjects();
+        game.GoToNextRound();
     }
 
     public void RemoveMissingObjects()

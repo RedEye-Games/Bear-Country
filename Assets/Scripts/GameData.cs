@@ -15,8 +15,11 @@ public class GameData
     public bool IsComplete { get; private set; }
     public int CurrentRound { get; private set; }
     public bool UsedSharedString { get; private set; }
-    public float GameDuration => _timeFinished - _timeStarted;
+    public float Duration => _timeFinished - _timeStarted;
     public LaunchedFromValue LaunchedFrom;
+
+    public int TotalScore { get; private set; }
+
 
     public GameData(GameSettings gameSettings, string sharedString) {
         Settings = gameSettings;
@@ -47,5 +50,10 @@ public class GameData
         if (CurrentRound < Settings.numberOfRounds) CurrentRound++;
         else { Debug.LogError("tried to advance beyond number of rounds"); }
         Debug.Log("hey, now it is round " + CurrentRound);
+    }
+
+    public void SetScore(int totalScore)
+    {
+        TotalScore = totalScore;
     }
 }

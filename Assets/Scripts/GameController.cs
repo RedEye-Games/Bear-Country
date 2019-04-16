@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    private GameData game;
+    private GameData gameData;
 
     public GameObject boardSpace;
     public GameObject boardEdge;
@@ -73,8 +73,8 @@ public class GameController : MonoBehaviour
         score = 0;
 
         GameSettings gameSettings = new GameSettings();
-        game = new GameData( gameSettings, DataHolder.sharedString );
-        game.Begin( GameData.LaunchedFromValue.main_menu );
+        gameData = new GameData( gameSettings, DataHolder.sharedString );
+        gameData.Begin( GameData.LaunchedFromValue.main_menu );
 
         // Define Valid Path Tags
         validPathTags.Add("Trail");
@@ -236,7 +236,7 @@ public class GameController : MonoBehaviour
         tilesPlacedThisRound.Clear();
         specialTilesPlacedThisRound.Clear();
         RemoveMissingObjects();
-        game.GoToNextRound();
+        gameData.GoToNextRound();
     }
 
     public void RemoveMissingObjects()
@@ -263,10 +263,16 @@ public class GameController : MonoBehaviour
         scoreBoard.GetComponent<ScoreBoard>().ScoreTiles();
         yield return new WaitUntil(() => !scoreBoard.isScoring);
         int highScore = scoreBoard.GetComponent<ScoreBoard>().totalScore;
+
+        // ToDo: this should probably happen somewhere else instead of here
+        gameData.SetScore(highScore);
+
         scoreBoard.GetComponent<HighScoreSaver>().SaveScore(highScore);
         HighScoreData highScores = scoreBoard.GetComponent<HighScoreSaver>().highScoreData;
         endGameOverlay.SetActive(true);
         endGameOverlay.GetComponentInChildren<HighScoreController>().UpdateScores(highScores);
+
+        AnalyticsWrapper.Report.GameFinish(gameData);
     }
 
 }

@@ -6,8 +6,8 @@ using UnityEngine.Analytics;
 public static class AnalyticsWrapper
 {
     private static bool ShouldSendEvent() {
-        //return Debug.isDebugBuild == false;
-        return true;
+        return Debug.isDebugBuild == false;
+        //return true;
     }
 
     private static void PreProcessParams(Dictionary<string, object> eventParams)
@@ -80,13 +80,14 @@ public static class AnalyticsWrapper
         public static void GameStart(GameData gameData)
         {
             string debugMessage = "gameStart";
-            Dictionary<string, object> eventParams = new Dictionary<string, object>();
-
-            eventParams.Add("numberOfRounds", gameData.Settings.numberOfRounds);
-            eventParams.Add("boardWidth", gameData.Settings.boardWidth);
-            eventParams.Add("boardHeight", gameData.Settings.boardHeight);
-            eventParams.Add("usedSharedString", gameData.UsedSharedString);
-            eventParams.Add("launchedFrom", gameData.LaunchedFrom);
+            Dictionary<string, object> eventParams = new Dictionary<string, object>
+            {
+                { "numberOfRounds", gameData.Settings.numberOfRounds },
+                { "boardWidth", gameData.Settings.boardWidth },
+                { "boardHeight", gameData.Settings.boardHeight },
+                { "usedSharedString", gameData.UsedSharedString },
+                { "launchedFrom", gameData.LaunchedFrom }
+            };
             if (PreCall(debugMessage, eventParams)) AnalyticsEvent.GameStart(eventParams);
         }
 
@@ -95,7 +96,13 @@ public static class AnalyticsWrapper
             string debugMessage = "gameFinish";
             Dictionary<string, object> eventParams = new Dictionary<string, object>
             {
-                { "gameData", gameData }
+                { "gameDurationInSeconds", gameData.Duration },
+                { "numberOfRounds", gameData.Settings.numberOfRounds },
+                { "boardWidth", gameData.Settings.boardWidth },
+                { "boardHeight", gameData.Settings.boardHeight },
+                { "usedSharedString", gameData.UsedSharedString },
+                { "launchedFrom", gameData.LaunchedFrom },
+                { "totalScore", gameData.TotalScore }
             };
 
             if (PreCall(debugMessage, eventParams)) AnalyticsEvent.GameOver(null, eventParams);

@@ -9,18 +9,6 @@ public class TileSystem : MonoBehaviour
     public List<GameObject> connectedExits;
     public string systemType;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void MergeSystem(GameObject mergingSystem)
     {
         if (mergingSystem.GetComponent<TileSystem>().systemType == systemType)

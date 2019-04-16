@@ -5,13 +5,20 @@ using UnityEngine.Analytics;
 
 public static class AnalyticsWrapper
 {
-    private static bool ShouldSendEvent() { 
-        return false; 
+    private static bool ShouldSendEvent() {
+        return Debug.isDebugBuild == false;
     }
 
-    private static bool PreCall(string debugMessage)
+    private static void PreProcessParams(Dictionary<string, object> eventParams)
+    {
+        eventParams.Add("appVersion", Application.version);
+        eventParams.Add("isDebugBuild", Debug.isDebugBuild);
+    }
+
+    private static bool PreCall(string debugMessage, Dictionary<string, object> eventParams)
     {
         if (Debug.isDebugBuild) Debug.Log("ANALYTICS: " + debugMessage);
+        PreProcessParams(eventParams);
         return ShouldSendEvent();
     }
 
@@ -20,7 +27,8 @@ public static class AnalyticsWrapper
         public static void CustomEvent(string eventName, Dictionary<string, object> eventParams)
         {
             if (Debug.isDebugBuild) eventName = "DEBUG: " + eventName;
-            if (!PreCall("custom event: " + eventName)) return;
+            if (!PreCall("custom event: " + eventName, eventParams)) return;
+
             AnalyticsEvent.Custom(eventName, eventParams);
         }
         public static void CustomEvent(string eventName) { CustomEvent(eventName, null); }
@@ -31,55 +39,58 @@ public static class AnalyticsWrapper
             public static void Start(string tutorialName, string cameFrom)
             {
                 string debugMessage = "tutorial start: " + tutorialName + ". cameFrom: " + cameFrom;
-                if (!PreCall(debugMessage)) return;
 
-                AnalyticsEvent.TutorialStart(tutorialName, new Dictionary<string, object>
+                Dictionary<string, object> eventParams = new Dictionary<string, object>
                 {
-                    { "cameFrom", cameFrom }
-                });
+                    { "cameFrom", cameFrom}
+                };
+
+                if (!PreCall(debugMessage, eventParams)) return;
+                AnalyticsEvent.TutorialStart(tutorialName, eventParams);
             }
 
             public static void Complete(string tutorialName, string cameFrom, float timeElapsed)
             {
                 string debugMessage = "tutorial complete: " + tutorialName + ". cameFrom: " + cameFrom + ". timeElapsed: " + timeElapsed;
-                if (!PreCall(debugMessage)) return;
 
-                AnalyticsEvent.TutorialComplete(tutorialName, new Dictionary<string, object>
+                Dictionary<string, object> eventParams = new Dictionary<string, object>
                 {
                     { "cameFrom", cameFrom },
                     { "durationViewed", timeElapsed }
-                });
+                };
+
+                if (PreCall(debugMessage, eventParams)) AnalyticsEvent.TutorialComplete(tutorialName, eventParams);
             }
         }
 
         public static void ScreenVisit(string screenName, string cameFrom)
         {
             string debugMessage = "screenVisit: " + screenName + ". cameFrom: " + cameFrom;
-            if (!PreCall(debugMessage)) return;
-
-            AnalyticsEvent.ScreenVisit(screenName, new Dictionary<string, object>
+            Dictionary<string, object> eventParams = new Dictionary<string, object>
             {
                 { "cameFrom", cameFrom}
-            });
+            };
+
+            bool shouldSend = PreCall(debugMessage, eventParams);
+            if (shouldSend) AnalyticsEvent.ScreenVisit(screenName, eventParams);
         }
 
         public static void GameStart()
         {
             string debugMessage = "gameStart";
-            if (!PreCall(debugMessage)) return;
-
-            AnalyticsEvent.GameStart();
+            Dictionary<string, object> eventParams = new Dictionary<string, object>();
+            if (PreCall(debugMessage, eventParams)) AnalyticsEvent.GameStart(eventParams);
         }
 
         public static void GameFinish(GameData gameData)
         {
             string debugMessage = "gameFinish";
-            if (!PreCall(debugMessage)) return;
-
-            AnalyticsEvent.GameOver(null, new Dictionary<string, object>
+            Dictionary<string, object> eventParams = new Dictionary<string, object>
             {
                 { "gameData", gameData }
-            });
+            };
+
+            if (PreCall(debugMessage, eventParams)) AnalyticsEvent.GameOver(null, eventParams);
         }
     }
 }

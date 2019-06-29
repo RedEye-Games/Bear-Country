@@ -46,6 +46,7 @@ public class ScoreBoard : MonoBehaviour
         // ToDo: Remove from Update
         CountSystems(tileSystems);
         CountTotalScore();
+        UpdateScore();
     }
 
     public void ScoreTiles()
@@ -59,14 +60,19 @@ public class ScoreBoard : MonoBehaviour
 
     private void CountSystems(GameObject[] tileSystems)
     {
-        systems = 0;
+        int largestSystem = 0;
         exitPoints = 0;
         foreach (var tileSystem in tileSystems)
         {
             TileSystem tileSystemComponent = tileSystem.GetComponent<TileSystem>();
             if (tileSystemComponent.systemType == null && tileSystemComponent.containedTiles.Count() > 1)
             {
-                exitPoints = exitPoints + exitScoreTable[tileSystemComponent.connectedExits.Count()];
+                int system = tileSystemComponent.connectedExits.Count();
+                if (largestSystem < system)
+                {
+                    largestSystem = system;
+                    exitPoints = exitScoreTable[largestSystem];
+                }
                 systems++;
             }
             else
@@ -156,7 +162,7 @@ public class ScoreBoard : MonoBehaviour
                 }
                 if (scoreKeeper.gameObject.name == "Total Score")
                 {
-                    scoreKeeper.text = "Total: " + exitPoints;
+                    scoreKeeper.text = "Total: " + totalScore;
                 }
             }
         }

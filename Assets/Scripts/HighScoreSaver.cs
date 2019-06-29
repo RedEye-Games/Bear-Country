@@ -9,6 +9,7 @@ public class HighScoreSaver : MonoBehaviour
     public HighScoreData highScoreData;
     const string folderName = "HighScoreData";
     const string fileExtension = ".dat";
+    public bool isSaving = false;
 
     void Update ()
     {
@@ -59,10 +60,12 @@ public class HighScoreSaver : MonoBehaviour
             shared = newShared,
             timeStamp = DateTime.Now
         };
-        highScoreData.scores.Add(scoreToAdd);
+        highScoreData.scores.Insert(0, scoreToAdd);
+        Debug.Log("Adding Score: " + scoreToAdd.score);
 
         string dataPath = Path.Combine(folderPath, "HighScores" + fileExtension);
         SaveScores(highScoreData, dataPath);
+        isSaving = false;
     }
 
     static void SaveScores (HighScoreData data, string path)

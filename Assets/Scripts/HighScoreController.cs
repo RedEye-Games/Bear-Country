@@ -21,10 +21,10 @@ public class HighScoreController : MonoBehaviour
 
     public void UpdateScores(HighScoreData highScores)
     {
-        highScores.scores.Sort((Score x, Score y) => DateTime.Compare(x.timeStamp, y.timeStamp));
         Score recentScore = highScores.scores[0];
+        Debug.Log("Most recent score is " + recentScore.score + " at " + recentScore.timeStamp);
+        highScores.scores.Sort((Score x, Score y) => DateTime.Compare(x.timeStamp, y.timeStamp));
         highScores.scores.Sort(SortByScore);
-        int recentScoreRank = highScores.scores.FindIndex(x => x == recentScore);
         int listSize;
         if (highScores.scores.Count > 10)
         {
@@ -34,13 +34,14 @@ public class HighScoreController : MonoBehaviour
         {
             listSize = highScores.scores.Count;
         }
+        highScores.scores.Reverse();
+        int recentScoreRank = highScores.scores.FindIndex(x => x == recentScore);
         List<Score> returningScores = highScores.scores.GetRange(0, listSize);
-        returningScores.Reverse();
-        int index = 1;
+        int index = 0;
         foreach (var score in returningScores)
         {
             GameObject newReturningScore = Instantiate(scorePrefab, transform, false);
-            newReturningScore.GetComponent<Text>().text = index + ". " + score.score;
+            newReturningScore.GetComponent<Text>().text = (index + 1) + ". " + score.score;
             if (index == recentScoreRank)
             {
                 newReturningScore.GetComponent<Text>().color = new Color(0.9058824f, 0.7450981f, 0.1215686f, 1f);

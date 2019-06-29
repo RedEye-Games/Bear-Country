@@ -261,7 +261,9 @@ public class GameController : MonoBehaviour
         scoreBoard.GetComponent<ScoreBoard>().ScoreTiles();
         yield return new WaitUntil(() => !scoreBoard.isScoring);
         int highScore = scoreBoard.GetComponent<ScoreBoard>().totalScore;
+        Debug.Log("Ended game. Saving.");
         scoreBoard.GetComponent<HighScoreSaver>().SaveScore(highScore);
+        yield return new WaitUntil(() => !scoreBoard.GetComponent<HighScoreSaver>().isSaving);
         HighScoreData highScores = scoreBoard.GetComponent<HighScoreSaver>().highScoreData;
         endGameOverlay.SetActive(true);
         endGameOverlay.GetComponentInChildren<HighScoreController>().UpdateScores(highScores);

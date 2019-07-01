@@ -103,7 +103,7 @@ public class WildlifeController : MonoBehaviour
                 }
             }
         }
-        checkingSalmon = false;
+        checkingBears = false;
     }
 
     void CheckForSalmon(GameObject tile)

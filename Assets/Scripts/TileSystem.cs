@@ -8,11 +8,12 @@ public class TileSystem : MonoBehaviour
     public List<GameObject> containedTiles;
     public List<GameObject> connectedExits;
     public string systemType;
+    public bool hasSalmon;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        hasSalmon = false;
     }
 
     // Update is called once per frame

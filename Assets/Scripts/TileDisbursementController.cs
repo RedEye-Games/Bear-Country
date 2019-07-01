@@ -36,7 +36,7 @@ public class TileDisbursementController : MonoBehaviour
     List<Tile> TileOptions = new List<Tile>();
     private List<Tile> tileChoices;
 
-    private bool disbursingTiles = false;
+    public bool disbursingTiles = false;
 
     private bool gameOver = false;
 

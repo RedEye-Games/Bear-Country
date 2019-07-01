@@ -82,6 +82,9 @@ public class TileController : MonoBehaviour
     public int frame;
     private IEnumerator coroutine;
 
+    // Wildlife Variables
+    public bool hasBear;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -629,6 +632,12 @@ public class TileController : MonoBehaviour
         {
             boardSpace.GetComponent<BoardSpace>().ClearPotential();
         }
+    }
+
+    // Spawn a Bear
+    public void SpawnBear()
+    {
+        hasBear = true;
     }
 
 }

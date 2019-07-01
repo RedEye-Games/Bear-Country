@@ -147,7 +147,8 @@ public class WildlifeController : MonoBehaviour
 
     void SpawnBear(GameObject tile)
     {
-        // Look through systems. For each trail system with a connected exit, spawn a bear.
-        tile.GetComponent<TileController>().SpawnBear();
+        // Enable a bear on the tile.
+        Debug.Log("Showing bear.");
+        tile.GetComponentInChildren<BearController>().ShowBear();
     }
 }

@@ -63,21 +63,12 @@ public class WildlifeController : MonoBehaviour
         checkingSalmon = true;
         CheckForSalmon(tile);
         yield return new WaitUntil(() => !checkingSalmon);
-        if (supportsBear)
-        {
-            checkingBears = true;
-            CheckForBears(tile);
-            yield return new WaitUntil(() => !checkingBears);
-        }
-        supportsBear = false;
-
-        // Clear Tile System List
         tileSystemList.Clear();
     }
 
     void CheckForBears(GameObject tile)
     {
-        // See if a tile contains a river system with salmon and a trail system with at least one exit
+        // See if a tile is part of a trail system with at least one exit
         // If so, spawn bear
 
         // Get all tile systems
@@ -125,13 +116,12 @@ public class WildlifeController : MonoBehaviour
                         {
                             // If so, fill river with Salmon
                             SpawnSalmon(tileSystem);
-                            supportsBear = true;
-                            Debug.Log("Spawning Salmon in " + tileSystem.name);
+                            CheckForBears(tile);
                         }
                     }
                     else
                     {
-                        supportsBear = true;
+                        CheckForBears(tile);
                     }
                 }
             }
@@ -143,6 +133,10 @@ public class WildlifeController : MonoBehaviour
     {
         // Fill a river with Salmon
         tileSystem.hasSalmon = true;
+        foreach (var tile in tileSystem.containedTiles)
+        {
+            //tile.GetComponentInChildren<SalmonController>().ShowSalmon();
+        }
     }
 
     void SpawnBear(GameObject tile)

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BearController : MonoBehaviour
 {
+    public GameObject salmon;
+
     SpriteRenderer[] childBears;
 
     // Start is called before the first frame update
@@ -30,5 +32,6 @@ public class BearController : MonoBehaviour
         {
             bear.enabled = true;
         }
+        salmon.GetComponent<SalmonController>().HideSalmon();
     }
 }

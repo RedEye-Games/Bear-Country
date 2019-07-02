@@ -28,7 +28,7 @@ public class GameController : MonoBehaviour
     private int score;
 
     // Scoring Systems
-    public List<TileSystem> tileSystemList;
+    public List<GameObject> tileSystemList;
     public GameObject tileSystem;
     readonly string tileSystemNamingString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private int tileSystemNamingInt = 0;
@@ -169,7 +169,7 @@ public class GameController : MonoBehaviour
     // Adds tileSystem to List
     public void AddTileSystem(TileSystem tileSystemToAdd)
     {
-        tileSystemList.Add(tileSystemToAdd);
+        //tileSystemList.Add(tileSystemToAdd);
     }
 
     public void AttachTileSystem(GameObject tile, string systemType = "Tile", bool isEdge = false)
@@ -235,6 +235,13 @@ public class GameController : MonoBehaviour
         tilesPlacedThisRound.Clear();
         specialTilesPlacedThisRound.Clear();
         RemoveMissingObjects();
+        GameObject[] allTiles = GameObject.FindGameObjectsWithTag("Tile");
+        tileSystemList.Clear();
+        // Wildlife Management
+        foreach (var tile in allTiles)
+        {
+            GetComponentInParent<WildlifeController>().AdjustWildlife(tile);
+        }
     }
 
     public void RemoveMissingObjects()

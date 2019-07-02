@@ -135,7 +135,7 @@ public class WildlifeController : MonoBehaviour
         tileSystem.hasSalmon = true;
         foreach (var tile in tileSystem.containedTiles)
         {
-            //tile.GetComponentInChildren<SalmonController>().ShowSalmon();
+            tile.GetComponentInChildren<SalmonController>().ShowSalmon();
         }
     }
 

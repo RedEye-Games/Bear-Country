@@ -28,6 +28,7 @@ public class BearController : MonoBehaviour
 
     public void ShowBear()
     {
+        RotateBear();
         foreach (var bear in childBears)
         {
             bear.enabled = true;

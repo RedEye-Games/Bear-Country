@@ -26,6 +26,7 @@ public class SalmonController : MonoBehaviour
 
     public void ShowSalmon()
     {
+        RotateSalmon();
         foreach (var salmon in childSalmon)
         {
             salmon.enabled = true;

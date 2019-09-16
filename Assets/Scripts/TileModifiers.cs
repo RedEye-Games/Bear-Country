@@ -46,6 +46,7 @@ public class TileModifiers : MonoBehaviour
         if (isRotating)
         {
             selectedTile.transform.rotation = Quaternion.RotateTowards(selectedTile.transform.rotation, to, rotationSpeed * 10 * Time.deltaTime);
+
             if (selectedTile.transform.rotation == to)
             {
                 selectedTile.transform.rotation = to;

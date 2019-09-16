@@ -33,7 +33,9 @@ public class TileDisbursementController : MonoBehaviour
     List<Tile> TileOptions = new List<Tile>();
     private List<Tile> tileChoices;
 
-    private bool disbursingTiles = false;
+    public bool disbursingTiles = false;
+
+    private bool gameOver = false;
 
     void Start()
     {
@@ -75,6 +77,18 @@ public class TileDisbursementController : MonoBehaviour
         DisburseSpecialTiles();
     }
 
+    void ConfirmAllTiles()
+    {
+        foreach (var tile in gameController.GetComponent<GameController>().tilesPlacedThisRound)
+        {
+            tile.GetComponent<TileController>().ConfirmTile();
+        }
+        foreach (var tile in gameController.GetComponent<GameController>().specialTilesPlacedThisRound)
+        {
+            tile.GetComponent<TileController>().ConfirmTile();
+        }
+    }
+
     void DisburseTiles()
     {
         DisableButton();
@@ -95,14 +109,8 @@ public class TileDisbursementController : MonoBehaviour
             EnableSpecialTileTray();
         }
 
-        foreach (var tile in gameController.GetComponent<GameController>().tilesPlacedThisRound)
-        {
-            tile.GetComponent<TileController>().ConfirmTile();
-        }
-        foreach (var tile in gameController.GetComponent<GameController>().specialTilesPlacedThisRound)
-        {
-            tile.GetComponent<TileController>().ConfirmTile();
-        }
+
+        ConfirmAllTiles();
 
         // Round Cleanup
         // ToDo: Move to more appropriate class.
@@ -249,7 +257,14 @@ public class TileDisbursementController : MonoBehaviour
 
     void EndGame ()
     {
-        StartCoroutine(gameController.EndGame());
+        if (!gameOver)
+        {
+            gameOver = true;
+            ConfirmAllTiles();
+            scoreBoard.GetComponent<ScoreBoard>().ScoreTiles();
+            StartCoroutine(gameController.EndGame());
+        }
+
     }
 
     void DisableButton()

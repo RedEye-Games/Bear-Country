@@ -8,4 +8,5 @@ public class Score
     public string seed;
     public int score;
     public DateTime timeStamp;
+    //public UserID userID;
 }

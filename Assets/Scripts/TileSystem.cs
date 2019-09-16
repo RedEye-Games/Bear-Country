@@ -8,6 +8,12 @@ public class TileSystem : MonoBehaviour
     public List<GameObject> containedTiles;
     public List<GameObject> connectedExits;
     public string systemType;
+    public bool hasSalmon;
+
+    void Start()
+    {
+        hasSalmon = false;
+    }
 
     public void MergeSystem(GameObject mergingSystem)
     {

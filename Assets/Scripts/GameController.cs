@@ -30,7 +30,7 @@ public class GameController : MonoBehaviour
     private int score;
 
     // Scoring Systems
-    public List<TileSystem> tileSystemList;
+    public List<GameObject> tileSystemList;
     public GameObject tileSystem;
     readonly string tileSystemNamingString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private int tileSystemNamingInt = 0;
@@ -171,7 +171,7 @@ public class GameController : MonoBehaviour
     // Adds tileSystem to List
     public void AddTileSystem(TileSystem tileSystemToAdd)
     {
-        tileSystemList.Add(tileSystemToAdd);
+        //tileSystemList.Add(tileSystemToAdd);
     }
 
     public void AttachTileSystem(GameObject tile, string systemType = "Tile", bool isEdge = false)
@@ -236,7 +236,16 @@ public class GameController : MonoBehaviour
         tilesPlacedThisRound.Clear();
         specialTilesPlacedThisRound.Clear();
         RemoveMissingObjects();
+
         gameData.GoToNextRound();
+        
+        GameObject[] allTiles = GameObject.FindGameObjectsWithTag("Tile");
+        tileSystemList.Clear();
+        // Wildlife Management
+        foreach (var tile in allTiles)
+        {
+            GetComponentInParent<WildlifeController>().AdjustWildlife(tile);
+        }
     }
 
     public void RemoveMissingObjects()
@@ -267,12 +276,13 @@ public class GameController : MonoBehaviour
         // ToDo: this should probably happen somewhere else instead of here
         gameData.SetScore(highScore);
 
+        Debug.Log("Ended game. Saving.");
         scoreBoard.GetComponent<HighScoreSaver>().SaveScore(highScore);
+        yield return new WaitUntil(() => !scoreBoard.GetComponent<HighScoreSaver>().isSaving);
         HighScoreData highScores = scoreBoard.GetComponent<HighScoreSaver>().highScoreData;
         endGameOverlay.SetActive(true);
         endGameOverlay.GetComponentInChildren<HighScoreController>().UpdateScores(highScores);
 
         AnalyticsWrapper.Report.GameFinish(gameData);
     }
-
 }

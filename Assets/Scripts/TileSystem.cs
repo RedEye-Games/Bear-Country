@@ -15,6 +15,12 @@ public class TileSystem : MonoBehaviour
         hasSalmon = false;
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
     public void MergeSystem(GameObject mergingSystem)
     {
         if (mergingSystem.GetComponent<TileSystem>().systemType == systemType)
